@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1096" height="512" viewBox="0 0 548 256">
+  <defs>
+    <polygon id="s42-stats-bg-a" points="0 0 142.173 0 157.111 15 548 15 548 256 0 256"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <use fill="#ffffff" fill-opacity=".3" xlink:href="#s42-stats-bg-a"/>
+  </g>
+</svg>

@@ -1,16 +1,15 @@
 import request from '@/utils/request'
-import MenuApi from '@/core/permission/modules/sys/menu'
 
 export function getMenuList() {
   return request({
-    url: MenuApi.list,
+    url: 'api/sys/menu/list',
     method: 'get'
   })
 }
 
 export function getMenuInfo(query) {
   return request({
-    url: MenuApi.info,
+    url: 'api/sys/menu/info',
     method: 'get',
     params: query
   })
@@ -18,7 +17,7 @@ export function getMenuInfo(query) {
 
 export function createMenu(data) {
   return request({
-    url: MenuApi.add,
+    url: 'api/sys/menu/add',
     method: 'post',
     data
   })
@@ -26,7 +25,7 @@ export function createMenu(data) {
 
 export function updateMenu(data) {
   return request({
-    url: MenuApi.update,
+    url: 'api/sys/menu/update',
     method: 'post',
     data
   })
@@ -34,7 +33,7 @@ export function updateMenu(data) {
 
 export function deleteMenu(data) {
   return request({
-    url: MenuApi.delete,
+    url: 'api/sys/menu/delete',
     method: 'post',
     data
   })

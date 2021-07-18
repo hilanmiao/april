@@ -2,9 +2,9 @@
   <form-dialog ref="formDialog">
     <template #slot-type="{ scope }">
       <el-radio-group v-model="scope.type" @change="handleMenuTypeChange">
-        <el-radio :label="0">目录</el-radio>
-        <el-radio :label="1">菜单</el-radio>
-        <el-radio :label="2">权限</el-radio>
+        <el-radio label="0">目录</el-radio>
+        <el-radio label="1">菜单</el-radio>
+        <el-radio label="2">权限</el-radio>
       </el-radio-group>
     </template>
     <template #slot-perms="{ scope }">
@@ -56,7 +56,7 @@
 import { constantRouterComponents } from '@/router'
 import PermissionCascader from './permission-cascader'
 import MenuIconSelector from './menu-icon-selector'
-import { isNumber } from 'lodash'
+// import { isNumber } from 'lodash'
 import { getMenuInfo, createMenu, updateMenu } from '@/api/sys/menu'
 import PermissionMixin from '@/core/mixins/permission'
 
@@ -69,7 +69,7 @@ export default {
   mixins: [PermissionMixin],
   data() {
     return {
-      menuId: -1,
+      menuId: '-1',
       menus: []
     }
   },
@@ -87,14 +87,14 @@ export default {
       return Object.keys(constantRouterComponents)
     },
     handleOpen(form, { showLoading, hideLoading, close, set }) {
-      if (this.menuId !== -1) {
+      if (this.menuId !== '-1') {
         // update mode
         showLoading()
         getMenuInfo({ menuId: this.menuId })
           .then(res => {
             const { menu, parentMenu } = res.data
             menu.parentNode = {
-              id: parentMenu ? menu.parentId : -1,
+              id: parentMenu ? menu.parentId : '-1',
               name: parentMenu ? parentMenu.name : '一级菜单'
             }
             // merge
@@ -117,7 +117,7 @@ export default {
       data.parentId = parentNode.id
       let req = null
 
-      if (this.menuId === -1) {
+      if (this.menuId === '-1') {
         // create
         req = createMenu(data)
       } else {
@@ -134,13 +134,14 @@ export default {
         })
     },
     open(menus, menuId) {
-      if (menuId && !isNumber(menuId)) {
+      // if (menuId && !isNumber(menuId)) {
+      if (menuId) {
         throw new Error('menuId is not invalid')
       }
       if (!menus) {
         throw new Error('menu must be not null')
       }
-      this.menuId = menuId ?? -1
+      this.menuId = menuId ?? '-1'
       this.menus = menus
       this.$refs.formDialog.open({
         title: '编辑菜单',
@@ -152,7 +153,7 @@ export default {
           {
             label: '菜单类型',
             prop: 'type',
-            value: 0,
+            value: '0',
             rules: {
               required: true,
               message: '请选择菜单类型',
@@ -184,7 +185,8 @@ export default {
               required: true,
               trigger: 'blur',
               validator: (rule, value, callback) => {
-                if (!value.id || !isNumber(value.id)) {
+                // if (!value.id || !isNumber(value.id)) {
+                if (!value.id) {
                   callback(new Error('请选择上级节点'))
                 } else {
                   callback()
@@ -198,7 +200,7 @@ export default {
             prop: 'router',
             value: '',
             hidden: ({ scope }) => {
-              return scope.type === 2
+              return scope.type === '2'
             },
             rules: {
               required: true,
@@ -217,7 +219,7 @@ export default {
             prop: 'perms',
             value: '',
             hidden: ({ scope }) => {
-              return scope.type !== 2
+              return scope.type !== '2'
             },
             rules: { required: true, message: '请选择权限', trigger: 'blur' },
             component: 'slot-perms'
@@ -227,7 +229,7 @@ export default {
             prop: 'icon',
             value: '',
             hidden: ({ scope }) => {
-              return scope.type === 2
+              return scope.type === '2'
             },
             component: 'slot-icon'
           },
@@ -236,7 +238,7 @@ export default {
             prop: 'viewPath',
             value: '',
             hidden: ({ scope }) => {
-              return scope.type !== 1
+              return scope.type !== '1'
             },
             component: 'slot-view-path'
           },
@@ -245,7 +247,7 @@ export default {
             prop: 'keepalive',
             value: true,
             hidden: ({ scope }) => {
-              return scope.type !== 1
+              return scope.type !== '1'
             },
             component: {
               name: 'el-switch'
@@ -256,7 +258,7 @@ export default {
             prop: 'isShow',
             value: true,
             hidden: ({ scope }) => {
-              return scope.type === 2
+              return scope.type === '2'
             },
             component: {
               name: 'el-switch'

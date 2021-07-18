@@ -79,27 +79,27 @@ export default {
       menus.forEach(menu => {
         // 根级别菜单渲染
         let realMenu
-        if (!parentMenu && !menu.parentId && menu.type === 1) {
+        if (!parentMenu && !menu.parentId && menu.type === '1') {
           // 根菜单，查找该跟菜单下子菜单，因为可能会包含权限
           const childMenu = this.filterMenuToTable(menus, menu)
           realMenu = { ...menu }
           realMenu.children = childMenu
-        } else if (!parentMenu && !menu.parentId && menu.type === 0) {
+        } else if (!parentMenu && !menu.parentId && menu.type === '0') {
           // 根目录
           const childMenu = this.filterMenuToTable(menus, menu)
           realMenu = { ...menu }
           realMenu.children = childMenu
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 1) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '1') {
           // 子菜单下继续找是否有子菜单
           const childMenu = this.filterMenuToTable(menus, menu)
           realMenu = { ...menu }
           realMenu.children = childMenu
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 0) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '0') {
           // 如果还是目录，继续递归
           const childMenu = this.filterMenuToTable(menus, menu)
           realMenu = { ...menu }
           realMenu.children = childMenu
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 2) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '2') {
           realMenu = { ...menu }
         }
         // add curent route
@@ -119,22 +119,22 @@ export default {
       const res = []
       menus.forEach(menu => {
         let node
-        if (menu.type === 2) {
+        if (menu.type === '2') {
           // 权限直接return
           return
         }
-        if (!parentMenu && !menu.parentId && menu.type === 1) {
+        if (!parentMenu && !menu.parentId && menu.type === '1') {
           // 根菜单
           node = { label: menu.name }
-        } else if (!parentMenu && !menu.parentId && menu.type === 0) {
+        } else if (!parentMenu && !menu.parentId && menu.type === '0') {
           // 根目录
           const childNode = this.filterMenuToTree(menus, menu)
           node = { label: menu.name }
           node.children = childNode
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 1) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '1') {
           // 子菜单则停止
           node = { label: menu.name }
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 0) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '0') {
           // 如果还是目录，继续递归
           const childNode = this.filterMenuToTree(menus, menu)
           node = { label: menu.name }
@@ -155,27 +155,27 @@ export default {
       const res = []
       menus.forEach(menu => {
         let node
-        if (!parentMenu && !menu.parentId && menu.type === 1) {
+        if (!parentMenu && !menu.parentId && menu.type === '1') {
           // 根菜单
           const childNode = this.filterMenuHasPermsToTree(menus, menu)
           node = { label: menu.name }
           node.children = childNode
-        } else if (!parentMenu && !menu.parentId && menu.type === 0) {
+        } else if (!parentMenu && !menu.parentId && menu.type === '0') {
           // 根目录
           const childNode = this.filterMenuHasPermsToTree(menus, menu)
           node = { label: menu.name }
           node.children = childNode
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 1) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '1') {
           // 子菜单则停止
           const childNode = this.filterMenuHasPermsToTree(menus, menu)
           node = { label: menu.name }
           node.children = childNode
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 0) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '0') {
           // 如果还是目录，继续递归
           const childNode = this.filterMenuHasPermsToTree(menus, menu)
           node = { label: menu.name }
           node.children = childNode
-        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === 2) {
+        } else if (parentMenu && parentMenu.id === menu.parentId && menu.type === '2') {
           // 权限停止递归
           node = { label: menu.name }
         }

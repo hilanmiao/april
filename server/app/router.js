@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- * @param {Egg.Application} app - egg application
- */
-module.exports = app => {
-  const { router, controller } = app;
-  router.get('/', controller.home.index);
+module.exports = () => {
+  // 已经使用 router-plus 插件替代
 };

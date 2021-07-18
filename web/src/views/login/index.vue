@@ -79,7 +79,7 @@
 
 <script>
 import defaultSettings from '@/settings'
-import { getImageCaptcha } from '@/api/login'
+import { getImageCaptcha } from '@/api/common'
 
 export default {
   name: 'Login',

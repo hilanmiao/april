@@ -11,7 +11,7 @@ import { constantRouterComponents } from '@/router'
  */
 function createRoute(menu, isRoot) {
   // 目录
-  if (menu.type === 0) {
+  if (menu.type === '0') {
     return {
       path: menu.router,
       component: isRoot ? Layout : BlankLayout,
@@ -75,16 +75,16 @@ export function filterAsyncRoutes(routes, parentRoute) {
   const res = []
 
   routes.forEach(route => {
-    if (route.type === 2 || !route.isShow) {
+    if (route.type === '2' || !route.isShow) {
       // 如果是权限或隐藏直接跳过
       return
     }
     // 根级别菜单渲染
     let realRoute
-    if (!parentRoute && !route.parentId && route.type === 1) {
+    if (!parentRoute && !route.parentId && route.type === '1') {
       // 根菜单
       realRoute = createRoute(route, true)
-    } else if (!parentRoute && !route.parentId && route.type === 0) {
+    } else if (!parentRoute && !route.parentId && route.type === '0') {
       // 目录
       const childRoutes = filterAsyncRoutes(routes, route)
       realRoute = createRoute(route, true)
@@ -92,10 +92,10 @@ export function filterAsyncRoutes(routes, parentRoute) {
         realRoute.redirect = childRoutes[0].path
         realRoute.children = childRoutes
       }
-    } else if (parentRoute && parentRoute.id === route.parentId && route.type === 1) {
+    } else if (parentRoute && parentRoute.id === route.parentId && route.type === '1') {
       // 子菜单
       realRoute = createRoute(route, false)
-    } else if (parentRoute && parentRoute.id === route.parentId && route.type === 0) {
+    } else if (parentRoute && parentRoute.id === route.parentId && route.type === '0') {
       // 如果还是目录，继续递归
       const childRoute = filterAsyncRoutes(routes, route)
       realRoute = createRoute(route, false)

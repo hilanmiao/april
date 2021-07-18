@@ -42,13 +42,13 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    },
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:7001',
-        pathRewrite: { '^/api': '' }
-      }
     }
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://127.0.0.1:7001',
+    //     pathRewrite: { '^/api': '' }
+    //   }
+    // }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

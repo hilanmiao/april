@@ -16,7 +16,7 @@
           <template slot-scope="scope">
             <span style="margin-right: 16px">{{ scope.row.name }}</span>
             <el-tag
-              v-if="!scope.row.isShow && scope.row.type !== 2"
+              v-if="!scope.row.isShow && scope.row.type !== '2'"
               type="danger"
               effect="dark"
               size="small"
@@ -134,14 +134,29 @@ export default {
   },
   methods: {
     async getMenuList() {
-      const { data } = await getMenuList()
+      let { data } = await getMenuList()
+      data = data.map((item) => {
+        return {
+          id: item.id,
+          parentId: item.parent_id,
+          name: item.name,
+          router: item.router,
+          perms: item.perms,
+          type: item.type,
+          icon: item.icon,
+          orderNum: item.order_num,
+          viewPath: item.view_path,
+          keepalive: item.keepalive,
+          isShow: item.is_show
+        }
+      })
 
       // clean
       if (this.menutree && this.menutree.length > 0) {
         this.menutree = []
       }
       // 同时缓存树形菜单
-      const parentNode = { id: -1, label: '一级菜单' }
+      const parentNode = { id: '-1', label: '一级菜单' }
       parentNode.children = this.filterMenuToTree(data, null)
       this.menutree.push(parentNode)
 
@@ -152,11 +167,11 @@ export default {
      */
     getMenuType(type) {
       switch (type) {
-        case 0:
+        case '0':
           return '目录'
-        case 1:
+        case '1':
           return '菜单'
-        case 2:
+        case '2':
           return '权限'
       }
     },

@@ -5,9 +5,12 @@
  */
 module.exports = app => {
   const apiRouter = app.router.namespace('/api');
-  const { controller } = app;
+  const { controller, middleware } = app;
   const { sysUser } = controller
 
-  apiRouter.resources('user', '/user', sysUser)
+  const tokenRequired = middleware.tokenRequired(null, app)
+
+  apiRouter.get('/sys/user/basic', tokenRequired, sysUser.getBasic);
+  apiRouter.resources('sys/user', '/sys/user', sysUser)
 
 };

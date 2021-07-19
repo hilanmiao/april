@@ -35,26 +35,6 @@ class LoginController extends Controller {
 
     this.success({ ctx, data: { accessToken: resLogin.accessToken, refreshToken: resLogin.refreshToken } })
   }
-
-  async getBaseInfo() {
-    const { ctx } = this;
-    const id = ctx.request.user.id
-    const res = await ctx.service.login.getBaseInfo({ id })
-    if (!res) {
-      this.fail({ ctx, code: 10003 })
-      return
-    }
-
-    this.success({ ctx, data: res })
-  }
-
-  async getPermmenu() {
-    const { ctx } = this;
-    const id = ctx.request.user.id
-    const res = await ctx.service.login.getPermmenu({ id })
-
-    this.success({ ctx, data: res })
-  }
 }
 
 module.exports = LoginController;

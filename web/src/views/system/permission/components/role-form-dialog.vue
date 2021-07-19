@@ -5,7 +5,7 @@
 <script>
 import PermissionMixin from '@/core/mixins/permission'
 import { getDeptList } from '@/api/sys/dept'
-import { getMenuList } from '@/api/sys/menu'
+import { getMenuList } from '@/api/sys/sys_menu'
 import { getRoleInfo, createRole, updateRole } from '@/api/sys/role'
 
 export default {

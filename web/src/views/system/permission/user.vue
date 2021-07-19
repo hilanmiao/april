@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { getUserListPage, deleteUsers, updateUserPassword } from '@/api/sys/user'
+import { getUserListPage, deleteUsers, updateUserPassword } from '@/api/sys/sys_user'
 import STable from '@/components/Table'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'

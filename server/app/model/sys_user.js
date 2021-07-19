@@ -50,7 +50,7 @@ module.exports = app => {
       defaultValue: '1',
       comment: '性别：1:男 2：女'
     },
-    head_thumb: {
+    avatar: {
       type: STRING,
       comment: '头像'
     },

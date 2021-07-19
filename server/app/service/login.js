@@ -35,35 +35,6 @@ class LoginService extends Service {
 
     return data
   }
-
-  async getBaseInfo({ id }) {
-    const { ctx } = this;
-
-    const user = await ctx.model.SysUser.findByPk(id, { attributes: ['id', 'display_name', 'mobile', 'company', 'position', 'head_thumb'] });
-    if (!user) {
-      return false
-    }
-
-    return user
-  }
-
-  async getPermmenu({ id }) {
-    const { ctx, app: { Sequelize: { Op } } } = this;
-
-
-    // 根据角色获取所有菜单
-    const menus = await ctx.model.SysMenu.findAll()
-    // 获取当前用户的所有权限
-    let perms = []
-    const result = await ctx.model.SysMenu.findAll({ where: { perms: { [Op.not]: null }, type: '2' } })
-    if (!_.isEmpty(result)) {
-      result.forEach(e => {
-        perms = _.concat(perms, e.perms.split(','));
-      });
-      perms = _.uniq(perms);
-    }
-    return { menus, perms }
-  }
 }
 
 module.exports = LoginService;

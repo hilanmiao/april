@@ -9,6 +9,6 @@ module.exports = app => {
   const { common } = controller
 
   // 获取图片验证码
-  apiRouter.get('/captcha/img', common.getImgCaptcha);
+  apiRouter.get('/common/captcha/img', common.getImgCaptcha);
 
 };

@@ -4,34 +4,69 @@ const Service = require('egg/index').Service;
 const _ = require('lodash')
 
 class SysMenuService extends Service {
+
+  /**
+   * 获取所有菜单
+   * @return {Promise<*>}
+   */
   async list() {
     const { ctx } = this
-    return await ctx.model.SysMenu.findAll()
+    const res = await ctx.model.SysMenu.findAll()
+    return res
   }
 
+  /**
+   * 创建
+   * @param parent_id
+   * @param name
+   * @param router
+   * @param perms
+   * @param type
+   * @param icon
+   * @param order_num
+   * @param view_path
+   * @param keepalive
+   * @param is_show
+   * @return {Promise<*>}
+   */
   async create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show }) {
     const { ctx } = this
-    const result = await ctx.model.SysMenu.create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
-    return result
+    const res = await ctx.model.SysMenu.create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
+    return res
   }
 
+  /**
+   * 更新
+   * @param id
+   * @param parent_id
+   * @param name
+   * @param router
+   * @param perms
+   * @param type
+   * @param icon
+   * @param order_num
+   * @param view_path
+   * @param keepalive
+   * @param is_show
+   * @return {Promise<*>}
+   */
   async update({ id, parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show }) {
     const { ctx } = this
-    const result = await ctx.model.SysMenu.update(id, { parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
-    return result
+    const res = await ctx.model.SysMenu.update(id, { parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
+    return res
   }
 
-  async remove({ ids }) {
+  /**
+   * 删除
+   * @param ids
+   * @return {Promise<*>}
+   */
+  async delete({ ids }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const query = { where: { id: { [Op.in]: ids } } };
 
-    return ctx.model.SysMenu.destroy(query);
-  }
-
-  // 根据角色获取所有菜单
-  async getMenus({ user_id }) {
-    const { ctx } = this
-    return await ctx.model.SysMenu.findAll()
+    const res = ctx.model.SysMenu.destroy(query);
+    return res
   }
 
   // 查找当前菜单下的子菜单，目录以及菜单
@@ -51,10 +86,15 @@ class SysMenuService extends Service {
     return allMenus
   }
 
-  // 获取某个菜单的信息
-  async getMenuItemInfo({ id }) {
+  /**
+   * 详情
+   * @param id
+   * @returns {Promise<*>}
+   */
+  async info({ id }) {
     const { ctx } = this
-    return await ctx.model.SysMenu.findByPk(id)
+    const res = await ctx.model.SysMenu.findByPk(id)
+    return res
   }
 
   // 获取某个菜单以及关联的父菜单的信息

@@ -1,5 +1,5 @@
 import Layout from '@/layout'
-import BlankLayout from '@/layout/components/BlankLayout'
+import BlankLayout from '@/layout/BlankLayout'
 import { isExternal } from '@/utils/validate'
 import { toHump } from '@/utils'
 import { constantRouterComponents } from '@/router'
@@ -79,7 +79,7 @@ export function filterAsyncRoutes(routes, parentRoute) {
       // 如果是权限或隐藏直接跳过
       return
     }
-    // 根级别菜单渲染
+
     let realRoute
     if (!parentRoute && !route.parentId && route.type === '1') {
       // 根菜单

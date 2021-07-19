@@ -57,7 +57,7 @@ import { constantRouterComponents } from '@/router'
 import PermissionCascader from './permission-cascader'
 import MenuIconSelector from './menu-icon-selector'
 // import { isNumber } from 'lodash'
-import { getMenuInfo, createMenu, updateMenu } from '@/api/sys/menu'
+import { getMenuInfo, createMenu, updateMenu } from '@/api/sys/sys_menu'
 import PermissionMixin from '@/core/mixins/permission'
 
 export default {

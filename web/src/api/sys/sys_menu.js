@@ -1,23 +1,23 @@
 import request from '@/utils/request'
 
-export function getMenuList() {
+export function getMenuSearch(params) {
   return request({
     url: 'api/sys/menu/list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
-export function getMenuInfo(query) {
+export function getMenu(id) {
   return request({
-    url: 'api/sys/menu/info',
-    method: 'get',
-    params: query
+    url: 'api/sys/menu/:id',
+    method: 'get'
   })
 }
 
 export function createMenu(data) {
   return request({
-    url: 'api/sys/menu/add',
+    url: 'api/sys/menu',
     method: 'post',
     data
   })
@@ -25,16 +25,15 @@ export function createMenu(data) {
 
 export function updateMenu(data) {
   return request({
-    url: 'api/sys/menu/update',
-    method: 'post',
+    url: 'api/sys/menu/:id',
+    method: 'put',
     data
   })
 }
 
 export function deleteMenu(data) {
   return request({
-    url: 'api/sys/menu/delete',
-    method: 'post',
-    data
+    url: 'api/sys/menu/:id',
+    method: 'delete'
   })
 }

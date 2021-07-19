@@ -5,12 +5,11 @@
  */
 module.exports = app => {
   const apiRouter = app.router.namespace('/api');
-
   const { controller, middleware } = app;
-  const { login } = controller
+  const { sysRole } = controller
 
   const tokenRequired = middleware.tokenRequired(null, app)
 
-  apiRouter.post('/login', login.login);
+  apiRouter.resources('sys/role', '/sys/role', sysRole)
 
 };

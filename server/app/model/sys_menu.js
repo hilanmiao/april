@@ -22,15 +22,10 @@ module.exports = app => {
       type: STRING,
       comment: '菜单地址'
     },
-    perms: {
-      type: STRING,
-      comment: '权限标识'
-    },
     type: {
       type: ENUM,
-      values: [ '0', '1', '2' ],
-      defaultValue: '0',
-      comment: '类型，0：目录、1：菜单、2：按钮'
+      values: [ 'directory', 'menu' ],
+      comment: '类型，directory：目录、menu：菜单'
     },
     icon: {
       type: STRING,
@@ -45,8 +40,8 @@ module.exports = app => {
       comment: '视图地址，对应vue文件'
     },
     keepalive: {
-      type: STRING,
-      comment: '路由缓存'
+      type: BOOLEAN,
+      comment: '路由是否缓存'
     },
     is_show: {
       type: BOOLEAN,

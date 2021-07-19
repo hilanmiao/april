@@ -13,7 +13,6 @@ import bootstrap from './core/bootstrap'
 
 import './core/use' // vue use
 import './icons' // icon
-import './permission' // permission control
 
 Vue.config.productionTip = false
 

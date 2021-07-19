@@ -8,23 +8,9 @@ export function login(data) {
   })
 }
 
-export function getBaseInfo() {
-  return request({
-    url: 'api/login/baseInfo',
-    method: 'get'
-  })
-}
-
-export function getPermmenu() {
-  return request({
-    url: 'api/login/permmenu',
-    method: 'get'
-  })
-}
-
 export function logout() {
   return request({
-    url: 'api/login/logout',
+    url: 'api/logout',
     method: 'put'
   })
 }

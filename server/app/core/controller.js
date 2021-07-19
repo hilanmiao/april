@@ -7,11 +7,11 @@
 // 5.动作名称和业务不要有关系，例：create不要写成courseCreate
 
 // 常见公共方法名如下：
-// page：分页
 // list：所有
+// search：有条件查询
 // create: 添加
 // update: 编辑
-// remove: 删除
+// delete: 删除
 // get：详情
 // copy: 复制
 // enable: 设置为可用
@@ -23,8 +23,6 @@
 // isExistChildren: 是否存在子项目
 // statistics: 统计
 // count: 数量
-// findAll: 根据条件过滤
-// findOne: 根据条件过滤一个
 
 
 // 其他方法名请遵循"动作+内容"，举例

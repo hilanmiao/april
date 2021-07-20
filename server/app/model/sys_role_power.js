@@ -4,23 +4,23 @@ const base = require('./base');
 
 module.exports = app => {
   const { UUID } = app.Sequelize;
-  const SysRoleMenu = base.defineModel(app, 'sys_role_menu', {
+  const SysRolePower = base.defineModel(app, 'sys_role_power', {
     id: {
       type: UUID,
       primaryKey: true,
       allowNull: false
     },
-    user_id: {
+    role_id: {
       type: UUID,
-      comment: '用户Id'
+      comment: '角色Id'
     },
     power_id: {
       type: UUID,
       comment: '权限Id'
     }
   }, {
-    comment: '系统-角色菜单表'
+    comment: '系统-角色权限表'
   });
 
-  return SysRoleMenu;
+  return SysRolePower;
 };

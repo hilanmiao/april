@@ -66,7 +66,7 @@ module.exports = app => {
     github_id: {
       type: STRING,
       comment: 'githubId'
-    },
+    }
   }, {
     comment: '系统-用户表'
   });

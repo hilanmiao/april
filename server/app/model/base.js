@@ -9,8 +9,8 @@
 const { v4: uuidv4 } = require('uuid')
 
 function generateUUID() {
-  return uuidv4().replace(/-/g, '');
-  // return uuidv4()
+  // return uuidv4().replace(/-/g, '');
+  return uuidv4()
 }
 
 function defineModel(app, name, attributes, options) {

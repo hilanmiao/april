@@ -13,16 +13,7 @@ module.exports = app => {
     name: {
       type: STRING,
       comment: '名称'
-    },
-    remark: {
-      type: STRING,
-      comment: '备注'
-    },
-    is_enabled: {
-      type: BOOLEAN,
-      defaultValue: true,
-      comment: '是否可用'
-    },
+    }
   }, {
     comment: '系统-文件表'
   });

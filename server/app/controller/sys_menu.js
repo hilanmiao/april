@@ -3,8 +3,12 @@
 const Controller = require('../core/controller');
 const _ = require('lodash');
 
-class SysUserController extends Controller {
+class SysMenuController extends Controller {
 
+  /**
+   * 所有
+   * @returns {Promise<void>}
+   */
   async list() {
     const { ctx } = this;
 
@@ -12,7 +16,11 @@ class SysUserController extends Controller {
     this.success({ ctx, data: res })
   }
 
-  async add() {
+  /**
+   * 创建
+   * @returns {Promise<void>}
+   */
+  async create() {
     const { ctx } = this;
     let { parentId: parent_id, name, router, perms, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isShow: is_show } = ctx.request.body
 
@@ -38,57 +46,35 @@ class SysUserController extends Controller {
       parent_id = null
     }
 
-    const menu = await ctx.service.sysMenu.create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.service.sysMenu.create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
 
-    this.success({ ctx, data: menu })
+    this.success({ ctx, data: res })
   }
 
-  async update() {
-    const { ctx } = this;
-    let { menuId: id, parentId: parent_id, name, router, perms, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isShow: is_show } = ctx.request.body
-
-    if (type === '2' && parent_id === '-1') {
-      // 无法直接创建权限，必须有ParentId
-      this.fail({ ctx, code: 10005 })
-      return
-    }
-
-    if (type === '1' && parent_id !== '-1') {
-      const parent = await ctx.service.sysMenu.getMenuItemInfo({ id: parent_id })
-      if (!parent) {
-        throw new Error('父节点菜单不存在！');
-      }
-      if (parent && parent.type === '1') {
-        // 当前新增为菜单但父节点也为菜单时为非法操作
-        this.fail({ ctx, code: 10006 })
-        return;
-      }
-      if (parent_id === '-1') {
-        parent_id = null
-      }
-    }
-
-    const menu = await ctx.service.sysMenu.update(id, { parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
-
-    this.success({ ctx, data: menu })
-  }
-
+  /**
+   * 删除
+   * @returns {Promise<void>}
+   */
   async delete() {
     const { ctx } = this;
-    const { menuId: menu_id } = ctx.request.body
+    const { id } = ctx.params.id
 
     // 如果有子目录，一并删除
-    const childMenus = await ctx.service.sysMenu.findChildMenus({ menu_id })
-    await ctx.service.sysMenu.remove({ ids: _.flattenDeep([menu_id, childMenus]) })
+    const childMenus = await ctx.service.sysMenu.getChildMenus({ id })
+    await ctx.service.sysMenu.delete({ ids: _.flattenDeep([id, childMenus]) })
     this.success({ ctx })
   }
 
-  async info() {
+  /**
+   * 详情
+   * @returns {Promise<void>}
+   */
+  async get() {
     const { ctx } = this;
-    const { menuId: id } = ctx.request.body
+    const { id } = ctx.params.id
     const res = await ctx.service.sysMenu.getMenuItemAndParentInfo({ id })
     this.success({ ctx, data: res })
   }
 }
 
-module.exports = SysUserController;
+module.exports = SysMenuController;

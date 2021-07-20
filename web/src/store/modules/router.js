@@ -2,14 +2,14 @@ import { constantRoutes, NotFoundRouter } from '@/router'
 import { filterAsyncRoutes } from '@/router/generator-routers'
 
 const state = {
-  routes: [], // 当前用户的所有路由
+  myRoutes: [], // 当前用户的所有路由
   addedRoutes: [] // 添加的路由（未使用到）
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addedRoutes = routes
-    state.routes = constantRoutes.concat(routes)
+    state.myRoutes = constantRoutes.concat(routes)
   }
 }
 

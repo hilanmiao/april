@@ -165,128 +165,128 @@
   </div>
 </template>
 
-<script>
-import { getUserListPage, deleteUsers, updateUserPassword } from '@/api/sys/sys_user'
-import STable from '@/components/Table'
-import WarningConfirmButton from '@/components/WarningConfirmButton'
-import TableLayout from '@/layout/components/TableLayout'
-import SysDeptTreePane from './components/dept-tree-pane'
-import SystemPermissionUserFormDialog from './components/user-form-dialog'
+<!--<script>-->
+<!--import { getUserListPage, deleteUsers, updateUserPassword } from '@/api/sys/sys_user'-->
+<!--import STable from '@/components/Table'-->
+<!--import WarningConfirmButton from '@/components/WarningConfirmButton'-->
+<!--import TableLayout from '@/layout/components/TableLayout'-->
+<!--import SysDeptTreePane from './components/dept-tree-pane'-->
+<!--import SystemPermissionUserFormDialog from './components/user-form-dialog'-->
 
-export default {
-  name: 'SystemPermissionUser',
-  components: {
-    STable,
-    TableLayout,
-    SysDeptTreePane,
-    WarningConfirmButton,
-    SystemPermissionUserFormDialog
-  },
-  data() {
-    return {
-      currentDeptId: -1,
-      selectionUserList: []
-    }
-  },
-  computed: {
-    hasMultipleSelection() {
-      return this.selectionUserList.length <= 0
-    }
-  },
-  watch: {
-    currentDeptId: function() {
-      this.handleRefresh()
-    }
-  },
-  methods: {
-    async getUserList({ page, limit }) {
-      const queryAll = this.currentDeptId === -1
-      const { data } = await getUserListPage({
-        page,
-        limit,
-        departmentIds: queryAll
-          ? undefined
-          : this.$refs.deptPane.getDeptIdChildrenById(this.currentDeptId)
-      })
-      return { list: data.list, pagination: { total: data.pagination.total }}
-    },
-    handleDeptChange(data) {
-      this.currentDeptId = data.id
-    },
-    handleSelectionChange(selection) {
-      if (!selection || selection.length <= 0) {
-        this.selectionUserList = []
-      } else {
-        this.selectionUserList = selection.map(e => { return e.id })
-      }
-    },
-    handleRefresh() {
-      this.$refs.userTable.refresh()
-    },
-    handleAdd() {
-      this.$refs.userFormDialog.open(this.$refs.deptPane.getDeptList())
-    },
-    handleEdit(row) {
-      this.$refs.userFormDialog.open(this.$refs.deptPane.getDeptList(), row.id)
-    },
-    handleUpdatePassword(row) {
-      this.$openFormDialog({
-        title: `更改管理员（${row.username}）密码`,
-        on: {
-          submit: async(data, { close, done }) => {
-            try {
-              await updateUserPassword({
-                userId: row.id,
-                password: data.password
-              })
-              close()
-            } catch {
-              done()
-            }
-          }
-        },
-        items: [
-          {
-            label: '新密码',
-            value: '',
-            prop: 'password',
-            rules: {
-              required: true,
-              message: '请输入新密码',
-              trigger: 'blur'
-            },
-            component: {
-              name: 'el-input',
-              attrs: {
-                placeholder: '请输入新密码'
-              }
-            }
-          }
-        ]
-      })
-    },
-    handleTransfer() {
-      this.$refs.deptPane.transfer([...this.selectionUserList])
-    },
-    async handleDelete(row, { close, done }) {
-      try {
-        await deleteUsers({ userIds: [row.id] })
-        close()
-      } catch {
-        done()
-      }
-    },
-    async handleMultipleDelete({ close, done }) {
-      try {
-        await deleteUsers({ userIds: [...this.selectionUserList] })
-        close()
-      } catch {
-        done()
-      }
-    }
-  }
-}
-</script>
+<!--export default {-->
+<!--  name: 'SystemPermissionUser',-->
+<!--  components: {-->
+<!--    STable,-->
+<!--    TableLayout,-->
+<!--    SysDeptTreePane,-->
+<!--    WarningConfirmButton,-->
+<!--    SystemPermissionUserFormDialog-->
+<!--  },-->
+<!--  data() {-->
+<!--    return {-->
+<!--      currentDeptId: -1,-->
+<!--      selectionUserList: []-->
+<!--    }-->
+<!--  },-->
+<!--  computed: {-->
+<!--    hasMultipleSelection() {-->
+<!--      return this.selectionUserList.length <= 0-->
+<!--    }-->
+<!--  },-->
+<!--  watch: {-->
+<!--    currentDeptId: function() {-->
+<!--      this.handleRefresh()-->
+<!--    }-->
+<!--  },-->
+<!--  methods: {-->
+<!--    async getUserList({ page, limit }) {-->
+<!--      const queryAll = this.currentDeptId === -1-->
+<!--      const { data } = await getUserListPage({-->
+<!--        page,-->
+<!--        limit,-->
+<!--        departmentIds: queryAll-->
+<!--          ? undefined-->
+<!--          : this.$refs.deptPane.getDeptIdChildrenById(this.currentDeptId)-->
+<!--      })-->
+<!--      return { list: data.list, pagination: { total: data.pagination.total }}-->
+<!--    },-->
+<!--    handleDeptChange(data) {-->
+<!--      this.currentDeptId = data.id-->
+<!--    },-->
+<!--    handleSelectionChange(selection) {-->
+<!--      if (!selection || selection.length <= 0) {-->
+<!--        this.selectionUserList = []-->
+<!--      } else {-->
+<!--        this.selectionUserList = selection.map(e => { return e.id })-->
+<!--      }-->
+<!--    },-->
+<!--    handleRefresh() {-->
+<!--      this.$refs.userTable.refresh()-->
+<!--    },-->
+<!--    handleAdd() {-->
+<!--      this.$refs.userFormDialog.open(this.$refs.deptPane.getDeptList())-->
+<!--    },-->
+<!--    handleEdit(row) {-->
+<!--      this.$refs.userFormDialog.open(this.$refs.deptPane.getDeptList(), row.id)-->
+<!--    },-->
+<!--    handleUpdatePassword(row) {-->
+<!--      this.$openFormDialog({-->
+<!--        title: `更改管理员（${row.username}）密码`,-->
+<!--        on: {-->
+<!--          submit: async(data, { close, done }) => {-->
+<!--            try {-->
+<!--              await updateUserPassword({-->
+<!--                userId: row.id,-->
+<!--                password: data.password-->
+<!--              })-->
+<!--              close()-->
+<!--            } catch {-->
+<!--              done()-->
+<!--            }-->
+<!--          }-->
+<!--        },-->
+<!--        items: [-->
+<!--          {-->
+<!--            label: '新密码',-->
+<!--            value: '',-->
+<!--            prop: 'password',-->
+<!--            rules: {-->
+<!--              required: true,-->
+<!--              message: '请输入新密码',-->
+<!--              trigger: 'blur'-->
+<!--            },-->
+<!--            component: {-->
+<!--              name: 'el-input',-->
+<!--              attrs: {-->
+<!--                placeholder: '请输入新密码'-->
+<!--              }-->
+<!--            }-->
+<!--          }-->
+<!--        ]-->
+<!--      })-->
+<!--    },-->
+<!--    handleTransfer() {-->
+<!--      this.$refs.deptPane.transfer([...this.selectionUserList])-->
+<!--    },-->
+<!--    async handleDelete(row, { close, done }) {-->
+<!--      try {-->
+<!--        await deleteUsers({ userIds: [row.id] })-->
+<!--        close()-->
+<!--      } catch {-->
+<!--        done()-->
+<!--      }-->
+<!--    },-->
+<!--    async handleMultipleDelete({ close, done }) {-->
+<!--      try {-->
+<!--        await deleteUsers({ userIds: [...this.selectionUserList] })-->
+<!--        close()-->
+<!--      } catch {-->
+<!--        done()-->
+<!--      }-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
 
 <style lang="scss" scoped>
 .sys-user-container {

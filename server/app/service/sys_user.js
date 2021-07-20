@@ -43,7 +43,7 @@ class SysUserService extends Service {
   async getBasic({ id }) {
     const { ctx } = this;
 
-    const res = await ctx.model.SysUser.findByPk(id, { attributes: ['id', 'display_name', 'mobile', 'company', 'position', 'head_thumb'] });
+    const res = await ctx.model.SysUser.findByPk(id, { attributes: ['id', 'display_name', 'mobile', 'company', 'position', 'avatar'] });
 
     return res
   }

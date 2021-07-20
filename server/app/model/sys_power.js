@@ -22,7 +22,7 @@ module.exports = app => {
       type: ENUM,
       values: [ 'menu', 'file', 'element', 'operation' ],
       comment: '权限类型：menu:菜单的访问权限、file:文件的修改权限、element:页面元素的可见性控制、operation:功能模块的操作权限、'
-    },
+    }
   }, {
     comment: '系统-权限表'
   });

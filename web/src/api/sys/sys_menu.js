@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getMenuSearch(params) {
+export function getMenuList(params) {
   return request({
     url: 'api/sys/menu/list',
     method: 'get',
@@ -33,7 +33,8 @@ export function updateMenu(data) {
 
 export function deleteMenu(data) {
   return request({
-    url: 'api/sys/menu/:id',
-    method: 'delete'
+    url: 'api/sys/menu',
+    method: 'delete',
+    data
   })
 }

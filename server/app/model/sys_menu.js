@@ -46,10 +46,6 @@ module.exports = app => {
     is_show: {
       type: BOOLEAN,
       comment: '是否显示在菜单栏'
-    },
-    remark: {
-      type: STRING,
-      comment: '备注'
     }
   }, {
     comment: '系统-菜单表'

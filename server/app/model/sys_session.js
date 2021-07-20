@@ -27,7 +27,7 @@ module.exports = app => {
       type: STRING,
       allowNull: false,
       comment: '用户密码'
-    },
+    }
   }, {
     comment: '系统-用户会话表'
   });

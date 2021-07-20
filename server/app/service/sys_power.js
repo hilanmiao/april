@@ -39,15 +39,24 @@ class SysUserService extends Service {
 
     // 获取用户的所有角色
     const user_id = ctx.request.user.id
-    const roles = await ctx.model.SysRole.findAll({ where: { user_id } })
+    const roles = await ctx.model.SysUserRole.findAll({ where: { user_id } })
+    const roleIds = _.map(roles, 'id')
 
     // 获取所有角色的所有权限
-    const roleIds = _.map(roles, 'id')
-    const powers = await ctx.model.SysPower.findAll({ where: { role_id: { [Op.in]: roleIds } } })
-    for (const item of powers) {
-      const ref_id = item.ref_id
-      // 获取菜单权限
-      res.push(await ctx.model.SysMenu.findByPk(ref_id))
+    let powerIds = []
+    for (const id of roleIds) {
+      const rolePowers = await ctx.model.SysRolePower.findAll({ where: { role_id: id } })
+      powerIds = _.concat(powerIds, _.map(rolePowers, 'id'))
+      powerIds = _.uniq(powerIds)
+    }
+    // 获取所有菜单
+    const menuIds = []
+    for (const id of powerIds) {
+      const power = await ctx.model.SysPower.findOne({ where: { type: 'menu', id } })
+      menuIds.push(power.ref_id)
+    }
+    for (const id of menuIds) {
+      res.push(await ctx.model.SysMenu.findByPk(id))
     }
 
     return res
@@ -63,15 +72,24 @@ class SysUserService extends Service {
 
     // 获取用户的所有角色
     const user_id = ctx.request.user.id
-    const roles = await ctx.model.SysRole.findAll({ where: { user_id } })
+    const roles = await ctx.model.SysUserRole.findAll({ where: { user_id } })
+    const roleIds = _.map(roles, 'id')
 
     // 获取所有角色的所有权限
-    const roleIds = _.map(roles, 'id')
-    const powers = await ctx.model.SysPower.findAll({ where: { role_id: { [Op.in]: roleIds } } })
-    for (const item of powers) {
-      const ref_id = item.ref_id
-      // 获取操作权限
-      res.push(await ctx.model.SysOperation.findByPk(ref_id))
+    let powerIds = []
+    for (const id of roleIds) {
+      const rolePowers = await ctx.model.SysRolePower.findAll({ where: { role_id: id } })
+      powerIds = _.concat(powerIds, _.map(rolePowers, 'id'))
+      powerIds = _.uniq(powerIds)
+    }
+    // 获取所有操作
+    const operationIds = []
+    for (const id of powerIds) {
+      const power = await ctx.model.SysPower.findOne({ where: { type: 'operation', id } })
+      operationIds.push(power.ref_id)
+    }
+    for (const id of operationIds) {
+      res.push(await ctx.model.SysMenu.findByPk(id))
     }
 
     return res

@@ -21,53 +21,53 @@
   </div>
 </template>
 
-<script>
-import { updateAccountInfo, getInfo } from '@/api/account'
+<!--<script>-->
+<!--import { updateAccountInfo, getInfo } from '@/api/account'-->
 
-export default {
-  name: 'AccountBasicSetting',
-  data() {
-    return {
-      loading: false,
-      submitting: false,
-      form: {
-        nickName: '',
-        email: '',
-        phone: '',
-        remark: ''
-      }
-    }
-  },
-  created() {
-    this.getUserInfo()
-  },
-  methods: {
-    async getUserInfo() {
-      try {
-        this.loading = true
-        const { data } = await getInfo()
-        for (const key in this.form) {
-          this.form[key] = data[key]
-        }
-      } finally {
-        this.loading = false
-      }
-    },
-    async handleSubmit() {
-      try {
-        this.submitting = true
-        await updateAccountInfo(this.form)
-        this.$message({
-          message: '更新成功',
-          type: 'success'
-        })
-      } finally {
-        this.submitting = false
-      }
-    }
-  }
-}
-</script>
+<!--export default {-->
+<!--  name: 'AccountBasicSetting',-->
+<!--  data() {-->
+<!--    return {-->
+<!--      loading: false,-->
+<!--      submitting: false,-->
+<!--      form: {-->
+<!--        nickName: '',-->
+<!--        email: '',-->
+<!--        phone: '',-->
+<!--        remark: ''-->
+<!--      }-->
+<!--    }-->
+<!--  },-->
+<!--  created() {-->
+<!--    this.getUserInfo()-->
+<!--  },-->
+<!--  methods: {-->
+<!--    async getUserInfo() {-->
+<!--      try {-->
+<!--        this.loading = true-->
+<!--        const { data } = await getInfo()-->
+<!--        for (const key in this.form) {-->
+<!--          this.form[key] = data[key]-->
+<!--        }-->
+<!--      } finally {-->
+<!--        this.loading = false-->
+<!--      }-->
+<!--    },-->
+<!--    async handleSubmit() {-->
+<!--      try {-->
+<!--        this.submitting = true-->
+<!--        await updateAccountInfo(this.form)-->
+<!--        this.$message({-->
+<!--          message: '更新成功',-->
+<!--          type: 'success'-->
+<!--        })-->
+<!--      } finally {-->
+<!--        this.submitting = false-->
+<!--      }-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
 
 <style lang="scss" scoped>
 .account-basic-setting-container {

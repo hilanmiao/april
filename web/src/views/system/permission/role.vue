@@ -27,46 +27,46 @@
   </div>
 </template>
 
-<script>
-import SystemPermissionRoleFormDialog from './components/role-form-dialog'
-import WarningConfirmButton from '@/components/WarningConfirmButton'
-import TableLayout from '@/layout/components/TableLayout'
-import STable from '@/components/Table'
-import { getRoleListByPage, deleteRole } from '@/api/sys/role'
+<!--<script>-->
+<!--import SystemPermissionRoleFormDialog from './components/role-form-dialog'-->
+<!--import WarningConfirmButton from '@/components/WarningConfirmButton'-->
+<!--import TableLayout from '@/layout/components/TableLayout'-->
+<!--import STable from '@/components/Table'-->
+<!--import { getRoleListByPage, deleteRole } from '@/api/sys/role'-->
 
-export default {
-  name: 'SystemPermissionRole',
-  components: {
-    TableLayout,
-    STable,
-    WarningConfirmButton,
-    SystemPermissionRoleFormDialog
-  },
-  methods: {
-    async getRoleList({ page, limit }) {
-      const { data } = await getRoleListByPage({ page, limit })
-      return { list: data.list, pagination: { total: data.pagination.total }}
-    },
-    handleRefresh() {
-      this.$refs.roleTable.refresh()
-    },
-    handleAdd() {
-      this.$refs.formDialog.open()
-    },
-    handleEdit(row) {
-      this.$refs.formDialog.open(row.id)
-    },
-    async handleDelete(row, { done, close }) {
-      try {
-        await deleteRole({ roleIds: [row.id] })
-        close()
-      } catch (e) {
-        done()
-      }
-    }
-  }
-}
-</script>
+<!--export default {-->
+<!--  name: 'SystemPermissionRole',-->
+<!--  components: {-->
+<!--    TableLayout,-->
+<!--    STable,-->
+<!--    WarningConfirmButton,-->
+<!--    SystemPermissionRoleFormDialog-->
+<!--  },-->
+<!--  methods: {-->
+<!--    async getRoleList({ page, limit }) {-->
+<!--      const { data } = await getRoleListByPage({ page, limit })-->
+<!--      return { list: data.list, pagination: { total: data.pagination.total }}-->
+<!--    },-->
+<!--    handleRefresh() {-->
+<!--      this.$refs.roleTable.refresh()-->
+<!--    },-->
+<!--    handleAdd() {-->
+<!--      this.$refs.formDialog.open()-->
+<!--    },-->
+<!--    handleEdit(row) {-->
+<!--      this.$refs.formDialog.open(row.id)-->
+<!--    },-->
+<!--    async handleDelete(row, { done, close }) {-->
+<!--      try {-->
+<!--        await deleteRole({ roleIds: [row.id] })-->
+<!--        close()-->
+<!--      } catch (e) {-->
+<!--        done()-->
+<!--      }-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
 
 <style>
 

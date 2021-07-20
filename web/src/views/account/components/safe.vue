@@ -29,64 +29,64 @@
   </div>
 </template>
 
-<script>
-import { updatePassword } from '@/api/account'
+<!--<script>-->
+<!--import { updatePassword } from '@/api/account'-->
 
-export default {
-  name: 'AccountSafeSetting',
-  data() {
-    const validateConfirmPassword = (rule, value, callback) => {
-      if (value.length <= 0) {
-        callback(new Error('请二次输入新密码以确认'))
-      } else if (value !== this.form.newPassword) {
-        callback(new Error('二次输入的密码与原来不一致'))
-      } else {
-        callback()
-      }
-    }
-    return {
-      submitting: false,
-      form: {
-        originPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      },
-      rules: {
-        originPassword: [
-          { required: true, message: '请输入原密码', trigger: 'blur' }
-        ],
-        newPassword: [
-          { required: true, message: '请输入新密码', trigger: 'blur' }
-        ],
-        confirmPassword: [{ required: true, trigger: 'blur', validator: validateConfirmPassword }]
-      }
-    }
-  },
-  methods: {
-    async handleSubmit() {
-      this.$refs.form.validate(async(valid) => {
-        if (valid) {
-          try {
-            this.submitting = true
-            await updatePassword({
-              originPassword: this.form.originPassword,
-              newPassword: this.form.newPassword
-            })
-            this.$message({
-              message: '密码更改成功',
-              type: 'success'
-            })
-            // reset form
-            this.$refs.form.resetFields()
-          } finally {
-            this.submitting = false
-          }
-        }
-      })
-    }
-  }
-}
-</script>
+<!--export default {-->
+<!--  name: 'AccountSafeSetting',-->
+<!--  data() {-->
+<!--    const validateConfirmPassword = (rule, value, callback) => {-->
+<!--      if (value.length <= 0) {-->
+<!--        callback(new Error('请二次输入新密码以确认'))-->
+<!--      } else if (value !== this.form.newPassword) {-->
+<!--        callback(new Error('二次输入的密码与原来不一致'))-->
+<!--      } else {-->
+<!--        callback()-->
+<!--      }-->
+<!--    }-->
+<!--    return {-->
+<!--      submitting: false,-->
+<!--      form: {-->
+<!--        originPassword: '',-->
+<!--        newPassword: '',-->
+<!--        confirmPassword: ''-->
+<!--      },-->
+<!--      rules: {-->
+<!--        originPassword: [-->
+<!--          { required: true, message: '请输入原密码', trigger: 'blur' }-->
+<!--        ],-->
+<!--        newPassword: [-->
+<!--          { required: true, message: '请输入新密码', trigger: 'blur' }-->
+<!--        ],-->
+<!--        confirmPassword: [{ required: true, trigger: 'blur', validator: validateConfirmPassword }]-->
+<!--      }-->
+<!--    }-->
+<!--  },-->
+<!--  methods: {-->
+<!--    async handleSubmit() {-->
+<!--      this.$refs.form.validate(async(valid) => {-->
+<!--        if (valid) {-->
+<!--          try {-->
+<!--            this.submitting = true-->
+<!--            await updatePassword({-->
+<!--              originPassword: this.form.originPassword,-->
+<!--              newPassword: this.form.newPassword-->
+<!--            })-->
+<!--            this.$message({-->
+<!--              message: '密码更改成功',-->
+<!--              type: 'success'-->
+<!--            })-->
+<!--            // reset form-->
+<!--            this.$refs.form.resetFields()-->
+<!--          } finally {-->
+<!--            this.submitting = false-->
+<!--          }-->
+<!--        }-->
+<!--      })-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
 
 <style lang="scss" scoped>
 .account-safe-setting-container {

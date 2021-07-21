@@ -50,7 +50,7 @@
 
 <script>
 import { getRoleList } from '@/api/sys/role'
-import { createUser, getUserInfo, updateUser } from '@/api/sys/sys_user'
+import { createUser, getUserInfo, updateUser } from '@/api/sys/sys-user'
 import { isNumber } from 'lodash'
 
 export default {

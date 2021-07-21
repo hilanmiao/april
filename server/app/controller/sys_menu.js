@@ -7,7 +7,7 @@ class SysMenuController extends Controller {
 
   /**
    * 所有
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async list() {
     const { ctx } = this;
@@ -18,24 +18,18 @@ class SysMenuController extends Controller {
 
   /**
    * 创建
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async create() {
     const { ctx } = this;
-    let { parentId: parent_id, name, router, perms, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isShow: is_show } = ctx.request.body
+    let { parentId: parent_id, name, router, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isShow: is_show } = ctx.request.body
 
-    if (type === '2' && parent_id === '-1') {
-      // 无法直接创建权限，必须有ParentId
-      this.fail({ ctx, code: 10005 })
-      return
-    }
-
-    if (type === '1' && parent_id !== '-1') {
+    if (type === 'menu' && parent_id !== '-1') {
       const parent = await ctx.service.sysMenu.getMenuItemInfo({ id: parent_id })
       if (!parent) {
         throw new Error('父节点菜单不存在！');
       }
-      if (parent && parent.type === '1') {
+      if (parent && parent.type === 'menu') {
         // 当前新增为菜单但父节点也为菜单时为非法操作
         this.fail({ ctx, code: 10006 })
         return;
@@ -46,14 +40,14 @@ class SysMenuController extends Controller {
       parent_id = null
     }
 
-    const res = await ctx.service.sysMenu.create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.service.sysMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show })
 
     this.success({ ctx, data: res })
   }
 
   /**
    * 删除
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async delete() {
     const { ctx } = this;
@@ -67,7 +61,7 @@ class SysMenuController extends Controller {
 
   /**
    * 详情
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async get() {
     const { ctx } = this;

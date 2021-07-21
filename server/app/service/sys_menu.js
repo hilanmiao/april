@@ -29,9 +29,9 @@ class SysMenuService extends Service {
    * @param is_show
    * @return {Promise<*>}
    */
-  async create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show }) {
+  async create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show }) {
     const { ctx } = this
-    const res = await ctx.model.SysMenu.create({ parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.model.SysMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show })
     return res
   }
 
@@ -50,9 +50,9 @@ class SysMenuService extends Service {
    * @param is_show
    * @return {Promise<*>}
    */
-  async update({ id, parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show }) {
+  async update({ id, parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show }) {
     const { ctx } = this
-    const res = await ctx.model.SysMenu.update(id, { parent_id, name, router, perms, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.model.SysMenu.update(id, { parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show })
     return res
   }
 

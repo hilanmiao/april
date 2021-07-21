@@ -2,13 +2,9 @@
   <form-dialog ref="formDialog">
     <template #slot-type="{ scope }">
       <el-radio-group v-model="scope.type" @change="handleMenuTypeChange">
-        <el-radio label="0">目录</el-radio>
-        <el-radio label="1">菜单</el-radio>
-        <el-radio label="2">权限</el-radio>
+        <el-radio label="directory">目录</el-radio>
+        <el-radio label="menu">菜单</el-radio>
       </el-radio-group>
-    </template>
-    <template #slot-perms="{ scope }">
-      <permission-cascader v-model="scope.perms" />
     </template>
     <template #slot-parent-node-name="{ scope }">
       <el-popover placement="bottom-start" width="500">
@@ -54,19 +50,16 @@
 
 <script>
 import { constantRouterComponents } from '@/router'
-import PermissionCascader from './permission-cascader'
-import MenuIconSelector from './menu-icon-selector'
-// import { isNumber } from 'lodash'
-import { getMenu, createMenu, updateMenu } from '@/api/sys/sys_menu'
-import PermissionMixin from '@/core/mixins/permission'
+import MenuIconSelector from './icon-selector'
+import { getMenu, createMenu, updateMenu } from '@/api/sys/sys-menu'
+import PowerMenuMixin from '@/core/mixins/power-menu'
 
 export default {
-  name: 'SystemPermissionMenuFormDialog',
+  name: 'SystemPowerMenuFormDialog',
   components: {
-    PermissionCascader,
     MenuIconSelector
   },
-  mixins: [PermissionMixin],
+  mixins: [PowerMenuMixin],
   data() {
     return {
       menuId: '-1',
@@ -134,14 +127,13 @@ export default {
         })
     },
     open(menus, menuId) {
-      // if (menuId && !isNumber(menuId)) {
       if (menuId) {
         throw new Error('menuId is not invalid')
       }
       if (!menus) {
         throw new Error('menu must be not null')
       }
-      this.menuId = menuId ?? '-1'
+      this.menuId = menuId || '-1'
       this.menus = menus
       this.$refs.formDialog.open({
         title: '编辑菜单',
@@ -153,7 +145,7 @@ export default {
           {
             label: '菜单类型',
             prop: 'type',
-            value: '0',
+            value: 'directory',
             rules: {
               required: true,
               message: '请选择菜单类型',
@@ -199,9 +191,6 @@ export default {
             label: '节点路由',
             prop: 'router',
             value: '',
-            hidden: ({ scope }) => {
-              return scope.type === '2'
-            },
             rules: {
               required: true,
               message: '请输入正确的节点路由',
@@ -215,22 +204,9 @@ export default {
             }
           },
           {
-            label: '权限',
-            prop: 'perms',
-            value: '',
-            hidden: ({ scope }) => {
-              return scope.type !== '2'
-            },
-            rules: { required: true, message: '请选择权限', trigger: 'blur' },
-            component: 'slot-perms'
-          },
-          {
             label: '节点图标',
             prop: 'icon',
             value: '',
-            hidden: ({ scope }) => {
-              return scope.type === '2'
-            },
             component: 'slot-icon'
           },
           {
@@ -238,7 +214,7 @@ export default {
             prop: 'viewPath',
             value: '',
             hidden: ({ scope }) => {
-              return scope.type !== '1'
+              return scope.type === 'directory'
             },
             component: 'slot-view-path'
           },
@@ -247,7 +223,7 @@ export default {
             prop: 'keepalive',
             value: true,
             hidden: ({ scope }) => {
-              return scope.type !== '1'
+              return scope.type === 'directory'
             },
             component: {
               name: 'el-switch'
@@ -257,9 +233,6 @@ export default {
             label: '是否显示',
             prop: 'isShow',
             value: true,
-            hidden: ({ scope }) => {
-              return scope.type === '2'
-            },
             component: {
               name: 'el-switch'
             }

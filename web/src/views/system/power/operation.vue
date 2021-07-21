@@ -16,7 +16,7 @@
           <template slot-scope="scope">
             <span style="margin-right: 16px">{{ scope.row.name }}</span>
             <el-tag
-              v-if="!scope.row.isShow && scope.row.type !== '2'"
+              v-if="!scope.row.isShow"
               type="danger"
               effect="dark"
               size="small"
@@ -112,21 +112,21 @@
 
 <script>
 import STable from '@/components/Table'
-import MenuFormDialog from './components/menu-form-dialog'
+import MenuFormDialog from '../components/power-menu-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import { getMenuList, deleteMenu } from '@/api/sys/sys_menu'
-import PermissionMixin from '@/core/mixins/permission'
+import { getMenuList, deleteMenu } from '@/api/sys/sys-menu'
+// import PowerMenuMixin from '@/core/mixins/power-menu'
 import TableLayout from '@/layout/components/TableLayout.vue'
 
 export default {
-  name: 'SystemPermissionMenu',
+  name: 'SystemPowerMenu',
   components: {
     STable,
     MenuFormDialog,
     TableLayout,
     WarningConfirmButton
   },
-  mixins: [PermissionMixin],
+  // mixins: [PowerMenuMixin],
   data() {
     return {
       menutree: []
@@ -135,21 +135,98 @@ export default {
   methods: {
     async getMenuList() {
       let { data } = await getMenuList()
-      data = data.map((item) => {
-        return {
-          id: item.id,
-          parentId: item.parent_id,
-          name: item.name,
-          router: item.router,
-          perms: item.perms,
-          type: item.type,
-          icon: item.icon,
-          orderNum: item.order_num,
-          viewPath: item.view_path,
-          keepalive: item.keepalive,
-          isShow: item.is_show
+      // data = data.map((item) => {
+      //   return {
+      //     id: item.id,
+      //     parentId: item.parent_id,
+      //     name: item.name,
+      //     router: item.router,
+      //     perms: item.perms,
+      //     type: item.type,
+      //     icon: item.icon,
+      //     orderNum: item.order_num,
+      //     viewPath: item.view_path,
+      //     keepalive: item.keepalive,
+      //     isShow: item.is_show
+      //   }
+      // })
+      data = [
+        {
+          'createTime': '2020-08-28 10:09:26',
+          'updateTime': '2021-05-21 16:30:14',
+          'id': 1,
+          'parentId': null,
+          'name': '系统管理',
+          'router': '/sys',
+          'perms': null,
+          'type': 'directory',
+          'icon': 'system',
+          'orderNum': 255,
+          'viewPath': null,
+          'keepalive': true,
+          'isShow': true
+        },
+        {
+          'createTime': '2020-09-04 09:41:43',
+          'updateTime': '2020-09-24 09:16:56',
+          'id': 23,
+          'parentId': 3,
+          'name': '角色列表',
+          'router': '/sys/role',
+          'perms': '',
+          'type': 'menu',
+          'icon': 'role',
+          'orderNum': 0,
+          'viewPath': 'views/system/role',
+          'keepalive': true,
+          'isShow': true
+        },
+        {
+          'createTime': '2020-08-01 00:00:00',
+          'updateTime': '2020-09-14 03:53:31',
+          'id': 3,
+          'parentId': 1,
+          'name': '权限管理',
+          'router': '/sys/power',
+          'perms': null,
+          'type': 'directory',
+          'icon': 'permission',
+          'orderNum': 0,
+          'viewPath': '',
+          'keepalive': true,
+          'isShow': true
+        },
+        {
+          'createTime': '2020-08-08 00:00:00',
+          'updateTime': '2020-09-08 06:54:45',
+          'id': 4,
+          'parentId': 3,
+          'name': '用户列表',
+          'router': '/sys/user',
+          'perms': null,
+          'type': 'menu',
+          'icon': 'peoples',
+          'orderNum': 0,
+          'viewPath': 'views/system/user',
+          'keepalive': true,
+          'isShow': true
+        },
+        {
+          'createTime': '2020-08-08 00:00:00',
+          'updateTime': '2020-09-24 09:51:40',
+          'id': 7,
+          'parentId': 3,
+          'name': '菜单列表',
+          'router': '/sys/power/menu',
+          'perms': null,
+          'type': 'menu',
+          'icon': 'menu',
+          'orderNum': 0,
+          'viewPath': 'views/system/power/menu',
+          'keepalive': true,
+          'isShow': true
         }
-      })
+      ]
 
       // clean
       if (this.menutree && this.menutree.length > 0) {
@@ -167,12 +244,10 @@ export default {
      */
     getMenuType(type) {
       switch (type) {
-        case '0':
+        case 'directory':
           return '目录'
-        case '1':
+        case 'menu':
           return '菜单'
-        case '2':
-          return '权限'
       }
     },
     handleRowClick(row) {

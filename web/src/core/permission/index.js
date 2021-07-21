@@ -40,7 +40,7 @@ function plugin(Vue) {
         const _this = this
         return (perm) => {
           const [pm, action] = perm.split('.')
-          const permissionList = _this.$store.getters.perms
+          const permissionList = _this.$store.getters.powerOperations
           if (_this.$permission[pm] && _this.$permission[pm][action]) {
             return permissionList.indexOf(_this.$permission[pm][action]) > -1
           }

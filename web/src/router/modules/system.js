@@ -2,7 +2,7 @@
  * system module
  */
 export default {
-  'views/system/permission/menu': () => import('@/views/system/permission/menu'),
-  'views/system/permission/user': () => import('@/views/system/permission/user'),
-  'views/system/permission/role': () => import('@/views/system/permission/role')
+  'views/system/power/menu': () => import('@/views/system/power/menu'),
+  'views/system/user': () => import('@/views/system/user'),
+  'views/system/role': () => import('@/views/system/role')
 }

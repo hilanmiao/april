@@ -26,7 +26,7 @@ const svgIcons = requireAll(req).map(i => {
 })
 
 export default {
-  name: 'MenuIconSelector',
+  name: 'IconSelector',
   props: {
     value: {
       type: String,
@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     handleSelectChange(v) {
-      this.$emit('input', v)
+      this.$emit('selected', v)
     }
   }
 }

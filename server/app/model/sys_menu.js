@@ -43,7 +43,7 @@ module.exports = app => {
       type: BOOLEAN,
       comment: '路由是否缓存'
     },
-    is_show: {
+    is_hidden: {
       type: BOOLEAN,
       comment: '是否显示在菜单栏'
     }

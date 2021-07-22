@@ -3,7 +3,7 @@
 const Service = require('egg/index').Service;
 const _ = require('lodash')
 
-class SysUserService extends Service {
+class SystemUserService extends Service {
 
   /**
      * 创建
@@ -13,7 +13,7 @@ class SysUserService extends Service {
      */
   async create({ ref_id, type }) {
     const { ctx } = this;
-    const res = await ctx.model.SysPower.create({ ref_id, type });
+    const res = await ctx.model.SystemPower.create({ ref_id, type });
     return res
   }
 
@@ -25,7 +25,7 @@ class SysUserService extends Service {
   async delete({ ids }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const query = { where: { id: { [Op.in]: ids } } };
-    const res = await ctx.model.SysPower.destroy(query);
+    const res = await ctx.model.SystemPower.destroy(query);
     return res
   }
 
@@ -39,24 +39,32 @@ class SysUserService extends Service {
 
     // 获取用户的所有角色
     const user_id = ctx.request.user.id
-    const roles = await ctx.model.SysUserRole.findAll({ where: { user_id } })
+    const roles = await ctx.model.SystemUserRole.findAll({ where: { user_id: '49fb2680-60a9-42f1-83b5-6d994ec0bf56' } })
     const roleIds = _.map(roles, 'id')
 
     // 获取所有角色的所有权限
     let powerIds = []
     for (const id of roleIds) {
-      const rolePowers = await ctx.model.SysRolePower.findAll({ where: { role_id: id } })
-      powerIds = _.concat(powerIds, _.map(rolePowers, 'id'))
-      powerIds = _.uniq(powerIds)
+      const rolePowers = await ctx.model.SystemRolePower.findAll({ where: { role_id: id } })
+      if (rolePowers) {
+        powerIds = _.concat(powerIds, _.map(rolePowers, 'power_id'))
+        powerIds = _.uniq(powerIds)
+      }
     }
+
     // 获取所有菜单
     const menuIds = []
     for (const id of powerIds) {
-      const power = await ctx.model.SysPower.findOne({ where: { type: 'menu', id } })
-      menuIds.push(power.ref_id)
+      const power = await ctx.model.SystemPower.findOne({ where: { type: 'menu', id } })
+      if (power) {
+        menuIds.push(power.ref_id)
+      }
     }
     for (const id of menuIds) {
-      res.push(await ctx.model.SysMenu.findByPk(id))
+      const menu = await ctx.model.SystemMenu.findByPk(id)
+      if (menu) {
+        res.push(menu)
+      }
     }
 
     return res
@@ -69,28 +77,6 @@ class SysUserService extends Service {
   async getMyPowerOperations() {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const res = []
-
-    // 获取用户的所有角色
-    const user_id = ctx.request.user.id
-    const roles = await ctx.model.SysUserRole.findAll({ where: { user_id } })
-    const roleIds = _.map(roles, 'id')
-
-    // 获取所有角色的所有权限
-    let powerIds = []
-    for (const id of roleIds) {
-      const rolePowers = await ctx.model.SysRolePower.findAll({ where: { role_id: id } })
-      powerIds = _.concat(powerIds, _.map(rolePowers, 'id'))
-      powerIds = _.uniq(powerIds)
-    }
-    // 获取所有操作
-    const operationIds = []
-    for (const id of powerIds) {
-      const power = await ctx.model.SysPower.findOne({ where: { type: 'operation', id } })
-      operationIds.push(power.ref_id)
-    }
-    for (const id of operationIds) {
-      res.push(await ctx.model.SysMenu.findByPk(id))
-    }
 
     return res
   }
@@ -106,4 +92,4 @@ class SysUserService extends Service {
   getMyPowerElements() {}
 }
 
-module.exports = SysUserService;
+module.exports = SystemUserService;

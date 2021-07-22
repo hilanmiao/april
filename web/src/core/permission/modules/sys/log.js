@@ -1,5 +1,5 @@
 export default {
-  req: 'sys/log/req/page',
-  login: 'sys/log/login/page',
-  task: 'sys/log/task/page'
+  req: 'system/log/req/page',
+  login: 'system/log/login/page',
+  task: 'system/log/task/page'
 }

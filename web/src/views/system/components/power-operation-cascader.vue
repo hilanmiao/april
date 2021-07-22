@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     permsArr: function() {
-      // 处理权限 'sys:menu:add,sys:menu:info' => [[ 'sys', 'menu', 'add' ], [...]]
+      // 处理权限 'system:menu:add,system:menu:info' => [[ 'system', 'menu', 'add' ], [...]]
       const arr = this.splitPerms(this.value).map(e => {
         return e.split(':')
       })

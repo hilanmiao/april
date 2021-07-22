@@ -4,7 +4,7 @@ const base = require('./base');
 
 module.exports = app => {
   const { STRING, UUID, BOOLEAN, ENUM, INTEGER } = app.Sequelize;
-  const SysMenu = base.defineModel(app, 'sys_menu', {
+  const SystemMenu = base.defineModel(app, 'system_menu', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -45,11 +45,12 @@ module.exports = app => {
     },
     is_hidden: {
       type: BOOLEAN,
-      comment: '是否显示在菜单栏'
+      comment: '是否隐藏',
+      defaultValue: false
     }
   }, {
     comment: '系统-菜单表'
   });
 
-  return SysMenu;
+  return SystemMenu;
 };

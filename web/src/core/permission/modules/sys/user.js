@@ -1,8 +1,8 @@
 export default {
-  add: 'sys/user/add',
-  page: 'sys/user/page',
-  info: 'sys/user/info',
-  update: 'sys/user/update',
-  delete: 'sys/user/delete',
-  password: 'sys/user/password'
+  add: 'system/user/add',
+  page: 'system/user/page',
+  info: 'system/user/info',
+  update: 'system/user/update',
+  delete: 'system/user/delete',
+  password: 'system/user/password'
 }

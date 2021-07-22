@@ -32,7 +32,7 @@
 <!--import WarningConfirmButton from '@/components/WarningConfirmButton'-->
 <!--import TableLayout from '@/layout/components/TableLayout'-->
 <!--import STable from '@/components/Table'-->
-<!--import { getRoleListByPage, deleteRole } from '@/api/sys/role'-->
+<!--import { getRoleListByPage, deleteRole } from '@/api/system/role'-->
 
 <!--export default {-->
 <!--  name: 'SystemPermissionRole',-->

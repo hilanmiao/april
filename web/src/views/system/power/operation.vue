@@ -112,9 +112,9 @@
 
 <script>
 import STable from '@/components/Table'
-import MenuFormDialog from '../components/power-menu-form-dialog'
+import MenuFormDialog from '../components/power-menu-form-dialog2'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import { getMenuList, deleteMenu } from '@/api/sys/sys-menu'
+import { getMenuList, deleteMenu } from '@/api/system/menu'
 // import PowerMenuMixin from '@/core/mixins/power-menu'
 import TableLayout from '@/layout/components/TableLayout.vue'
 
@@ -157,7 +157,7 @@ export default {
           'id': 1,
           'parentId': null,
           'name': '系统管理',
-          'router': '/sys',
+          'router': '/system',
           'perms': null,
           'type': 'directory',
           'icon': 'system',
@@ -172,7 +172,7 @@ export default {
           'id': 23,
           'parentId': 3,
           'name': '角色列表',
-          'router': '/sys/role',
+          'router': '/system/role',
           'perms': '',
           'type': 'menu',
           'icon': 'role',
@@ -187,7 +187,7 @@ export default {
           'id': 3,
           'parentId': 1,
           'name': '权限管理',
-          'router': '/sys/power',
+          'router': '/system/power',
           'perms': null,
           'type': 'directory',
           'icon': 'permission',
@@ -202,7 +202,7 @@ export default {
           'id': 4,
           'parentId': 3,
           'name': '用户列表',
-          'router': '/sys/user',
+          'router': '/system/user',
           'perms': null,
           'type': 'menu',
           'icon': 'peoples',
@@ -217,7 +217,7 @@ export default {
           'id': 7,
           'parentId': 3,
           'name': '菜单列表',
-          'router': '/sys/power/menu',
+          'router': '/system/power/menu',
           'perms': null,
           'type': 'menu',
           'icon': 'menu',

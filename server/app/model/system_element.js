@@ -4,7 +4,7 @@ const base = require('./base');
 
 module.exports = app => {
   const { STRING, UUID } = app.Sequelize;
-  const SysElement = base.defineModel(app, 'sys_element', {
+  const SystemElement = base.defineModel(app, 'system_element', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -18,5 +18,5 @@ module.exports = app => {
     comment: '系统-页面元素表'
   });
 
-  return SysElement;
+  return SystemElement;
 };

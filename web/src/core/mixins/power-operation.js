@@ -7,7 +7,7 @@ export default {
   methods: {
     /**
      * 逗号分隔权限
-     * @param {String} perms 例如 sys:user:add,sys:user:update
+     * @param {String} perms 例如 system:user:add,system:user:update
      * @returns 权限数组
      */
     splitPerms(perms) {
@@ -30,7 +30,7 @@ export default {
     },
     /**
      * 遍历获取$service下定义的权限的值并合并到一个数组后返回
-     * 例如： [ 'sys:user:add', 'sys:menu:add', .... ]
+     * 例如： [ 'system:user:add', 'system:menu:add', .... ]
      */
     flatPerms() {
       let perms = []

@@ -8,7 +8,7 @@ const base = require('./base');
 
 module.exports = app => {
   const { STRING, UUID, ENUM } = app.Sequelize;
-  const SysPower = base.defineModel(app, 'sys_power', {
+  const SystemPower = base.defineModel(app, 'system_power', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -27,5 +27,5 @@ module.exports = app => {
     comment: '系统-权限表'
   });
 
-  return SysPower;
+  return SystemPower;
 };

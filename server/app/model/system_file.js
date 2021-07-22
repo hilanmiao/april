@@ -4,7 +4,7 @@ const base = require('./base');
 
 module.exports = app => {
   const { STRING, UUID, BOOLEAN } = app.Sequelize;
-  const SysRole = base.defineModel(app, 'sys_role', {
+  const SystemFile = base.defineModel(app, 'system_file', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -15,8 +15,8 @@ module.exports = app => {
       comment: '名称'
     }
   }, {
-    comment: '系统-角色表'
+    comment: '系统-文件表'
   });
 
-  return SysRole;
+  return SystemFile;
 };

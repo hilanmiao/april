@@ -2,6 +2,8 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+import _ from 'lodash'
+
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -237,4 +239,15 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+/**
+ * 数组json对象下划线转驼峰
+ * @param list
+ * @returns {unknown[]}
+ */
+export function listCamelCase(list) {
+  return _.map(list, (value) => {
+    return _.mapKeys(value, (value, key) => _.camelCase(key))
+  })
 }

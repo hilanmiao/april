@@ -3,7 +3,7 @@
 const Service = require('egg/index').Service;
 const _ = require('lodash')
 
-class SysRoleService extends Service {
+class SystemRoleService extends Service {
 
 
   /**
@@ -13,7 +13,7 @@ class SysRoleService extends Service {
    */
   async create({ name }) {
     const { ctx } = this;
-    const res = await ctx.model.SysRole.create({ name });
+    const res = await ctx.model.SystemRole.create({ name });
     return res
   }
 
@@ -24,7 +24,7 @@ class SysRoleService extends Service {
    */
   async update({ id, name }) {
     const { ctx } = this;
-    const res = await ctx.model.SysRole.update(id, { name });
+    const res = await ctx.model.SystemRole.update(id, { name });
     return res
   }
 
@@ -36,9 +36,9 @@ class SysRoleService extends Service {
   async delete({ ids }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const query = { where: { id: { [Op.in]: ids } } };
-    const res = await ctx.model.SysPower.destroy(query);
+    const res = await ctx.model.SystemPower.destroy(query);
     return res
   }
 }
 
-module.exports = SysRoleService;
+module.exports = SystemRoleService;

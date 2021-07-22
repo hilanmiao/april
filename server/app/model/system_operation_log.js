@@ -4,7 +4,7 @@ const base = require('./base');
 
 module.exports = app => {
   const { STRING, UUID, BOOLEAN } = app.Sequelize;
-  const SysOperation = base.defineModel(app, 'sys_operation', {
+  const SystemOperationLog = base.defineModel(app, 'system_operation_log', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -15,8 +15,8 @@ module.exports = app => {
       comment: '名称'
     }
   }, {
-    comment: '系统-操作表'
+    comment: '系统-操作日志表'
   });
 
-  return SysOperation;
+  return SystemOperationLog;
 };

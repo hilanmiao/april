@@ -19,13 +19,13 @@ class LoginService extends Service {
       refreshToken: ''
     };
 
-    const user = await ctx.model.SysUser.findByCredentials(username, password);
+    const user = await ctx.model.SystemUser.findByCredentials(username, password);
     // 未找到用户
     if (!user) {
       return false
     }
 
-    const session = await ctx.model.SysSession.createInstance(user);
+    const session = await ctx.model.SystemSession.createInstance(user);
     const accessToken = await ctx.helper.createToken(user, null, this.config.sysConfig.expirationPeriod.short);
     const refreshToken = await ctx.helper.createToken(null, session, this.config.sysConfig.expirationPeriod.long);
 

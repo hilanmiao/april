@@ -7,7 +7,7 @@ const base = require('./base');
 // 如果不需要保留用户的所有登录时间的话，可以不用伪删除
 module.exports = app => {
   const { STRING, UUID, Op } = app.Sequelize;
-  const SysSession = base.defineModel(app, 'sys_session', {
+  const SystemSession = base.defineModel(app, 'system_session', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -32,23 +32,23 @@ module.exports = app => {
     comment: '系统-用户会话表'
   });
 
-  SysSession.createInstance = async function(user) {
+  SystemSession.createInstance = async function(user) {
     const document = {
       user_id: user.id,
       key: uuidv4(),
       password_hash: user.password
     }
 
-    const newSession = await SysSession.create(document)
+    const newSession = await SystemSession.create(document)
     const query = { where: { user_id: user.id, key: { [Op.ne]: document.key } } };
     // 上一步如果没有出错的话，再删除旧的
-    await SysSession.destroy(query)
+    await SystemSession.destroy(query)
 
     return newSession
   }
 
-  SysSession.findByCredentials = async function(id, key) {
-    const session = await SysSession.findByPk(id);
+  SystemSession.findByCredentials = async function(id, key) {
+    const session = await SystemSession.findByPk(id);
     if (!session) {
       return false;
     }
@@ -56,5 +56,5 @@ module.exports = app => {
     return session.key === key ? session : false;
   };
 
-  return SysSession;
+  return SystemSession;
 };

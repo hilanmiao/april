@@ -35,6 +35,14 @@ class LoginController extends Controller {
 
     this.success({ ctx, data: { accessToken: resLogin.accessToken, refreshToken: resLogin.refreshToken } })
   }
+
+  /**
+   * 登出
+   */
+  logout() {
+    const { ctx } = this
+    this.success({ ctx })
+  }
 }
 
 module.exports = LoginController;

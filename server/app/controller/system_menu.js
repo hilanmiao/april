@@ -3,7 +3,7 @@
 const Controller = require('../core/controller');
 const _ = require('lodash');
 
-class SysMenuController extends Controller {
+class SystemMenuController extends Controller {
 
   /**
    * 所有
@@ -12,7 +12,7 @@ class SysMenuController extends Controller {
   async list() {
     const { ctx } = this;
 
-    const res = await ctx.service.sysMenu.list()
+    const res = await ctx.service.systemMenu.list()
     this.success({ ctx, data: res })
   }
 
@@ -22,10 +22,10 @@ class SysMenuController extends Controller {
    */
   async create() {
     const { ctx } = this;
-    let { parentId: parent_id, name, router, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isShow: is_show } = ctx.request.body
+    let { parentId: parent_id, name, router, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isHidden: is_hidden } = ctx.request.body
 
     if (type === 'menu' && parent_id !== '-1') {
-      const parent = await ctx.service.sysMenu.getMenuItemInfo({ id: parent_id })
+      const parent = await ctx.service.systemMenu.getMenuItemAndParentInfo({ id: parent_id })
       if (!parent) {
         throw new Error('父节点菜单不存在！');
       }
@@ -40,7 +40,7 @@ class SysMenuController extends Controller {
       parent_id = null
     }
 
-    const res = await ctx.service.sysMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.service.systemMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden })
 
     this.success({ ctx, data: res })
   }
@@ -51,11 +51,11 @@ class SysMenuController extends Controller {
    */
   async delete() {
     const { ctx } = this;
-    const { id } = ctx.params.id
+    const id = ctx.params.id
 
     // 如果有子目录，一并删除
-    const childMenus = await ctx.service.sysMenu.getChildMenus({ id })
-    await ctx.service.sysMenu.delete({ ids: _.flattenDeep([id, childMenus]) })
+    const childMenus = await ctx.service.systemMenu.getChildMenus({ id })
+    await ctx.service.systemMenu.delete({ ids: _.flattenDeep([id, childMenus]) })
     this.success({ ctx })
   }
 
@@ -65,10 +65,10 @@ class SysMenuController extends Controller {
    */
   async get() {
     const { ctx } = this;
-    const { id } = ctx.params.id
-    const res = await ctx.service.sysMenu.getMenuItemAndParentInfo({ id })
+    const id = ctx.params.id
+    const res = await ctx.service.systemMenu.getMenuItemAndParentInfo({ id })
     this.success({ ctx, data: res })
   }
 }
 
-module.exports = SysMenuController;
+module.exports = SystemMenuController;

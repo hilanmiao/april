@@ -3,7 +3,7 @@
 const Service = require('egg/index').Service;
 const _ = require('lodash')
 
-class SysMenuService extends Service {
+class SystemMenuService extends Service {
 
   /**
    * 获取所有菜单
@@ -11,7 +11,7 @@ class SysMenuService extends Service {
    */
   async list() {
     const { ctx } = this
-    const res = await ctx.model.SysMenu.findAll()
+    const res = await ctx.model.SystemMenu.findAll()
     return res
   }
 
@@ -20,18 +20,17 @@ class SysMenuService extends Service {
    * @param parent_id
    * @param name
    * @param router
-   * @param perms
    * @param type
    * @param icon
    * @param order_num
    * @param view_path
    * @param keepalive
-   * @param is_show
-   * @return {Promise<*>}
+   * @param is_hidden
+   * @returns {Promise<*>}
    */
-  async create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show }) {
+  async create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden }) {
     const { ctx } = this
-    const res = await ctx.model.SysMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.model.SystemMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden })
     return res
   }
 
@@ -41,18 +40,17 @@ class SysMenuService extends Service {
    * @param parent_id
    * @param name
    * @param router
-   * @param perms
    * @param type
    * @param icon
    * @param order_num
    * @param view_path
    * @param keepalive
-   * @param is_show
-   * @return {Promise<*>}
+   * @param is_hidden
+   * @returns {Promise<*>}
    */
-  async update({ id, parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show }) {
+  async update({ id, parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden }) {
     const { ctx } = this
-    const res = await ctx.model.SysMenu.update(id, { parent_id, name, router, type, icon, order_num, view_path, keepalive, is_show })
+    const res = await ctx.model.SystemMenu.update(id, { parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden })
     return res
   }
 
@@ -65,7 +63,7 @@ class SysMenuService extends Service {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const query = { where: { id: { [Op.in]: ids } } };
 
-    const res = ctx.model.SysMenu.destroy(query);
+    const res = ctx.model.SystemMenu.destroy(query);
     return res
   }
 
@@ -77,7 +75,8 @@ class SysMenuService extends Service {
   async getChildMenus({ id }) {
     const { ctx } = this
     const res = []
-    const menus = await ctx.model.SysMenu.findAll({ where: { parent_id: id } })
+    console.log(id)
+    const menus = await ctx.model.SystemMenu.findAll({ where: { parent_id: id } })
     for (let i = 0; i < menus.length; i++) {
       // 子目录下是菜单或目录，继续往下级查找
       const child = await this.getChildMenus({ id: menus[i].id })
@@ -95,7 +94,7 @@ class SysMenuService extends Service {
    */
   async get({ id }) {
     const { ctx } = this
-    const res = await ctx.model.SysMenu.findByPk(id)
+    const res = await ctx.model.SystemMenu.findByPk(id)
     return res
   }
 
@@ -106,13 +105,13 @@ class SysMenuService extends Service {
    */
   async getMenuItemAndParentInfo({ id }) {
     const { ctx } = this
-    const menu = await ctx.model.SysMenu.findByPk(id)
+    const menu = await ctx.model.SystemMenu.findByPk(id)
     let parentMenu = null
     if (menu && menu.parent_id) {
-      parentMenu = await ctx.model.SysMenu.findByPk(menu.parent_id)
+      parentMenu = await ctx.model.SystemMenu.findByPk(menu.parent_id)
     }
     return { menu, parentMenu };
   }
 }
 
-module.exports = SysMenuService;
+module.exports = SystemMenuService;

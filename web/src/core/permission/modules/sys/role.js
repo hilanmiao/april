@@ -1,8 +1,8 @@
 export default {
-  list: 'sys/role/list',
-  page: 'sys/role/page',
-  add: 'sys/role/add',
-  update: 'sys/role/update',
-  delete: 'sys/role/delete',
-  info: 'sys/role/info'
+  list: 'system/role/list',
+  page: 'system/role/page',
+  add: 'system/role/add',
+  update: 'system/role/update',
+  delete: 'system/role/delete',
+  info: 'system/role/info'
 }

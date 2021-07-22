@@ -18,10 +18,11 @@ class CommonService extends Service {
     const svg = svgCaptcha.create({
       size: 4,
       color: true,
-      noise: 4,
+      noise: 1,
       width,
       height,
-      ignoreChar: '0o1i', // 过滤掉一些字符，例如0o1i
+      ignoreChars: '0Oo1iIl', // 过滤掉一些字符，例如0o1i
+      // background: '#cc9966'
     });
     const result = {
       img: `data:image/svg+xml;base64,${new Buffer(svg.data).toString('base64')}`,

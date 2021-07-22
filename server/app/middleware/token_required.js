@@ -28,18 +28,18 @@ module.exports = (options, app) => {
       let user = decodedToken.user;
 
       // token 验证通过，把当前完整的 user 挂载到ctx.request 上
-      user = await ctx.model.SysUser.findOne({ where: { username: user.username } });
+      user = await ctx.model.SystemUser.findOne({ where: { username: user.username } });
       ctx.request.user = user;
       await next();
     } else if (decodedToken.sessionId) {
-      const session = await ctx.model.SysSession.findByCredentials(decodedToken.sessionId, decodedToken.sessionKey)
+      const session = await ctx.model.SystemSession.findByCredentials(decodedToken.sessionId, decodedToken.sessionKey)
 
       if (!session) {
         // 检验失败，这个用户的session可能已经被删除
         ctx.helper.fail({ ctx, code: 10003, message: 'Session may have been deleted' });
         return
       }
-      const user = await ctx.model.SysUser.findByPk(session.userId)
+      const user = await ctx.model.SystemUser.findByPk(session.userId)
       if (!user) {
         // 校验失败，这个用户可能已经被删除
         ctx.helper.fail({ ctx, code: 10003, message: 'User may have been deleted' });

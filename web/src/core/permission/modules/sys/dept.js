@@ -1,9 +1,9 @@
 export default {
-  list: 'sys/dept/list',
-  move: 'sys/dept/move',
-  update: 'sys/dept/update',
-  delete: 'sys/dept/delete',
-  add: 'sys/dept/add',
-  info: 'sys/dept/info',
-  transfer: 'sys/dept/transfer'
+  list: 'system/dept/list',
+  move: 'system/dept/move',
+  update: 'system/dept/update',
+  delete: 'system/dept/delete',
+  add: 'system/dept/add',
+  info: 'system/dept/info',
+  transfer: 'system/dept/transfer'
 }

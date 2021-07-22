@@ -16,7 +16,7 @@
           <template slot-scope="scope">
             <span style="margin-right: 16px">{{ scope.row.name }}</span>
             <el-tag
-              v-if="!scope.row.isShow"
+              v-if="scope.row.isHidden"
               type="danger"
               effect="dark"
               size="small"
@@ -90,7 +90,7 @@
       </s-table>
     </table-layout>
     <!-- form dialog -->
-    <menu-form-dialog ref="menuDialog" @save-success="handleRefresh" />
+    <menu-form-dialog ref="menuDialog" v-model="dialogVisible" :menutree="menutree" />
   </div>
 </template>
 
@@ -98,9 +98,10 @@
 import STable from '@/components/Table'
 import MenuFormDialog from '../components/power-menu-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import { getMenuList, deleteMenu } from '@/api/sys/sys-menu'
+import { getMenuList, deleteMenu } from '@/api/system/menu'
 import PowerMenuMixin from '@/core/mixins/power-menu'
 import TableLayout from '@/layout/components/TableLayout.vue'
+import { listCamelCase } from '@/utils'
 
 export default {
   name: 'SystemPowerMenu',
@@ -113,104 +114,15 @@ export default {
   mixins: [PowerMenuMixin],
   data() {
     return {
+      dialogVisible: false,
       menutree: []
     }
   },
   methods: {
     async getMenuList() {
       let { data } = await getMenuList()
-      // data = data.map((item) => {
-      //   return {
-      //     id: item.id,
-      //     parentId: item.parent_id,
-      //     name: item.name,
-      //     router: item.router,
-      //     perms: item.perms,
-      //     type: item.type,
-      //     icon: item.icon,
-      //     orderNum: item.order_num,
-      //     viewPath: item.view_path,
-      //     keepalive: item.keepalive,
-      //     isShow: item.is_show
-      //   }
-      // })
-      data = [
-        {
-          'createTime': '2020-08-28 10:09:26',
-          'updateTime': '2021-05-21 16:30:14',
-          'id': 1,
-          'parentId': null,
-          'name': '系统管理',
-          'router': '/sys',
-          'perms': null,
-          'type': 'directory',
-          'icon': 'system',
-          'orderNum': 255,
-          'viewPath': null,
-          'keepalive': true,
-          'isShow': true
-        },
-        {
-          'createTime': '2020-09-04 09:41:43',
-          'updateTime': '2020-09-24 09:16:56',
-          'id': 23,
-          'parentId': 3,
-          'name': '角色列表',
-          'router': '/sys/role',
-          'perms': '',
-          'type': 'menu',
-          'icon': 'role',
-          'orderNum': 0,
-          'viewPath': 'views/system/role',
-          'keepalive': true,
-          'isShow': true
-        },
-        {
-          'createTime': '2020-08-01 00:00:00',
-          'updateTime': '2020-09-14 03:53:31',
-          'id': 3,
-          'parentId': 1,
-          'name': '权限管理',
-          'router': '/sys/power',
-          'perms': null,
-          'type': 'directory',
-          'icon': 'permission',
-          'orderNum': 0,
-          'viewPath': '',
-          'keepalive': true,
-          'isShow': true
-        },
-        {
-          'createTime': '2020-08-08 00:00:00',
-          'updateTime': '2020-09-08 06:54:45',
-          'id': 4,
-          'parentId': 3,
-          'name': '用户列表',
-          'router': '/sys/user',
-          'perms': null,
-          'type': 'menu',
-          'icon': 'peoples',
-          'orderNum': 0,
-          'viewPath': 'views/system/user',
-          'keepalive': true,
-          'isShow': true
-        },
-        {
-          'createTime': '2020-08-08 00:00:00',
-          'updateTime': '2020-09-24 09:51:40',
-          'id': 7,
-          'parentId': 3,
-          'name': '菜单列表',
-          'router': '/sys/power/menu',
-          'perms': null,
-          'type': 'menu',
-          'icon': 'menu',
-          'orderNum': 0,
-          'viewPath': 'views/system/power/menu',
-          'keepalive': true,
-          'isShow': true
-        }
-      ]
+      // 下划线转驼峰
+      data = listCamelCase(data)
 
       // clean
       if (this.menutree && this.menutree.length > 0) {
@@ -241,14 +153,14 @@ export default {
       this.$refs.menuTable.refresh()
     },
     handleAdd() {
-      this.$refs.menuDialog.open(this.menutree)
+      this.dialogVisible = true
     },
     handleEdit(item) {
       this.$refs.menuDialog.open(this.menutree, item.id)
     },
     async handleDelete(row, { close, done }) {
       try {
-        await deleteMenu({ menuId: row.id })
+        await deleteMenu(row.id)
         close()
       } catch (e) {
         done()

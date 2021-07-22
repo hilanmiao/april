@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import { getRoleList } from '@/api/sys/role'
-import { createUser, getUserInfo, updateUser } from '@/api/sys/sys-user'
+import { getRoleList } from '@/api/system/role'
+import { createUser, getUserInfo, updateUser } from '@/api/system/user'
 import { isNumber } from 'lodash'
 
 export default {

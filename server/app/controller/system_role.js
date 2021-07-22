@@ -2,7 +2,7 @@
 
 const Controller = require('../core/controller');
 
-class SysRoleController extends Controller {
+class SystemRoleController extends Controller {
 
   /**
    * 创建
@@ -11,7 +11,7 @@ class SysRoleController extends Controller {
   async create() {
     const { ctx } = this;
     const { name } = ctx.request.body
-    const res = await ctx.service.sysRole.create({ name })
+    const res = await ctx.service.systemRole.create({ name })
     if (!res) {
       this.fail({ ctx, code: 10001 })
       return
@@ -28,7 +28,7 @@ class SysRoleController extends Controller {
     const { ctx } = this;
     const id = ctx.params.id
     const { name } = ctx.request.body
-    const res = await ctx.service.sysRole.update({ id, name })
+    const res = await ctx.service.systemRole.update({ id, name })
     if (!res) {
       this.fail({ ctx, code: 10001 })
       return
@@ -44,7 +44,7 @@ class SysRoleController extends Controller {
   async delete() {
     const { ctx } = this;
     const { ids } = ctx.request.body
-    const res = await ctx.service.sysRole.delete({ ids })
+    const res = await ctx.service.systemRole.delete({ ids })
     if (!res) {
       this.fail({ ctx, code: 10001 })
       return
@@ -55,4 +55,4 @@ class SysRoleController extends Controller {
 
 }
 
-module.exports = SysRoleController;
+module.exports = SystemRoleController;

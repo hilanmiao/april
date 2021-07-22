@@ -1,4 +1,4 @@
 export default {
-  list: 'sys/online/list',
-  kick: 'sys/online/kick'
+  list: 'system/online/list',
+  kick: 'system/online/kick'
 }

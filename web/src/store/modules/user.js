@@ -1,8 +1,9 @@
 import { login, logout } from '@/api/login'
-import { getBasic } from '@/api/sys/sys-user'
+import { getBasic } from '@/api/system/user'
 import { setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-import { getMyPowerMenus, getMyPowerOperations } from '@/api/sys/sys-power'
+import { getMyPowerMenus, getMyPowerOperations } from '@/api/system/power'
+import { listCamelCase } from '@/utils'
 
 const state = {
   token: '',
@@ -83,85 +84,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       getMyPowerMenus()
         .then(response => {
-          // const { data } = response
-          // const { powerMenus, powerOperations } = data
-          const powerMenus = [
-            {
-              'createTime': '2020-08-28 10:09:26',
-              'updateTime': '2021-05-21 16:30:14',
-              'id': 1,
-              'parentId': null,
-              'name': '系统管理',
-              'router': '/sys',
-              'perms': null,
-              'type': 'directory',
-              'icon': 'system',
-              'orderNum': 255,
-              'viewPath': null,
-              'keepalive': true,
-              'isShow': true
-            },
-            {
-              'createTime': '2020-09-04 09:41:43',
-              'updateTime': '2020-09-24 09:16:56',
-              'id': 23,
-              'parentId': 3,
-              'name': '角色列表',
-              'router': '/sys/role',
-              'perms': '',
-              'type': 'menu',
-              'icon': 'role',
-              'orderNum': 0,
-              'viewPath': 'views/system/role',
-              'keepalive': true,
-              'isShow': true
-            },
-            {
-              'createTime': '2020-08-01 00:00:00',
-              'updateTime': '2020-09-14 03:53:31',
-              'id': 3,
-              'parentId': 1,
-              'name': '权限管理',
-              'router': '/sys/power',
-              'perms': null,
-              'type': 'directory',
-              'icon': 'permission',
-              'orderNum': 0,
-              'viewPath': '',
-              'keepalive': true,
-              'isShow': true
-            },
-            {
-              'createTime': '2020-08-08 00:00:00',
-              'updateTime': '2020-09-08 06:54:45',
-              'id': 4,
-              'parentId': 3,
-              'name': '用户列表',
-              'router': '/sys/user',
-              'perms': null,
-              'type': 'menu',
-              'icon': 'peoples',
-              'orderNum': 0,
-              'viewPath': 'views/system/user',
-              'keepalive': true,
-              'isShow': true
-            },
-            {
-              'createTime': '2020-08-08 00:00:00',
-              'updateTime': '2020-09-24 09:51:40',
-              'id': 7,
-              'parentId': 3,
-              'name': '菜单列表',
-              'router': '/sys/power/menu',
-              'perms': null,
-              'type': 'menu',
-              'icon': 'menu',
-              'orderNum': 0,
-              'viewPath': 'views/system/power/menu',
-              'keepalive': true,
-              'isShow': true
-            }
-          ]
+          const { data } = response
+          let powerMenus = data
+          // const powerMenus = [{"id":"0a23246d-81f8-4ac7-91e4-6a9bf1a485f3","parent_id":"2e6f67b1-8b5f-4e41-b042-ecf698123648","name":"权限管理","router":"/system/power","type":"directory","icon":"documentation","order_num":0,"view_path":null,"keepalive":false,"is_hidden":false,"created_at":"2021-07-22 15:18:23","updated_at":"2021-07-22 15:18:23","deleted_at":null},{"id":"2330595e-d765-47f9-a2a5-cce9c626a502","parent_id":"0a23246d-81f8-4ac7-91e4-6a9bf1a485f3","name":"菜单管理","router":"/system/power/menu","type":"menu","icon":"documentation","order_num":0,"view_path":"views/system/power/menu","keepalive":false,"is_hidden":false,"created_at":"2021-07-22 15:18:53","updated_at":"2021-07-22 15:18:53","deleted_at":null},{"id":"2e6f67b1-8b5f-4e41-b042-ecf698123648","parent_id":null,"name":"系统管理","router":"/system","type":"directory","icon":"dashboard","order_num":0,"view_path":null,"keepalive":false,"is_hidden":false,"created_at":"2021-07-22 15:07:35","updated_at":"2021-07-22 15:07:35","deleted_at":null},{"id":"3c6b46cc-be72-4d1b-9ec2-fd3bca050efd","parent_id":"2e6f67b1-8b5f-4e41-b042-ecf698123648","name":"角色管理","router":"/system/role","type":"menu","icon":"chart","order_num":0,"view_path":"views/system/role","keepalive":false,"is_hidden":false,"created_at":"2021-07-22 15:12:10","updated_at":"2021-07-22 15:12:10","deleted_at":null},{"id":"70edbb32-9836-4a74-8926-75f251c06f9c","parent_id":"2e6f67b1-8b5f-4e41-b042-ecf698123648","name":"用户管理","router":"/system/user","type":"menu","icon":"documentation","order_num":0,"view_path":"views/system/user","keepalive":false,"is_hidden":false,"created_at":"2021-07-22 15:17:59","updated_at":"2021-07-22 15:17:59","deleted_at":null}]
+          // 下划线转驼峰
+          powerMenus = listCamelCase(powerMenus)
+          console.log(powerMenus)
           commit('SET_POWER_MENUS', powerMenus)
 
           resolve({ powerMenus })
@@ -179,7 +107,7 @@ const actions = {
         .then(response => {
           // const { data } = response
           // const { powerMenus, powerOperations } = data
-          const powerOperations = ['sys:dept:list', 'sys:dept:info', 'sys:user:page', 'sys:user:info', 'sys:menu:list', 'sys:menu:info', 'sys:role:list', 'sys:role:page', 'sys:role:info', 'sys:user:add', 'sys:dept:move', 'sys:dept:transfer', 'sys:dept:add', 'sys:dept:update', 'sys:menu:add', 'sys:menu:delete', 'sys:menu:update', 'sys:role:add', 'sys:dept:delete']
+          const powerOperations = ['system:dept:list', 'system:dept:info', 'system:user:page', 'system:user:info', 'system:menu:list', 'system:menu:info', 'system:role:list', 'system:role:page', 'system:role:info', 'system:user:add', 'system:dept:move', 'system:dept:transfer', 'system:dept:add', 'system:dept:update', 'system:menu:add', 'system:menu:delete', 'system:menu:update', 'system:role:add', 'system:dept:delete']
           commit('SET_POWER_OPERATIONS', powerOperations)
 
           resolve()
@@ -199,7 +127,7 @@ const actions = {
           removeToken()
 
           // 清除store存储的routes
-          dispatch('permission/resetRoutes', null, { root: true })
+          dispatch('router/resetRoutes', null, { root: true })
 
           // reset visited views and cached views
           // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485

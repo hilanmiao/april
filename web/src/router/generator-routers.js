@@ -33,6 +33,8 @@ function createRoute(menu, isRoot) {
     }
   }
   const component = constantRouterComponents[menu.viewPath]
+  // 放弃动态加载
+  // const component = import(`@/views/${menu.viewPath}`)
   if (!component) {
     return undefined
   }
@@ -75,7 +77,7 @@ export function filterAsyncRoutes(routes, parentRoute) {
   const res = []
 
   routes.forEach(route => {
-    if (!route.isShow) {
+    if (route.isHidden) {
       // 如果是隐藏直接跳过
       return
     }

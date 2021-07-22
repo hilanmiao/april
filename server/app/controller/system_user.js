@@ -2,7 +2,7 @@
 
 const Controller = require('../core/controller');
 
-class SysUserController extends Controller {
+class SystemUserController extends Controller {
 
   /**
    * 获取图片验证码
@@ -10,7 +10,7 @@ class SysUserController extends Controller {
    */
   async create() {
     const { ctx } = this;
-    const res = await ctx.service.sysUser.create({ username: 'admin', password: '123456' })
+    const res = await ctx.service.systemUser.create({ username: 'admin', password: '123456' })
     if (!res) {
       this.fail({ ctx, code: 10001 })
     }
@@ -24,7 +24,7 @@ class SysUserController extends Controller {
   async get() {
     const { ctx } = this;
     const id = ctx.request.user.id
-    const res = await ctx.service.sysUser.get({ id })
+    const res = await ctx.service.systemUser.get({ id })
     if (!res) {
       this.fail({ ctx, code: 10003 })
       return
@@ -40,7 +40,7 @@ class SysUserController extends Controller {
   async getBasic() {
     const { ctx } = this;
     const id = ctx.request.user.id
-    const res = await ctx.service.sysUser.getBasic({ id })
+    const res = await ctx.service.systemUser.getBasic({ id })
     if (!res) {
       this.fail({ ctx, code: 10003 })
       return
@@ -51,4 +51,4 @@ class SysUserController extends Controller {
 
 }
 
-module.exports = SysUserController;
+module.exports = SystemUserController;

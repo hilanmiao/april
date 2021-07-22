@@ -2,7 +2,7 @@
 
 const Controller = require('../core/controller');
 
-class SysPowerController extends Controller {
+class SystemPowerController extends Controller {
 
   /**
    * 创建
@@ -11,7 +11,7 @@ class SysPowerController extends Controller {
   async create() {
     const { ctx } = this;
     const { ref_id, type } = ctx.request.body
-    const res = await ctx.service.sysPower.create({ ref_id, type })
+    const res = await ctx.service.systemPower.create({ ref_id, type })
     if (!res) {
       this.fail({ ctx, code: 10001 })
       return
@@ -27,7 +27,7 @@ class SysPowerController extends Controller {
   async delete() {
     const { ctx } = this;
     const { ids } = ctx.request.body
-    const res = await ctx.service.sysPower.delete({ ids })
+    const res = await ctx.service.systemPower.delete({ ids })
     if (!res) {
       this.fail({ ctx, code: 10001 })
       return
@@ -42,7 +42,7 @@ class SysPowerController extends Controller {
    */
   async getMyPowerMenus() {
     const { ctx } = this;
-    const res = await ctx.service.sysPower.getMyPowerMenus()
+    const res = await ctx.service.systemPower.getMyPowerMenus()
 
     this.success({ ctx, data: res })
   }
@@ -53,10 +53,10 @@ class SysPowerController extends Controller {
    */
   async getMyPowerOperations() {
     const { ctx } = this;
-    const res = await ctx.service.sysPower.getMyPowerOperations()
+    const res = await ctx.service.systemPower.getMyPowerOperations()
 
     this.success({ ctx, data: res })
   }
 }
 
-module.exports = SysPowerController;
+module.exports = SystemPowerController;

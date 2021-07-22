@@ -3,7 +3,7 @@
 const Service = require('egg/index').Service;
 const _ = require('lodash')
 
-class SysUserService extends Service {
+class SystemUserService extends Service {
 
   /**
      * 创建
@@ -14,11 +14,11 @@ class SysUserService extends Service {
   async create({ username, password }) {
     const { ctx } = this;
     let res = null
-    const user = await ctx.model.SysUser.findOne({ where: { username } })
+    const user = await ctx.model.SystemUser.findOne({ where: { username } })
     if (!_.isEmpty(user)) {
       return false
     }
-    res = await ctx.model.SysUser.create({ username, password });
+    res = await ctx.model.SystemUser.create({ username, password });
     return res
   }
 
@@ -30,7 +30,7 @@ class SysUserService extends Service {
   async get({ id }) {
     const { ctx } = this;
 
-    const res = await ctx.model.SysUser.findByPk(id);
+    const res = await ctx.model.SystemUser.findByPk(id);
 
     return res
   }
@@ -43,10 +43,10 @@ class SysUserService extends Service {
   async getBasic({ id }) {
     const { ctx } = this;
 
-    const res = await ctx.model.SysUser.findByPk(id, { attributes: ['id', 'display_name', 'mobile', 'company', 'position', 'avatar'] });
+    const res = await ctx.model.SystemUser.findByPk(id, { attributes: ['id', 'display_name', 'mobile', 'company', 'position', 'avatar'] });
 
     return res
   }
 }
 
-module.exports = SysUserService;
+module.exports = SystemUserService;

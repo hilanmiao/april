@@ -6,7 +6,7 @@ const base = require('./base');
 
 module.exports = app => {
   const { STRING, BOOLEAN, UUID, ENUM } = app.Sequelize;
-  const SysUser = base.defineModel(app, 'sys_user', {
+  const SystemUser = base.defineModel(app, 'system_user', {
     id: {
       type: UUID,
       primaryKey: true,
@@ -72,8 +72,8 @@ module.exports = app => {
   });
 
   // 有context的时候可以用this
-  SysUser.findByCredentials = async function(username, password) {
-    const user = await SysUser.findOne({ where: { username } });
+  SystemUser.findByCredentials = async function(username, password) {
+    const user = await SystemUser.findOne({ where: { username } });
     if (!user) {
       return false;
     }
@@ -94,8 +94,8 @@ module.exports = app => {
   };
 
   // 没有context的时候只能用prototype（和普通函数不冲突）
-  SysUser.prototype.findByCredentials = async function(username, password) {
-    return await SysUser.findOne({
+  SystemUser.prototype.findByCredentials = async function(username, password) {
+    return await SystemUser.findOne({
       where: {
         username,
       },
@@ -103,13 +103,13 @@ module.exports = app => {
   };
 
   // 生成哈希
-  SysUser.generateHash = async function generateHash(key) {
+  SystemUser.generateHash = async function generateHash(key) {
     const salt = await Bcrypt.genSalt(10);
     const hash = await Bcrypt.hash(key, salt);
     return { key, hash };
   };
 
-  SysUser.prototype.generateHash = async function generateHash(key) {
+  SystemUser.prototype.generateHash = async function generateHash(key) {
     const salt = await Bcrypt.genSalt(10);
     const hash = await Bcrypt.hash(key, salt);
     return { key, hash };
@@ -122,7 +122,7 @@ module.exports = app => {
   }
 
   // 添加钩子
-  SysUser.beforeCreate((user, options) => {
+  SystemUser.beforeCreate((user, options) => {
     return generateHash(user.password).then(({ hash }) => {
       user.password = hash;
     });
@@ -134,8 +134,8 @@ module.exports = app => {
     // });
   });
 
-  SysUser.associate = function() {
+  SystemUser.associate = function() {
   };
 
-  return SysUser;
+  return SystemUser;
 };

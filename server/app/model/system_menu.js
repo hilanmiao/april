@@ -52,5 +52,8 @@ module.exports = app => {
     comment: '系统-菜单表'
   });
 
+  SystemMenu.associate = function() {
+  }
+
   return SystemMenu;
 };

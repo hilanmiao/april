@@ -11,7 +11,7 @@ class SystemMenuService extends Service {
    */
   async list() {
     const { ctx } = this
-    const res = await ctx.model.SystemMenu.findAll()
+    const res = await ctx.model.SystemPower.findAll({ where: { type: 'menu' }, include: [{ model: ctx.model.SystemMenu }] })
     return res
   }
 
@@ -26,7 +26,7 @@ class SystemMenuService extends Service {
    * @param view_path
    * @param keepalive
    * @param is_hidden
-   * @returns {Promise<*>}
+   * @return {Promise<*>}
    */
   async create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden }) {
     const { ctx } = this
@@ -46,7 +46,7 @@ class SystemMenuService extends Service {
    * @param view_path
    * @param keepalive
    * @param is_hidden
-   * @returns {Promise<*>}
+   * @return {Promise<*>}
    */
   async update({ id, parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden }) {
     const { ctx } = this
@@ -101,7 +101,7 @@ class SystemMenuService extends Service {
   /**
    * 获取某个菜单以及关联的父菜单的信息
    * @param id
-   * @returns {Promise<{menu: *, parentMenu: null}>}
+   * @return {Promise<{menu: *, parentMenu: null}>}
    */
   async getMenuItemAndParentInfo({ id }) {
     const { ctx } = this

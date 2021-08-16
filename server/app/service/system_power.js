@@ -30,6 +30,20 @@ class SystemUserService extends Service {
   }
 
   /**
+   * 获取所有的菜单权限
+   * @returns {Promise<*>}
+   */
+  async getPowerMenus() {
+    const { ctx } = this
+    const op = {
+      where: { type: 'menu' },
+      include: [{ model: ctx.model.SystemMenu }]
+    }
+    const res = await ctx.model.SystemPower.findAll(op)
+    return res
+  }
+
+  /**
    * 获取我的菜单权限
    * @return {Promise<*[]>}
    */

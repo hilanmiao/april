@@ -13,60 +13,67 @@
         <el-table-column prop="updateTime" label="更新时间" align="center" />
         <el-table-column label="操作" width="150" align="center" fixed="right">
           <template slot-scope="scope">
-            <el-button size="mini" type="text" :disabled="!$auth('sysRole.update')" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
             <warning-confirm-button
               :closed="handleRefresh"
-              :disabled="!$auth('sysRole.delete')"
               @confirm="(o) => { handleDelete(scope.row, o) }"
             >删除</warning-confirm-button>
           </template>
         </el-table-column>
       </s-table>
     </table-layout>
-    <system-permission-role-form-dialog ref="formDialog" @save-success="handleRefresh" />
+
+    <role-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
   </div>
 </template>
 
-<!--<script>-->
-<!--import SystemPermissionRoleFormDialog from './components/role-form-dialog'-->
-<!--import WarningConfirmButton from '@/components/WarningConfirmButton'-->
-<!--import TableLayout from '@/layout/components/TableLayout'-->
-<!--import STable from '@/components/Table'-->
-<!--import { getRoleListByPage, deleteRole } from '@/api/system/role'-->
+<script>
+import roleFormDialog from './components/role-form-dialog'
+import WarningConfirmButton from '@/components/WarningConfirmButton'
+import TableLayout from '@/layout/components/TableLayout'
+import STable from '@/components/Table'
+import { getRoleListByPage, deleteRole } from '@/api/system/role'
 
-<!--export default {-->
-<!--  name: 'SystemPermissionRole',-->
-<!--  components: {-->
-<!--    TableLayout,-->
-<!--    STable,-->
-<!--    WarningConfirmButton,-->
-<!--    SystemPermissionRoleFormDialog-->
-<!--  },-->
-<!--  methods: {-->
-<!--    async getRoleList({ page, limit }) {-->
-<!--      const { data } = await getRoleListByPage({ page, limit })-->
-<!--      return { list: data.list, pagination: { total: data.pagination.total }}-->
-<!--    },-->
-<!--    handleRefresh() {-->
-<!--      this.$refs.roleTable.refresh()-->
-<!--    },-->
-<!--    handleAdd() {-->
-<!--      this.$refs.formDialog.open()-->
-<!--    },-->
-<!--    handleEdit(row) {-->
-<!--      this.$refs.formDialog.open(row.id)-->
-<!--    },-->
-<!--    async handleDelete(row, { done, close }) {-->
-<!--      try {-->
-<!--        await deleteRole({ roleIds: [row.id] })-->
-<!--        close()-->
-<!--      } catch (e) {-->
-<!--        done()-->
-<!--      }-->
-<!--    }-->
-<!--  }-->
-<!--}-->
-<!--</script>-->
+export default {
+  name: 'SystemPermissionRole',
+  components: {
+    TableLayout,
+    STable,
+    WarningConfirmButton,
+    roleFormDialog
+  },
+  data() {
+    return {
+      dialogVisible: false,
+      formId: ''
+    }
+  },
+  methods: {
+    async getRoleList({ page, limit }) {
+      const { data } = await getRoleListByPage({ page, limit })
+      return { list: data.list, pagination: { total: data.pagination.total }}
+    },
+    handleRefresh() {
+      this.$refs.roleTable.refresh()
+    },
+    handleAdd() {
+      this.dialogVisible = true
+    },
+    handleEdit(row) {
+      this.formId = row.id
+      this.dialogVisible = true
+    },
+    async handleDelete(row, { done, close }) {
+      try {
+        await deleteRole({ ids: [row.id] })
+        close()
+      } catch (e) {
+        done()
+      }
+    }
+  }
+}
+</script>
 
 <style>
 

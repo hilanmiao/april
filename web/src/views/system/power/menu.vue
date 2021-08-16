@@ -90,7 +90,7 @@
       </s-table>
     </table-layout>
     <!-- form dialog -->
-    <menu-form-dialog ref="menuDialog" v-model="dialogVisible" :menutree="menutree" />
+    <menu-form-dialog ref="menuDialog" v-model="dialogVisible" />
   </div>
 </template>
 

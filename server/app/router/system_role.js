@@ -10,6 +10,10 @@ module.exports = app => {
 
   const tokenRequired = middleware.tokenRequired(null, app)
 
-  apiRouter.resources('system/role', '/system/role', systemRole)
-
+  apiRouter.post('/system/role', systemRole.create);
+  apiRouter.put('/system/role', systemRole.update);
+  apiRouter.delete('/system/role', systemRole.delete);
+  apiRouter.get('/system/role', systemRole.get);
+  apiRouter.get('/system/role/list', systemRole.list);
+  apiRouter.get('/system/role/page', systemRole.page);
 };

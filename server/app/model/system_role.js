@@ -13,10 +13,20 @@ module.exports = app => {
     name: {
       type: STRING,
       comment: '名称'
+    },
+    remark: {
+      type: STRING,
+      comment: '备注'
     }
   }, {
-    comment: '系统-角色表'
+    comment: '系统-角色表',
+    paranoid: true
   });
+
+  SystemRole.associate = function() {
+    // SystemRole.hasMany(app.model.SystemRolePower, { foreignKey: 'role_id', sourceKey: 'id', constraints: false });
+    SystemRole.belongsToMany(app.model.SystemPower, { through: app.model.SystemRolePower, foreignKey: 'role_id', otherKey: 'power_id', constraints: false });
+  }
 
   return SystemRole;
 };

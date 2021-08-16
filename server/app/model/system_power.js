@@ -24,8 +24,14 @@ module.exports = app => {
       comment: '权限类型：menu:菜单的访问权限、file:文件的修改权限、element:页面元素的可见性控制、operation:功能模块的操作权限、'
     }
   }, {
-    comment: '系统-权限表'
+    comment: '系统-权限表',
+    paranoid: true
   });
+
+  SystemPower.associate = function() {
+    SystemPower.hasOne(app.model.SystemMenu, { foreignKey: 'id', sourceKey: 'ref_id', constraints: false });
+    SystemPower.belongsToMany(app.model.SystemRole, { through: app.model.SystemRolePower, foreignKey: 'power_id', otherKey: 'role_id', constraints: false });
+  }
 
   return SystemPower;
 };

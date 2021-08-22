@@ -4,14 +4,14 @@
       <template v-slot:headerLeft>
         <el-button size="mini" type="primary" @click="handleAdd">新增</el-button>
         <warning-confirm-button
-          buttonType="danger"
+          button-type="danger"
           :content="`确认批量删除 ${tableMultipleSelection.length} 条数据？`"
           :closed="handleRefresh"
           @confirm="(o) => { handleBulkDelete(o) }"
         >批量删除</warning-confirm-button>
       </template>
       <template v-slot:headerRight>
-        <el-input size="mini" placeholder="请输入内容" class="search-input" v-model="tableSearchParams.name">
+        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入内容" class="search-input">
           <el-button slot="append" icon="el-icon-search" type="primary" @click="loadTableData">搜索</el-button>
         </el-input>
         <span class="line">|</span>
@@ -20,6 +20,7 @@
       </template>
       <template>
         <el-table
+          class="has-checkbox"
           v-loading="tableLoading"
           :data="tableData"
           size="small"
@@ -126,6 +127,7 @@ export default {
     },
     // 新增
     handleAdd() {
+      this.formId = '-1'
       this.dialogVisible = true
     },
     // 编辑

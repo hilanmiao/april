@@ -79,7 +79,7 @@
 <script>
 import _ from 'lodash'
 import IconSelector from './icon-selector'
-import { getMenu, createMenu, updateMenu } from '@/api/system/menu'
+import { getMenuAndParentMenu, createMenu, updateMenu } from '@/api/system/menu'
 import { constantRouterComponents } from '@/router'
 
 export default {
@@ -98,12 +98,17 @@ export default {
     dialogVisible: {
       type: Boolean,
       required: true
+    },
+    formId: {
+      type: String,
+      default: '-1'
     }
   },
   data() {
     return {
       // 通用属性
       labelWidth: '80px',
+      defaultForm: null,
       form: {
         id: '-1',
         parentId: null,
@@ -147,62 +152,93 @@ export default {
       return this.menutree
     }
   },
+  created() {
+    // 拷贝form默认值
+    this.defaultForm = _.cloneDeep(this.form)
+  },
+  destroyed() {
+    this.defaultForm = null
+  },
   methods: {
-    // 通用逻辑
+    // 打开回调
     open() {
+      this.init()
+      // 添加
       if (this.form.id === '-1') return
-      getMenu(this.form.id)
-        .then(res => {
-          const { menu, parentMenu } = res.data
-          this.form.parentId = parentMenu ? menu.parentId : '-1'
-          this.form.parentName = parentMenu ? parentMenu.name : '一级菜单'
-        })
+      // 编辑
+      this.setData()
     },
+    // 初始化数据事件等
+    async init() {
+      this.form.id = this.formId
+    },
+    // 设置数据
+    async setData() {
+      const { data } = await getMenuAndParentMenu({ id: this.form.id })
+      const { menu, parentMenu } = data
+      this.form.parentId = parentMenu ? menu.parentId : '-1'
+      this.form.parentName = parentMenu ? parentMenu.name : '一级菜单'
+      this.form.name = menu.name
+      this.form.router = menu.router
+      this.form.type = menu.type
+      this.form.icon = menu.icon
+      this.form.orderNum = menu.orderNum
+      this.form.viewPath = menu.viewPath
+      this.form.keepalive = menu.keepalive
+      this.form.isHidden = menu.isHidden
+    },
+    // 关闭回调
     close() {
       this.visible = false
       this.saving = false
       this.loading = false
       this.clearValidate()
     },
+    // 关闭回调
     closed() {
       // 重置form
-      for (const key in this.form) {
-        delete this.form[key]
-      }
+      this.form = _.cloneDeep(this.defaultForm)
     },
+    // 完成
     done() {
       this.saving = false
     },
+    // 检验表单
     validate(callback) {
       if (this.$refs.form) {
         this.$refs.form.validate(callback)
       }
     },
+    // 重置表单
     resetFields() {
       if (this.$refs.form) {
         this.$refs.form.resetFields()
       }
     },
+    // 移除表单校验
     clearValidate(props) {
       if (this.$refs.form) {
         this.$refs.form.clearValidate(props)
       }
     },
+    // 提交
     submit() {
+      // 提交前处理
+
+      // 提交通用处理
       this.$refs.form.validate(valid => {
         if (valid) {
           this.saving = true
-
           const data = _.cloneDeep(this.form)
           let res = null
-          if (this.form.id === '-1') {
+          if (data.id === '-1') {
             res = createMenu(data)
           } else {
             res = updateMenu(data)
           }
           res
             .then(() => {
-              this.$emit('handleRefresh')
+              this.$emit('save-success')
               this.close()
             })
             .catch(() => {
@@ -211,16 +247,18 @@ export default {
         }
       })
     },
-    // 业务逻辑
+    // 图标选择
     iconSelected(val) {
       this.form.icon = val
     },
+    // 菜单点击回调
     handleMenuNodeClick(data) {
       const { id, label } = data
       this.form.parentId = id
       this.form.parentName = label
       this.popoverVisible = false
     },
+    // 获取视图文件路径
     getViewFiles() {
       return Object.keys(constantRouterComponents)
     }

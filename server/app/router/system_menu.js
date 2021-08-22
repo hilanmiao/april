@@ -10,11 +10,9 @@ module.exports = app => {
 
   const tokenRequired = middleware.tokenRequired(null, app)
 
-  apiRouter.get('/system/menu/list', systemMenu.list);
-  apiRouter.get('/system/menu', systemMenu.get);
   apiRouter.post('/system/menu', systemMenu.create);
-  // apiRouter.put('/system/menu', systemMenu.update);
-  apiRouter.delete('/system/menu/:id', systemMenu.delete);
-  // apiRouter.resources('menu', '/system/menu', systemMenu)
-
+  apiRouter.put('/system/menu', systemMenu.update);
+  apiRouter.delete('/system/menu', systemMenu.delete);
+  apiRouter.get('/system/menu/menu-and-parent-menu', systemMenu.getMenuAndParentMenu);
+  apiRouter.get('/system/menu/list', systemMenu.list);
 };

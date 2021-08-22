@@ -11,7 +11,7 @@ class SystemRoleService extends Service {
    * @param remark
    * @param powerMenus
    * @param powerOperations
-   * @returns {Promise<{role_id}|*>}
+   * @returns {Promise<{role_id}|{code: number}>}
    */
   async create({ name, remark, powerMenus, powerOperations }) {
     const { ctx } = this;
@@ -43,12 +43,15 @@ class SystemRoleService extends Service {
       // 提交事务
       await transaction.commit()
       res = { role_id: modelRole.id }
+
       return res
     } catch (e) {
       console.log(e)
       ctx.logger.error(e)
       await transaction.rollback();
-      return res
+
+      // 操作失败
+      return { code: 20107 }
     }
   }
 
@@ -59,7 +62,7 @@ class SystemRoleService extends Service {
    * @param remark
    * @param powerMenus
    * @param powerOperations
-   * @returns {Promise<{role_id}|*>}
+   * @returns {Promise<{role_id}|{code: number}>}
    */
   async update({ id, name, remark, powerMenus, powerOperations }) {
     const { ctx } = this;
@@ -95,19 +98,22 @@ class SystemRoleService extends Service {
       // 提交事务
       await transaction.commit()
       res = { role_id: modelRole.id }
+
       return res
     } catch (e) {
       console.log(e)
       ctx.logger.error(e)
       await transaction.rollback();
-      return res
+
+      // 操作失败
+      return { code: 20107 }
     }
   }
 
   /**
    * 删除
    * @param ids
-   * @return {Promise<*>}
+   * @returns {Promise<{code: number}|{count}>}
    */
   async delete({ ids }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
@@ -129,19 +135,22 @@ class SystemRoleService extends Service {
       // 提交事务
       await transaction.commit()
       res = { count: ids.length }
+
       return res
     } catch (e) {
       console.log(e)
       ctx.logger.error(e)
       await transaction.rollback();
-      return res
+
+      // 操作失败
+      return { code: 20107 }
     }
   }
 
   /**
    * 查询
    * @param id
-   * @return {Promise<*>}
+   * @returns {Promise<*|{code: number}>}
    */
   async get({ id }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
@@ -163,17 +172,25 @@ class SystemRoleService extends Service {
         }
       ]
     }
+
     const res = await ctx.model.SystemRole.findOne(op);
+    if (!res) {
+      // 未找到角色
+      return { code: 20401 }
+    }
+
     return res
   }
 
   /**
    * 查询
-   * @return {Promise<*>}
+   * @returns {Promise<*>}
    */
   async list() {
     const { ctx, app: { Sequelize: { Op } } } = this;
+
     const res = await ctx.model.SystemRole.findAll()
+
     return res;
   }
 
@@ -181,7 +198,8 @@ class SystemRoleService extends Service {
    * 分页
    * @param page
    * @param limit
-   * @return {Promise<*>}
+   * @param name
+   * @returns {Promise<{pagination: {total, size, page}, list: (number|number|M[]|TInstance[]|SQLResultSetRowList|HTMLCollectionOf<HTMLTableRowElement>|string|*)}>}
    */
   async page({ page, limit, name }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
@@ -195,7 +213,17 @@ class SystemRoleService extends Service {
       offset: (+(page || 1) - 1) * +limit || 0,
       limit: +limit || 20
     }
-    const res = await ctx.model.SystemRole.findAndCountAll(op);
+
+    let res = await ctx.model.SystemRole.findAndCountAll(op);
+    res = {
+      list: res.rows,
+      pagination: {
+        page,
+        size: limit,
+        total: res.count
+      }
+    }
+
     return res;
   }
 }

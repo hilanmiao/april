@@ -1,39 +1,41 @@
 import request from '@/utils/request'
+const apiUrl = 'api/system/menu/'
 
-export function getMenuList(params) {
+export function getMenuAndParentMenu(params) {
   return request({
-    url: 'api/system/menu/list',
+    url: apiUrl + 'menu-and-parent-menu',
     method: 'get',
     params
   })
 }
 
-export function getMenu(id) {
+export function getMenuList() {
   return request({
-    url: 'api/system/menu/' + id,
+    url: apiUrl + 'list',
     method: 'get'
   })
 }
 
 export function createMenu(data) {
   return request({
-    url: 'api/system/menu',
+    url: apiUrl,
     method: 'post',
     data
   })
 }
 
-export function updateMenu(id, data) {
+export function updateMenu(data) {
   return request({
-    url: 'api/system/menu/' + id,
+    url: apiUrl,
     method: 'put',
     data
   })
 }
 
-export function deleteMenu(id) {
+export function deleteMenu(data) {
   return request({
-    url: 'api/system/menu/' + id,
-    method: 'delete'
+    url: apiUrl,
+    method: 'delete',
+    data
   })
 }

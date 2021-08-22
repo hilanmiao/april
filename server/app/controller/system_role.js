@@ -14,11 +14,11 @@ class SystemRoleController extends Controller {
     const { name, remark, powerMenus, powerOperations } = ctx.request.body
 
     const res = await ctx.service.systemRole.create({ name, remark, powerMenus, powerOperations })
-    if (!res) {
-      this.fail({ ctx, code: 10001 })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
       return
     }
-
     this.success({ ctx, data: res })
   }
 
@@ -32,11 +32,11 @@ class SystemRoleController extends Controller {
     const { id, name, remark, powerMenus, powerOperations } = ctx.request.body
 
     const res = await ctx.service.systemRole.update({ id, name, remark, powerMenus, powerOperations })
-    if (!res) {
-      this.fail({ ctx, code: 10001 })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
       return
     }
-
     this.success({ ctx, data: res })
   }
 
@@ -47,12 +47,13 @@ class SystemRoleController extends Controller {
   async delete() {
     const { ctx } = this;
     const { ids } = ctx.request.body
+
     const res = await ctx.service.systemRole.delete({ ids })
-    if (!res) {
-      this.fail({ ctx, code: 10001 })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
       return
     }
-
     this.success({ ctx, data: res })
   }
 
@@ -66,11 +67,11 @@ class SystemRoleController extends Controller {
     const { id } = ctx.request.query
 
     const res = await ctx.service.systemRole.get({ id })
-    if (!res) {
-      this.fail({ ctx, code: 10001 })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
       return
     }
-
     this.success({ ctx, data: res })
   }
 
@@ -80,6 +81,7 @@ class SystemRoleController extends Controller {
    */
   async list() {
     const { ctx } = this;
+
     const res = await ctx.service.systemRole.list()
 
     this.success({ ctx, data: res })
@@ -92,17 +94,10 @@ class SystemRoleController extends Controller {
   async page() {
     const { ctx } = this;
     const { page, limit, name } = ctx.request.query
-    const res = await ctx.service.systemRole.page({ page, limit, name })
-    const data = {
-      list: res.rows,
-      pagination: {
-        page,
-        size: limit,
-        total: res.count
-      }
-    }
 
-    this.success({ ctx, data })
+    const res = await ctx.service.systemRole.page({ page, limit, name })
+
+    this.success({ ctx, data: res })
   }
 }
 

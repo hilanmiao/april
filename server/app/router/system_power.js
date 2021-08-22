@@ -10,8 +10,6 @@ module.exports = app => {
 
   const tokenRequired = middleware.tokenRequired(null, app)
 
-  apiRouter.get('/system/power/my_power_operations', tokenRequired, systemPower.getMyPowerOperations);
-  apiRouter.get('/system/power/my_power_menus', tokenRequired, systemPower.getMyPowerMenus);
-  apiRouter.resources('system/power', '/system/power', systemPower)
-
+  apiRouter.get('/system/power/my-power-operations', tokenRequired, systemPower.getMyPowerOperations);
+  apiRouter.get('/system/power/my-power-menus', tokenRequired, systemPower.getMyPowerMenus);
 };

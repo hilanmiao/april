@@ -85,6 +85,7 @@ export default {
     return {
       // 通用属性
       labelWidth: '80px',
+      defaultForm: null,
       form: {
         id: '',
         name: '',
@@ -117,15 +118,15 @@ export default {
       return this.form.id === '-1' ? '添加角色' : '编辑角色'
     }
   },
-  watch: {
-    formId: {
-      immediate: true,
-      handler: function(val) {
-        this.form.id = val
-      }
-    }
+  created() {
+    // 拷贝form默认值
+    this.defaultForm = _.cloneDeep(this.form)
+  },
+  destroyed() {
+    this.defaultForm = null
   },
   methods: {
+    // 打开回调
     open() {
       this.init()
       // 添加
@@ -135,6 +136,7 @@ export default {
     },
     // 初始化数据事件等
     async init() {
+      this.form.id = this.formId
       const { data: menusData } = await getMenuList()
       this.menus = this.filterMenuToTree(menusData, null)
     },
@@ -142,7 +144,6 @@ export default {
     async setData() {
       const { data: role } = await getRole({ id: this.form.id })
       const { name, remark, systemPowers } = role
-      console.log(powerMenus)
       this.form.name = name
       this.form.remark = remark
       const powerMenus = _.map(systemPowers, 'systemMenu')
@@ -157,37 +158,41 @@ export default {
         })
       }
     },
+    // 关闭回调
     close() {
       this.visible = false
       this.saving = false
       this.loading = false
       this.clearValidate()
     },
+    // 关闭回调
     closed() {
       // 重置form
-      // for (const key in this.form) {
-      //   delete this.form[key]
-      // }
-      this.resetFields()
+      this.form = _.cloneDeep(this.defaultForm)
     },
+    // 完成
     done() {
       this.saving = false
     },
+    // 检验表单
     validate(callback) {
       if (this.$refs.form) {
         this.$refs.form.validate(callback)
       }
     },
+    // 重置表单
     resetFields() {
       if (this.$refs.form) {
         this.$refs.form.resetFields()
       }
     },
+    // 移除表单校验
     clearValidate(props) {
       if (this.$refs.form) {
         this.$refs.form.clearValidate(props)
       }
     },
+    // 提交
     submit() {
       // 提交前处理
       this.form.powerMenus = this.getTreeMenuCheckedKeys()
@@ -214,6 +219,7 @@ export default {
         }
       })
     },
+    // 获取树选中的数据
     getTreeMenuCheckedKeys() {
       const childKeys = this.$refs.treeMenu.getCheckedKeys()
       const halfKeys = this.$refs.treeMenu.getHalfCheckedKeys()

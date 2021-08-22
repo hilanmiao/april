@@ -17,7 +17,8 @@ class LoginController extends Controller {
     const resVerify = await ctx.service.common.verifyImgCaptcha({ id: captchaId, code: verifyCode })
 
     if (!resVerify) {
-      this.fail({ ctx, code: 10002 })
+      // 验证码不正确
+      this.fail({ ctx, code: 20106 })
       return
     }
 

@@ -6,42 +6,38 @@ const _ = require('lodash');
 class SystemMenuController extends Controller {
 
   /**
-   * 所有
-   * @return {Promise<void>}
+   * 创建
+   * @returns {Promise<void>}
    */
-  async list() {
+  async create() {
     const { ctx } = this;
+    ctx.validate({ parentId: 'string', name: 'string', router: 'string' }, ctx.request.body)
+    const { parentId: parent_id, name, router, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isHidden: is_hidden } = ctx.request.body
 
-    const res = await ctx.service.systemMenu.list()
+    const res = await ctx.service.systemMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
     this.success({ ctx, data: res })
   }
 
   /**
-   * 创建
+   * 更新
    * @return {Promise<void>}
    */
-  async create() {
+  async update() {
     const { ctx } = this;
-    let { parentId: parent_id, name, router, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isHidden: is_hidden } = ctx.request.body
+    ctx.validate({ id: 'string', parentId: 'string', name: 'string', router: 'string' }, ctx.request.body)
+    const { id, parentId: parent_id, name, router, type, icon, orderNum: order_num, viewPath: view_path, keepalive, isHidden: is_hidden } = ctx.request.body
 
-    if (type === 'menu' && parent_id !== '-1') {
-      const parent = await ctx.service.systemMenu.getMenuItemAndParentInfo({ id: parent_id })
-      if (!parent) {
-        throw new Error('父节点菜单不存在！');
-      }
-      if (parent && parent.type === 'menu') {
-        // 当前新增为菜单但父节点也为菜单时为非法操作
-        this.fail({ ctx, code: 10006 })
-        return;
-      }
+    const res = await await ctx.service.systemMenu.update({ id, parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
     }
-
-    if (parent_id === '-1') {
-      parent_id = null
-    }
-
-    const res = await ctx.service.systemMenu.create({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden })
-
     this.success({ ctx, data: res })
   }
 
@@ -51,22 +47,44 @@ class SystemMenuController extends Controller {
    */
   async delete() {
     const { ctx } = this;
-    const id = ctx.params.id
+    const { ids } = ctx.request.body
 
-    // 如果有子目录，一并删除
-    const childMenus = await ctx.service.systemMenu.getChildMenus({ id })
-    await ctx.service.systemMenu.delete({ ids: _.flattenDeep([id, childMenus]) })
-    this.success({ ctx })
+    const res = await ctx.service.systemMenu.delete({ ids })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
+    this.success({ ctx, data: res })
   }
 
   /**
-   * 详情
+   * 获取某个菜单以及关联的父菜单的信息
+   * @returns {Promise<void>}
+   */
+  async getMenuAndParentMenu() {
+    const { ctx } = this;
+    ctx.validate({ id: 'string' }, ctx.request.query)
+    const { id } = ctx.request.query
+
+    const res = await ctx.service.systemMenu.getMenuAndParentMenu({ id })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
+    this.success({ ctx, data: res })
+  }
+
+  /**
+   * 查询
    * @return {Promise<void>}
    */
-  async get() {
+  async list() {
     const { ctx } = this;
-    const id = ctx.params.id
-    const res = await ctx.service.systemMenu.getMenuItemAndParentInfo({ id })
+
+    const res = await ctx.service.systemMenu.list()
+
     this.success({ ctx, data: res })
   }
 }

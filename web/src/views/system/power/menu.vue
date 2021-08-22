@@ -101,7 +101,6 @@ import WarningConfirmButton from '@/components/WarningConfirmButton'
 import { getMenuList, deleteMenu } from '@/api/system/menu'
 import PowerMenuMixin from '@/core/mixins/power-menu'
 import TableLayout from '@/layout/components/TableLayout.vue'
-import { listCamelCase } from '@/utils'
 
 export default {
   name: 'SystemPowerMenu',
@@ -120,9 +119,7 @@ export default {
   },
   methods: {
     async getMenuList() {
-      let { data } = await getMenuList()
-      // 下划线转驼峰
-      data = listCamelCase(data)
+      const { data } = await getMenuList()
 
       // clean
       if (this.menutree && this.menutree.length > 0) {

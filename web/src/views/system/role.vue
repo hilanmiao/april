@@ -1,26 +1,59 @@
 <template>
   <div class="sys-menu-container">
-    <table-layout>
-      <s-table ref="roleTable" :data-request="getRoleList" show-pagination stripe row-key="id" border>
-        <template v-slot:prepend>
-          <el-button size="mini" type="primary" :disabled="!$auth('sysRole.add')" @click="handleAdd">新增</el-button>
-        </template>
-        <el-table-column prop="id" label="#" align="center" width="55" />
-        <el-table-column prop="name" label="名称" align="center" width="200" />
-        <el-table-column prop="label" label="标识" align="center" width="200" />
-        <el-table-column prop="remark" label="备注" align="center" />
-        <el-table-column prop="createTime" label="创建时间" align="center" />
-        <el-table-column prop="updateTime" label="更新时间" align="center" />
-        <el-table-column label="操作" width="150" align="center" fixed="right">
-          <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-            <warning-confirm-button
-              :closed="handleRefresh"
-              @confirm="(o) => { handleDelete(scope.row, o) }"
-            >删除</warning-confirm-button>
-          </template>
-        </el-table-column>
-      </s-table>
+    <table-layout class="table-layout">
+      <template v-slot:headerLeft>
+        <el-button size="mini" type="primary" @click="handleAdd">新增</el-button>
+        <warning-confirm-button
+          buttonType="danger"
+          :content="`确认批量删除 ${tableMultipleSelection.length} 条数据？`"
+          :closed="handleRefresh"
+          @confirm="(o) => { handleBulkDelete(o) }"
+        >批量删除</warning-confirm-button>
+      </template>
+      <template v-slot:headerRight>
+        <el-input size="mini" placeholder="请输入内容" class="search-input" v-model="tableSearchParams.name">
+          <el-button slot="append" icon="el-icon-search" type="primary" @click="loadTableData">搜索</el-button>
+        </el-input>
+        <span class="line">|</span>
+        <el-button size="mini" icon="el-icon-refresh" @click="handleRefresh" />
+        <el-button size="mini" icon="el-icon-download" />
+      </template>
+      <template>
+        <el-table
+          v-loading="tableLoading"
+          :data="tableData"
+          size="small"
+          :header-cell-style="{ backgroundColor: '#ebeef4' }"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="index" width="30" />
+          <el-table-column type="selection" align="center" width="30" />
+          <el-table-column prop="name" label="名称" align="center" width="200">
+            <template slot-scope="{row}">
+              <span class="link-type" @click="handleEdit(row)">{{ row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注" align="center" />
+          <el-table-column prop="createTime" label="创建时间" align="center" width="200" />
+          <el-table-column prop="updateTime" label="更新时间" align="center" width="200" />
+          <el-table-column label="操作" width="150" align="center">
+            <template slot-scope="scope">
+              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <warning-confirm-button
+                :closed="handleRefresh"
+                @confirm="(o) => { handleDelete(scope.row, o) }"
+              >删除</warning-confirm-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+      <template v-slot:pagination>
+        <pagination v-show="tablePagination.total>0" :total="tablePagination.total" :page.sync="tablePagination.currentPage" :limit.sync="tablePagination.pageSize" @pagination="loadTableData" />
+      </template>
     </table-layout>
 
     <role-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
@@ -28,44 +61,92 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import roleFormDialog from './components/role-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import TableLayout from '@/layout/components/TableLayout'
-import STable from '@/components/Table'
+import TableLayout from '@/layout/components/TableLayout2'
+import Pagination from '@/components/Pagination'
 import { getRoleListByPage, deleteRole } from '@/api/system/role'
 
 export default {
   name: 'SystemPermissionRole',
   components: {
     TableLayout,
-    STable,
+    Pagination,
     WarningConfirmButton,
     roleFormDialog
   },
   data() {
     return {
+      // 列表相关
+      tableData: [],
+      tableLoading: false,
+      tablePagination: {
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      },
+      tableSearchParams: {
+        name: ''
+      },
+      tableMultipleSelection: [],
+      // 导出配置
+      // 表单相关
       dialogVisible: false,
-      formId: ''
+      formId: '-1'
     }
   },
+  created() {
+    this.loadTableData()
+  },
   methods: {
-    async getRoleList({ page, limit }) {
-      const { data } = await getRoleListByPage({ page, limit })
-      return { list: data.list, pagination: { total: data.pagination.total }}
+    // 加载表格数据
+    async loadTableData() {
+      this.tableLoading = true
+      const page = this.tablePagination.currentPage
+      const limit = this.tablePagination.pageSize
+      const name = this.tableSearchParams.name
+      try {
+        const { data } = await getRoleListByPage({ page, limit, name })
+        this.tableData = data.list
+        this.tablePagination.total = data.pagination.total
+        this.tableLoading = false
+      } catch (e) {
+        console.log(e)
+        this.tableLoading = false
+      }
     },
+    // 多选框选择事件
+    handleSelectionChange(selection) {
+      this.tableMultipleSelection = selection
+    },
+    // 刷新表格数据
     handleRefresh() {
-      this.$refs.roleTable.refresh()
+      this.loadTableData()
     },
+    // 新增
     handleAdd() {
       this.dialogVisible = true
     },
+    // 编辑
     handleEdit(row) {
       this.formId = row.id
       this.dialogVisible = true
     },
+    // 删除
     async handleDelete(row, { done, close }) {
       try {
         await deleteRole({ ids: [row.id] })
+        close()
+      } catch (e) {
+        done()
+      }
+    },
+    // 批量删除
+    async handleBulkDelete({ done, close }) {
+      try {
+        const ids = _.map(this.tableMultipleSelection, 'id')
+        await deleteRole({ ids })
         close()
       } catch (e) {
         done()
@@ -75,6 +156,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "~@/styles/table-layout.scss";
 
 </style>

@@ -58,10 +58,9 @@
 
 <script>
 import _ from 'lodash'
-import { getMenuList } from '@/api/system/power'
+import { getMenuList } from '@/api/system/menu'
 import { createRole, updateRole, getRole } from '@/api/system/role'
 import PowerMenuMixin from '@/core/mixins/power-menu'
-import { listCamelCase } from '@/utils'
 
 export default {
   components: {
@@ -78,7 +77,8 @@ export default {
       required: true
     },
     formId: {
-      type: String
+      type: String,
+      default: '-1'
     }
   },
   data() {
@@ -86,7 +86,7 @@ export default {
       // 通用属性
       labelWidth: '80px',
       form: {
-        id: '-1',
+        id: '',
         name: '',
         remark: '',
         powerMenus: [],
@@ -135,18 +135,17 @@ export default {
     },
     // 初始化数据事件等
     async init() {
-      let { data: menusData } = await getMenuList()
-      // 下划线转驼峰
-      menusData = listCamelCase(menusData)
+      const { data: menusData } = await getMenuList()
       this.menus = this.filterMenuToTree(menusData, null)
     },
     // 设置数据
     async setData() {
       const { data: role } = await getRole({ id: this.form.id })
-      const { name, remark, system_role_powers: powerMenus } = role
+      const { name, remark, systemPowers } = role
       console.log(powerMenus)
       this.form.name = name
       this.form.remark = remark
+      const powerMenus = _.map(systemPowers, 'systemMenu')
       // 设置节点
       if (powerMenus && powerMenus.length > 0) {
         powerMenus.forEach(o => {

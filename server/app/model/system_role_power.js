@@ -19,7 +19,8 @@ module.exports = app => {
       comment: '权限Id'
     }
   }, {
-    comment: '系统-角色权限表'
+    comment: '系统-角色权限表',
+    paranoid: false
   });
 
   return SystemRolePower;

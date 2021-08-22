@@ -17,10 +17,10 @@ module.exports = app => {
     remark: {
       type: STRING,
       comment: '备注'
-    }
+    },
   }, {
     comment: '系统-角色表',
-    paranoid: true
+    paranoid: false
   });
 
   SystemRole.associate = function() {

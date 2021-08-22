@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import { camelizeKeys } from '@/utils/index'
 
 const UNKNOWN_ERROR = '未知错误，请重试'
 
@@ -45,7 +46,10 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response.data
+    // const res = response.data
+    // 递归下划线转驼峰
+    const res = camelizeKeys(response.data)
+    console.log(res)
 
     // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {

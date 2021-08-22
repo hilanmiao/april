@@ -25,11 +25,12 @@ module.exports = app => {
     }
   }, {
     comment: '系统-权限表',
-    paranoid: true
+    paranoid: false
   });
 
   SystemPower.associate = function() {
     SystemPower.hasOne(app.model.SystemMenu, { foreignKey: 'id', sourceKey: 'ref_id', constraints: false });
+    SystemPower.hasOne(app.model.SystemOperation, { foreignKey: 'id', sourceKey: 'ref_id', constraints: false });
     SystemPower.belongsToMany(app.model.SystemRole, { through: app.model.SystemRolePower, foreignKey: 'power_id', otherKey: 'role_id', constraints: false });
   }
 

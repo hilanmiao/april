@@ -37,17 +37,6 @@ class SystemPowerController extends Controller {
   }
 
   /**
-   * 获取所有的菜单权限
-   * @return {Promise<void>}
-   */
-  async getPowerMenus() {
-    const { ctx } = this;
-    const res = await ctx.service.systemPower.getPowerMenus()
-
-    this.success({ ctx, data: res })
-  }
-
-  /**
    * 获取我的菜单权限
    * @return {Promise<void>}
    */

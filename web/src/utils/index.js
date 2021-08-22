@@ -242,12 +242,21 @@ export function removeClass(ele, cls) {
 }
 
 /**
- * 数组json对象下划线转驼峰
+ * 递归下划线转驼峰
  * @param list
  * @returns {unknown[]}
  */
-export function listCamelCase(list) {
-  return _.map(list, (value) => {
-    return _.mapKeys(value, (value, key) => _.camelCase(key))
-  })
+export function camelizeKeys(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(v => camelizeKeys(v))
+  } else if (obj !== null && obj.constructor === Object) {
+    return Object.keys(obj).reduce(
+      (result, key) => ({
+        ...result,
+        [_.camelCase(key)]: camelizeKeys(obj[key])
+      }),
+      {}
+    )
+  }
+  return obj
 }

@@ -8,9 +8,12 @@ class SystemRoleService extends Service {
   /**
    * 创建
    * @param name
-   * @return {Promise<*>}
+   * @param remark
+   * @param powerMenus
+   * @param powerOperations
+   * @returns {Promise<{role_id}|*>}
    */
-  async create({ name, powerMenus, powerOperations }) {
+  async create({ name, remark, powerMenus, powerOperations }) {
     const { ctx } = this;
     let res,
       transaction;
@@ -18,17 +21,32 @@ class SystemRoleService extends Service {
       // 开启事务
       transaction = await ctx.model.transaction();
 
-      const modelRole = await ctx.model.SystemRole.create({ name }, { transaction });
-      powerMenus = _.map(powerMenus, item => {
+      // 创建角色
+      const modelRole = await ctx.model.SystemRole.create({ name, remark }, { transaction });
+
+      const powerIds = []
+      // 获取菜单的权限
+      for (const menuId of powerMenus) {
+        const power = await ctx.model.SystemPower.findOne({ where: { type: 'menu', ref_id: menuId }, transaction })
+        if (power) {
+          powerIds.push(power.id)
+        }
+      }
+      // 获取操作的权限
+
+      // 批量创建角色权限
+      const rolePowers = _.map(powerIds, item => {
         return { role_id: modelRole.id, power_id: item }
       });
-      await ctx.model.SystemRolePower.bulkCreate(powerMenus, { transaction })
+      await ctx.model.SystemRolePower.bulkCreate(rolePowers, { transaction })
 
       // 提交事务
       await transaction.commit()
       res = { role_id: modelRole.id }
       return res
     } catch (e) {
+      console.log(e)
+      ctx.logger.error(e)
       await transaction.rollback();
       return res
     }
@@ -36,10 +54,14 @@ class SystemRoleService extends Service {
 
   /**
    * 更新
+   * @param id
    * @param name
-   * @return {Promise<*>}
+   * @param remark
+   * @param powerMenus
+   * @param powerOperations
+   * @returns {Promise<{role_id}|*>}
    */
-  async update({ id, name, powerMenus, powerOperations }) {
+  async update({ id, name, remark, powerMenus, powerOperations }) {
     const { ctx } = this;
     let res,
       transaction;
@@ -47,19 +69,36 @@ class SystemRoleService extends Service {
       // 开启事务
       transaction = await ctx.model.transaction();
 
+      // 更新角色
       const modelRole = await ctx.model.SystemRole.findOne({ where: { id }, transaction, lock: true, skipLocked: true });
-      await modelRole.update({ name })
-      await ctx.model.SystemRolePower.destroy({ where: { role_id: id }, transaction })
-      powerMenus = _.map(powerMenus, item => {
+      await modelRole.update({ name, remark }, { transaction })
+
+      // 删除角色的所有权限
+      const re = await ctx.model.SystemRolePower.destroy({ where: { role_id: id }, transaction })
+
+      const powerIds = []
+      // 获取菜单的权限
+      for (const menuId of powerMenus) {
+        const power = await ctx.model.SystemPower.findOne({ where: { type: 'menu', ref_id: menuId }, transaction })
+        if (power) {
+          powerIds.push(power.id)
+        }
+      }
+      // 获取操作的权限
+
+      // 批量创建角色权限
+      const rolePowers = _.map(powerIds, item => {
         return { role_id: modelRole.id, power_id: item }
       });
-      await ctx.model.SystemRolePower.bulkCreate(powerMenus, { transaction })
+      await ctx.model.SystemRolePower.bulkCreate(rolePowers, { transaction })
 
       // 提交事务
       await transaction.commit()
       res = { role_id: modelRole.id }
       return res
     } catch (e) {
+      console.log(e)
+      ctx.logger.error(e)
       await transaction.rollback();
       return res
     }
@@ -72,11 +111,38 @@ class SystemRoleService extends Service {
    */
   async delete({ ids }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
-    const op = { where: { id: { [Op.in]: ids } } };
-    const res = await ctx.model.SystemRole.destroy(op);
-    return res
+    // const op = { where: { id: { [Op.in]: ids } } };
+    let res,
+      transaction;
+    try {
+      // 开启事务
+      transaction = await ctx.model.transaction();
+
+      for (const id of ids) {
+        const modelRole = await ctx.model.SystemRole.findOne({ where: { id }, transaction, lock: true, skipLocked: true });
+        // 删除角色的所有权限
+        await ctx.model.SystemRolePower.destroy({ where: { role_id: id }, transaction })
+        // 删除角色
+        await modelRole.destroy({ transaction })
+      }
+
+      // 提交事务
+      await transaction.commit()
+      res = { count: ids.length }
+      return res
+    } catch (e) {
+      console.log(e)
+      ctx.logger.error(e)
+      await transaction.rollback();
+      return res
+    }
   }
 
+  /**
+   * 查询
+   * @param id
+   * @return {Promise<*>}
+   */
   async get({ id }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const op = {
@@ -86,7 +152,14 @@ class SystemRoleService extends Service {
       include: [
         {
           model: ctx.model.SystemPower,
-          attributes: ['id']
+          include: [
+            {
+              model: ctx.model.SystemMenu
+            },
+            {
+              model: ctx.model.SystemOperation
+            }
+          ]
         }
       ]
     }
@@ -94,22 +167,27 @@ class SystemRoleService extends Service {
     return res
   }
 
-  async count() {
-    const { ctx, app: { Sequelize: { Op } } } = this;
-    const res = await ctx.model.SystemRole.count()
-    return res;
-  }
-
+  /**
+   * 查询
+   * @return {Promise<*>}
+   */
   async list() {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const res = await ctx.model.SystemRole.findAll()
     return res;
   }
 
-  async page({ page, limit }) {
+  /**
+   * 分页
+   * @param page
+   * @param limit
+   * @return {Promise<*>}
+   */
+  async page({ page, limit, name }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
     const op = {
       where: {
+        name: { [Op.like]: `%${name || ''}%` },
       },
       order: [
         [ 'created_at', 'desc' ]

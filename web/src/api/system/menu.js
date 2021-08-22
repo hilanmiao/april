@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function getMenuList(params) {
+  return request({
+    url: 'api/system/menu/list',
+    method: 'get',
+    params
+  })
+}
+
 export function getMenu(id) {
   return request({
     url: 'api/system/menu/' + id,

@@ -8,10 +8,10 @@ module.exports = {
   domain: 'http://127.0.0.1:7001',
   jwtSecret: 'april',
   mysql: {
-    host: '127.0.0.1',
+    host: '81.70.194.45',
     port: '3306',
     user: 'root',
-    password: '123456',
+    password: 'Lanmiaobirthyear1992!',
     database: 'april',
   },
   redis: {

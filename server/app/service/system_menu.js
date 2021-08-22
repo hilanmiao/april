@@ -11,7 +11,7 @@ class SystemMenuService extends Service {
    */
   async list() {
     const { ctx } = this
-    const res = await ctx.model.SystemPower.findAll({ where: { type: 'menu' }, include: [{ model: ctx.model.SystemMenu }] })
+    const res = await ctx.model.SystemMenu.findAll()
     return res
   }
 

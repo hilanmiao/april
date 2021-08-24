@@ -7,14 +7,22 @@
       <el-container>
         <el-main>
           <div class="table-container">
-            <div v-if="$slots.header" class="table-layout-header">
-              <slot name="header" />
+            <div class="table-layout-header">
+              <div class="left">
+                <slot name="headerLeft" />
+              </div>
+              <div class="right">
+                <slot name="headerRight" />
+              </div>
             </div>
             <div
               class="table-layout-content"
               :class="{ 'fixed-table-height': !wrap }"
             >
               <slot />
+            </div>
+            <div v-if="$slots.pagination" class="table-layout-pagination">
+              <slot name="pagination" />
             </div>
           </div>
         </el-main>
@@ -63,9 +71,15 @@ export default {
   .table-layout-header {
     margin-bottom: 15px;
     display: flex;
-    display: -webkit-flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .table-layout-pagination {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 

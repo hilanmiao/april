@@ -11,7 +11,7 @@
         >批量删除</warning-confirm-button>
       </template>
       <template v-slot:headerRight>
-        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入内容" class="search-input">
+        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入角色名称" class="search-input">
           <el-button slot="append" icon="el-icon-search" type="primary" @click="loadTableData">搜索</el-button>
         </el-input>
         <span class="line">|</span>
@@ -65,12 +65,12 @@
 import _ from 'lodash'
 import roleFormDialog from './components/role-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import TableLayout from '@/layout/components/TableLayout2'
+import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
 import { getRoleListByPage, deleteRole } from '@/api/system/role'
 
 export default {
-  name: 'SystemPermissionRole',
+  name: 'SystemRole',
   components: {
     TableLayout,
     Pagination,

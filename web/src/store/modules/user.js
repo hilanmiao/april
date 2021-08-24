@@ -1,5 +1,5 @@
 import { login, logout } from '@/api/login'
-import { getBasic } from '@/api/system/user'
+import { getUserBasic } from '@/api/system/user'
 import { setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { getMyPowerMenus, getMyPowerOperations } from '@/api/system/power'
@@ -60,10 +60,10 @@ const actions = {
     })
   },
 
-  // 获取我的信息
-  getBasic({ commit, dispatch }) {
+  // 获取我的基本信息
+  getUserBasic({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
-      getBasic()
+      getUserBasic()
         .then(response => {
           const { data } = response
 

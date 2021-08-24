@@ -57,8 +57,8 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
-          // 获取我的信息
-          await store.dispatch('user/getBasic')
+          // 获取我的基本信息
+          await store.dispatch('user/getUserBasic')
           // 获取我的操作权限
           await store.dispatch('user/getMyPowerOperations')
           // 获取我的菜单权限

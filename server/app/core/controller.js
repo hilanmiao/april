@@ -10,7 +10,8 @@
 // create: 添加
 // update: 编辑
 // delete: 删除
-// get：详情
+// get：详情-关联表
+// getXxxBasic：详情-单表基础信息
 // count: 统计
 // list：查询
 // page: 分页

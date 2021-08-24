@@ -106,7 +106,7 @@ import MenuFormDialog from '../components/power-menu-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import { getMenuList, deleteMenu } from '@/api/system/menu'
 import PowerMenuMixin from '@/core/mixins/power-menu'
-import TableLayout from '@/layout/components/TableLayout2'
+import TableLayout from '@/layout/components/TableLayout'
 
 export default {
   name: 'SystemPowerMenu',

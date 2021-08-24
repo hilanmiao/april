@@ -58,14 +58,15 @@ module.exports = app => {
       type: STRING,
       comment: '简介'
     },
-    is_enabled: {
-      type: BOOLEAN,
-      defaultValue: true,
-      comment: '是否可用'
-    },
     github_id: {
       type: STRING,
       comment: 'githubId'
+    },
+    status: {
+      type: ENUM,
+      values: [ '1', '2' ],
+      defaultValue: '1',
+      comment: '状态：1:启用 2：禁用'
     }
   }, {
     comment: '系统-用户表'

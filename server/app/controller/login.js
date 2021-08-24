@@ -29,11 +29,6 @@ class LoginController extends Controller {
       return
     }
 
-    if (!resLogin.user.is_enabled) {
-      this.fail({ ctx, code: 10003 })
-      return
-    }
-
     this.success({ ctx, data: { accessToken: resLogin.accessToken, refreshToken: resLogin.refreshToken } })
   }
 

@@ -19,7 +19,8 @@ module.exports = app => {
       comment: '角色Id'
     }
   }, {
-    comment: '系统-用户角色表'
+    comment: '系统-用户角色表',
+    paranoid: false
   });
 
   return SystemUserRole;

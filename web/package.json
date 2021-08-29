@@ -16,9 +16,10 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "clipboard": "^2.0.8",
     "core-js": "^3.12.1",
     "echarts": "^4.9.0",
-    "element-ui": "^2.15.2",
+    "element-ui": "^2.15.5",
     "file-saver": "^2.0.5",
     "jszip": "^3.6.0",
     "lodash": "^4.17.21",

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "crypto-random-string": "^3.3.1",
     "dayjs": "^1.10.6",
     "egg": "^2.15.1",
     "egg-cors": "^2.2.3",

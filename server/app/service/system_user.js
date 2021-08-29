@@ -2,12 +2,13 @@
 
 const Service = require('egg/index').Service;
 const _ = require('lodash')
+const cryptoRandomString = require('crypto-random-string')
 
 class SystemUserService extends Service {
 
   /**
    * 创建
-   * @param role_id
+   * @param roleIds
    * @param username
    * @param display_name
    * @param real_name
@@ -18,10 +19,9 @@ class SystemUserService extends Service {
    * @param sex
    * @param avatar
    * @param introduction
-   * @param status
-   * @return {Promise<{user_id}|{code: number}>}
+   * @returns {Promise<{password: string | *, user_id}|{code: number}>}
    */
-  async create({ role_id, username, display_name, real_name, position, company, email, mobile, sex, avatar, introduction, status }) {
+  async create({ roleIds, username, display_name, real_name, position, company, email, mobile, sex, avatar, introduction }) {
     const { ctx } = this;
     let res,
       transaction;
@@ -29,12 +29,26 @@ class SystemUserService extends Service {
       // 开启事务
       transaction = await ctx.model.transaction();
 
+      // 查看登录名是否已被注册
+      const isExist = await ctx.model.SystemUser.findOne({ where: { username }, transaction })
+      if (isExist) {
+        await transaction.rollback();
+        // 登录名已被注册
+        return { code: 20502 }
+      }
+
       // 创建用户
-      const modelUser = await ctx.model.SystemUser.create({ username, display_name, real_name, position, company, email, mobile, sex, avatar, introduction, status }, { transaction });
+      // 生成6位随机字符password
+      const password = cryptoRandomString({ length: 6 })
+      const modelUser = await ctx.model.SystemUser.create({ username, password, display_name, real_name, position, company, email, mobile, sex, avatar, introduction }, { transaction });
+      // 创建用户角色
+      for (const roleId of roleIds) {
+        await ctx.model.SystemUserRole.create({ role_id: roleId, user_id: modelUser.id }, { transaction });
+      }
 
       // 提交事务
       await transaction.commit()
-      res = { user_id: modelUser.id }
+      res = { user_id: modelUser.id, password }
 
       return res
     } catch (e) {
@@ -50,7 +64,7 @@ class SystemUserService extends Service {
   /**
    * 更新
    * @param id
-   * @param role_id
+   * @param roleIds
    * @param display_name
    * @param real_name
    * @param position
@@ -60,10 +74,9 @@ class SystemUserService extends Service {
    * @param sex
    * @param avatar
    * @param introduction
-   * @param status
-   * @return {Promise<{user_id}|{code: number}>}
+   * @returns {Promise<{user_id}|{code: number}>}
    */
-  async update({ id, role_id, display_name, real_name, position, company, email, mobile, sex, avatar, introduction, status }) {
+  async update({ id, roleIds, display_name, real_name, position, company, email, mobile, sex, avatar, introduction }) {
     const { ctx } = this;
     let res,
       transaction;
@@ -71,10 +84,15 @@ class SystemUserService extends Service {
       // 开启事务
       transaction = await ctx.model.transaction();
 
-      // 更新角色
+      // 更新用户
       const modelUser = await ctx.model.SystemUser.findOne({ where: { id }, transaction, lock: true, skipLocked: true });
-      await modelUser.update({ display_name, real_name, position, company, email, mobile, sex, avatar, introduction, status }, { transaction })
-
+      await modelUser.update({ display_name, real_name, position, company, email, mobile, sex, avatar, introduction }, { transaction })
+      // 删除用户的所有角色
+      await ctx.model.SystemUserRole.destroy({ where: { user_id: id }, transaction })
+      // 重新创建用户角色
+      for (const roleId of roleIds) {
+        await ctx.model.SystemUserRole.create({ role_id: roleId, user_id: id }, { transaction });
+      }
 
       // 提交事务
       await transaction.commit()
@@ -109,6 +127,8 @@ class SystemUserService extends Service {
         const modelUser = await ctx.model.SystemUser.findOne({ where: { id }, transaction, lock: true, skipLocked: true });
         // 删除用户
         await modelUser.destroy({ transaction })
+        // 删除用户的所有角色
+        await ctx.model.SystemUserRole.destroy({ where: { user_id: id }, transaction })
       }
 
       // 提交事务
@@ -137,7 +157,12 @@ class SystemUserService extends Service {
       where: {
         id
       },
-      include: []
+      attributes: { exclude: ['password'] },
+      include: [
+        {
+          model: ctx.model.SystemRole
+        }
+      ]
     }
 
     const res = await ctx.model.SystemUser.findOne(op);
@@ -178,7 +203,12 @@ class SystemUserService extends Service {
         [ 'created_at', 'desc' ]
       ],
       offset: (+(page || 1) - 1) * +limit || 0,
-      limit: +limit || 20
+      limit: +limit || 20,
+      include: [
+        {
+          model: ctx.model.SystemRole
+        }
+      ]
     }
 
     let res = await ctx.model.SystemUser.findAndCountAll(op);

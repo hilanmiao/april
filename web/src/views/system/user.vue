@@ -77,12 +77,12 @@
           >
             <template slot-scope="scope">
               <el-tag
-                v-for="i in scope.row.roleNames"
-                :key="i"
+                v-for="item in scope.row.systemRoles"
+                :key="item.id"
                 type="success"
                 size="small"
                 :style="{ 'margin-right': '3px' }"
-              >{{ i }}</el-tag>
+              >{{ item.name }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column
@@ -127,13 +127,13 @@
       </template>
     </table-layout>
 
-    <!--    <role-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />-->
+    <user-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
-// import roleFormDialog from './components/role-form-dialog'
+import userFormDialog from './components/user-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
@@ -144,8 +144,8 @@ export default {
   components: {
     TableLayout,
     Pagination,
-    WarningConfirmButton
-    // roleFormDialog
+    WarningConfirmButton,
+    userFormDialog
   },
   data() {
     return {

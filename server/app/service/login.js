@@ -9,31 +9,31 @@ class LoginService extends Service {
    * 登录
    * @param username
    * @param password
-   * @return {Promise<{accessToken: string, user: {}, refreshToken: string}>}
+   * @returns {Promise<{code: number}|{accessToken: string, user: {}, refreshToken: string}>}
    */
   async login({ username, password }) {
     const { ctx } = this;
-    const data = {
+    const res = {
       user: {},
       accessToken: '',
       refreshToken: ''
     };
 
     const user = await ctx.model.SystemUser.findByCredentials(username, password);
-    // 未找到用户
     if (!user) {
-      return false
+      // 用户名或密码不正确
+      return { code: 20101 }
     }
 
     const session = await ctx.model.SystemSession.createInstance(user);
     const accessToken = await ctx.helper.createToken(user, null, this.config.sysConfig.expirationPeriod.short);
     const refreshToken = await ctx.helper.createToken(null, session, this.config.sysConfig.expirationPeriod.long);
 
-    data.user = user;
-    data.accessToken = accessToken;
-    data.refreshToken = refreshToken;
+    res.user = user;
+    res.accessToken = accessToken;
+    res.refreshToken = refreshToken;
 
-    return data
+    return res
   }
 }
 

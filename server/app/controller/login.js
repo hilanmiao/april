@@ -15,21 +15,18 @@ class LoginController extends Controller {
 
     // 检查验证码
     const resVerify = await ctx.service.common.verifyImgCaptcha({ id: captchaId, code: verifyCode })
-
-    if (!resVerify) {
-      // 验证码不正确
-      this.fail({ ctx, code: 20106 })
+    if (resVerify.code) {
+      this.fail({ ctx, code: resVerify.code })
       return
     }
 
     // 登录
-    const resLogin = await ctx.service.login.login({ username, password })
-    if (!resLogin) {
-      this.fail({ ctx, code: 10003 })
+    const res = await ctx.service.login.login({ username, password })
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
       return
     }
-
-    this.success({ ctx, data: { accessToken: resLogin.accessToken, refreshToken: resLogin.refreshToken } })
+    this.success({ ctx, data: res })
   }
 
   /**

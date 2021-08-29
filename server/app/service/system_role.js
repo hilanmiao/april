@@ -77,7 +77,7 @@ class SystemRoleService extends Service {
       await modelRole.update({ name, remark }, { transaction })
 
       // 删除角色的所有权限
-      const re = await ctx.model.SystemRolePower.destroy({ where: { role_id: id }, transaction })
+      await ctx.model.SystemRolePower.destroy({ where: { role_id: id }, transaction })
 
       const powerIds = []
       // 获取菜单的权限

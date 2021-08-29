@@ -26,6 +26,7 @@ module.exports = app => {
   SystemRole.associate = function() {
     // SystemRole.hasMany(app.model.SystemRolePower, { foreignKey: 'role_id', sourceKey: 'id', constraints: false });
     SystemRole.belongsToMany(app.model.SystemPower, { through: app.model.SystemRolePower, foreignKey: 'role_id', otherKey: 'power_id', constraints: false });
+    SystemRole.belongsToMany(app.model.SystemUser, { through: app.model.SystemUserRole, foreignKey: 'role_id', otherKey: 'user_id', constraints: false });
   }
 
   return SystemRole;

@@ -1,259 +1,329 @@
 <template>
-  <form-dialog ref="formDialog">
-    <template #slot-dept-node="{ scope }">
-      <el-popover placement="bottom-start" width="500">
-        <el-tree
-          :style="{ 'max-height': '400px', 'overflow-y': 'auto' }"
-          node-key="id"
-          :expand-on-click-node="false"
-          :data="scope.deptNode.data"
-          :props="{ children: 'children', label: 'label' }"
-          @node-click="
-            data => {
-              scope.deptNode.id = data.id
-              scope.deptNode.value = data.label
-            }
-          "
-        />
-        <el-input
-          slot="reference"
-          v-model="scope.deptNode.value"
-          placeholder="请选择所属部门"
-          readonly
-        />
-      </el-popover>
-    </template>
-    <template #slot-roles="{ scope }">
-      <el-select
-        v-model="scope.roles.value"
-        multiple
-        placeholder="请选择"
-        style="width: 100%;"
-        :multiple-limit="3"
-      >
-        <el-option
-          v-for="item in scope.roles.data"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-    </template>
-    <template #slot-status="{ scope }">
-      <el-radio-group v-model="scope.status">
-        <el-radio :label="1">启用</el-radio>
-        <el-radio :label="0">禁用</el-radio>
-      </el-radio-group>
-    </template>
-  </form-dialog>
+  <div>
+    <el-dialog
+      :title="title"
+      width="50%"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+      :center="true"
+      :visible.sync="visible"
+      @open="open"
+      @close="close"
+      @closed="closed"
+    >
+      <el-form ref="form" label-position="right" :model="form" :rules="rules">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="登录名" :label-width="labelWidth" prop="username">
+              <el-input v-model="form.username" autocomplete="off" :disabled="form.id !== '-1'"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="真实姓名" :label-width="labelWidth">
+              <el-input v-model="form.realName" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="昵称" :label-width="labelWidth">
+              <el-input v-model="form.displayName" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别" :label-width="labelWidth">
+              <el-radio v-model="form.sex" label="1">男</el-radio>
+              <el-radio v-model="form.sex" label="2">女</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="手机" :label-width="labelWidth" prop="mobile">
+              <el-input v-model="form.mobile" autocomplete="off" />
+            </el-form-item>        </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱" :label-width="labelWidth">
+              <el-input v-model="form.email" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="简介" :label-width="labelWidth">
+          <el-input v-model="form.introduction" autocomplete="off" type="textarea" />
+        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="角色" :label-width="labelWidth" prop="roleIds">
+              <el-select
+                v-model="form.roleIds"
+                multiple
+                placeholder="请选择"
+                style="width: 100%;"
+                :multiple-limit="3"
+              >
+                <el-option
+                  v-for="item in roleList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" />
+        </el-row>
+        <el-form-item label="头像" :label-width="labelWidth">
+          <!--        <el-upload-->
+          <!--          class="avatar-uploader"-->
+          <!--          action="#"-->
+          <!--          :show-file-list="false"-->
+          <!--          :on-success="handleUploadSuccess"-->
+          <!--          :on-error="handleUploadError"-->
+          <!--          :http-request="upload"-->
+          <!--        >-->
+          <!--          <img v-if="form.avatar" :src="form.avatar" class="avatar">-->
+          <!--          <i v-else class="el-icon-plus avatar-uploader-icon" />-->
+          <!--        </el-upload>-->
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-row type="flex" justify="end">
+          <el-button size="mini" @click="close">取 消</el-button>
+          <el-button size="mini" type="primary" :loading="saving" @click="submit">确 定</el-button>
+        </el-row>
+      </div>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="visiblePassword"
+      width="30%"
+      :show-close="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+    >
+      <el-result icon="success" title="创建成功" sub-title="密码只显示一次，请牢记">
+        <template slot="extra">
+          <p style="font-size: 20px;font-weight: bold;">{{ password }}</p>
+          <el-button size="mini" type="primary" icon="el-icon-document" @click="handleCopy(password,$event)">
+            复制密码
+          </el-button>
+        </template>
+      </el-result>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" type="info" @click="closePassword">关 闭</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+import clip from '@/utils/clipboard'
+import _ from 'lodash'
 import { getRoleList } from '@/api/system/role'
-import { createUser, getUserInfo, updateUser } from '@/api/system/user'
-import { isNumber } from 'lodash'
+import { createUser, updateUser, getUser } from '@/api/system/user'
 
 export default {
-  name: 'SystemPermissionUserFormDialog',
-  data() {
-    return {
-      updateId: -1
+  components: {
+
+  },
+  model: {
+    prop: 'dialogVisible',
+    event: 'close'
+  },
+  props: {
+    dialogVisible: {
+      type: Boolean,
+      required: true
+    },
+    formId: {
+      type: String,
+      default: '-1'
     }
   },
+  data() {
+    return {
+      // 通用属性
+      labelWidth: '80px',
+      defaultForm: null,
+      form: {
+        id: '',
+        username: '',
+        realName: '',
+        displayName: '',
+        sex: '1',
+        mobile: '',
+        email: '',
+        roleIds: '',
+        introduction: '',
+        avatar: ''
+      },
+      rules: {
+        username: [{ required: true, message: '必填', trigger: 'blur' }],
+        mobile: [{ required: true, message: '必填', trigger: 'blur' }],
+        roleIds: [{ required: true, message: '必填', trigger: 'blur' }]
+      },
+      loading: false,
+      saving: false,
+      // 业务属性
+      roleList: [],
+      visiblePassword: false,
+      password: ''
+    }
+  },
+  computed: {
+    visible: {
+      get() {
+        // 父组件向下传递dialogVisible的值时通过计算属性赋值到visible
+        return this.dialogVisible
+      },
+      set() {
+        // 当dialog关闭时，会触发this.visible = false，从而来到这个方法，我们在这里将关闭事件同步给父组件
+        this.$emit('close', false)
+      }
+    },
+    title() {
+      return this.form.id === '-1' ? '添加用户' : '编辑用户'
+    }
+  },
+  created() {
+    // 拷贝form默认值
+    this.defaultForm = _.cloneDeep(this.form)
+  },
+  destroyed() {
+    this.defaultForm = null
+  },
   methods: {
-    async handleSubmit(data, { done, close }) {
-      const { deptNode, roles } = data
-      delete data.deptNode
-      delete data.roles
-      // dept id
-      data.departmentId = deptNode.id
-      data.roles = roles.value
-      let req = null
+    // 打开回调
+    open() {
+      this.init()
+      // 添加
+      if (this.form.id === '-1') return
+      // 编辑
+      this.setData()
+    },
+    // 初始化数据事件等
+    async init() {
+      this.form.id = this.formId
+      const { data: roleList } = await getRoleList()
+      this.roleList = roleList
+    },
+    // 设置数据
+    async setData() {
+      const { data: user } = await getUser({ id: this.form.id })
+      const { username, realName, displayName, sex, mobile, email, systemRoles, introduction, avatar } = user
+      this.form.username = username
+      this.form.realName = realName
+      this.form.displayName = displayName
+      this.form.sex = sex
+      this.form.mobile = mobile
+      this.form.email = email
+      this.form.roleIds = _.map(systemRoles, 'id')
+      this.form.introduction = introduction
+      this.form.avatar = avatar
+    },
+    // 关闭回调
+    close() {
+      this.visible = false
+      this.saving = false
+      this.loading = false
+      this.clearValidate()
+    },
+    // 关闭回调
+    closed() {
+      // 重置form
+      this.form = _.cloneDeep(this.defaultForm)
+    },
+    // 完成
+    done() {
+      this.saving = false
+    },
+    // 检验表单
+    validate(callback) {
+      if (this.$refs.form) {
+        this.$refs.form.validate(callback)
+      }
+    },
+    // 重置表单
+    resetFields() {
+      if (this.$refs.form) {
+        this.$refs.form.resetFields()
+      }
+    },
+    // 移除表单校验
+    clearValidate(props) {
+      if (this.$refs.form) {
+        this.$refs.form.clearValidate(props)
+      }
+    },
+    // 提交成功
+    closePassword() {
+      this.visiblePassword = false
+      this.$emit('save-success')
+      this.close()
+    },
+    // 提交
+    submit() {
+      // 提交前处理
 
-      if (this.updateId === -1) {
-        // create
-        req = createUser(data)
-      } else {
-        data.id = this.updateId
-        req = updateUser(data)
-      }
-      req
-        .then(_ => {
-          this.$emit('save-success')
-          close()
-        })
-        .catch(() => {
-          done()
-        })
-    },
-    async handleOpen(depts, form, { showLoading, hideLoading, close, rebind }) {
-      try {
-        showLoading()
-        const { data: roleData } = await getRoleList()
-        if (this.updateId === -1) {
-          // create
-          form.roles.data = roleData
-        } else {
-          // update
-          const { data: userData } = await getUserInfo({
-            userId: this.updateId
-          })
-          const { roles } = userData
-          userData.roles = {
-            value: roles,
-            data: roleData
+      // 提交通用处理
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.saving = true
+          const data = _.cloneDeep(this.form)
+          let res = null
+          if (data.id === '-1') {
+            res = createUser(data)
+          } else {
+            res = updateUser(data)
           }
-          userData.deptNode = {
-            id: userData.departmentId,
-            value: userData.departmentName,
-            data: depts
-          }
-          rebind(userData)
+          res
+            .then(({ data }) => {
+              // 如果是添加，成功后显示密码
+              if (this.form.id === '-1') {
+                this.password = data.password
+                this.visiblePassword = true
+              } else {
+                this.$emit('save-success')
+                this.close()
+              }
+            })
+            .catch(() => {
+              this.done()
+            })
         }
-        hideLoading()
-      } catch {
-        close()
-      }
-    },
-    open(depts, updateId = -1) {
-      if (!depts) {
-        throw new Error('dept tree must not null')
-      }
-      if (!isNumber(updateId)) {
-        throw new Error('update id must be a number')
-      }
-      this.updateId = updateId
-      this.$refs.formDialog.open({
-        title: '编辑用户',
-        on: {
-          open: (form, methods) => { this.handleOpen(depts, form, methods) },
-          submit: this.handleSubmit
-        },
-        items: [
-          {
-            label: '所属部门',
-            prop: 'deptNode',
-            value: { id: undefined, value: '', data: depts },
-            rules: {
-              required: true,
-              trigger: 'blur',
-              validator: (rule, value, callback) => {
-                if (!value.id || !isNumber(value.id)) {
-                  callback(new Error('请选择所属部门'))
-                } else {
-                  callback()
-                }
-              }
-            },
-            component: 'slot-dept-node'
-          },
-          {
-            label: '所属角色',
-            prop: 'roles',
-            value: { value: [], data: [] },
-            rules: {
-              required: true,
-              trigger: 'blur',
-              validator: (rule, value, callback) => {
-                if (value.value.length <= 0) {
-                  callback(new Error('请选择所属角色'))
-                } else {
-                  callback()
-                }
-              }
-            },
-            component: 'slot-roles'
-          },
-          {
-            label: '用户名',
-            prop: 'username',
-            value: '',
-            rules: {
-              required: true,
-              trigger: 'blur',
-              message: '请输入用户名'
-            },
-            component: {
-              name: 'el-input',
-              attrs: {
-                placeholder: '请输入用户名'
-              }
-            }
-          },
-          {
-            label: '姓名',
-            prop: 'name',
-            value: '',
-            span: 12,
-            rules: {
-              required: true,
-              trigger: 'blur',
-              message: '请输入姓名'
-            },
-            component: {
-              name: 'el-input',
-              attrs: {
-                placeholder: '请输入姓名'
-              }
-            }
-          },
-          {
-            label: '呢称',
-            prop: 'nickName',
-            value: '',
-            span: 12,
-            component: {
-              name: 'el-input',
-              attrs: {
-                placeholder: '请输入呢称'
-              }
-            }
-          },
-          {
-            label: '邮箱',
-            prop: 'email',
-            value: '',
-            span: 12,
-            component: {
-              name: 'el-input',
-              attrs: {
-                placeholder: '请输入邮箱'
-              }
-            }
-          },
-          {
-            label: '手机',
-            prop: 'phone',
-            value: '',
-            span: 12,
-            component: {
-              name: 'el-input',
-              attrs: {
-                placeholder: '请输入手机号码'
-              }
-            }
-          },
-          {
-            label: '备注',
-            prop: 'remark',
-            value: '',
-            component: {
-              name: 'el-input',
-              props: {
-                type: 'textarea',
-                rows: 2
-              }
-            }
-          },
-          {
-            label: '状态',
-            prop: 'status',
-            value: 1,
-            component: 'slot-status'
-          }
-        ]
       })
+    },
+    handleCopy(text, event) {
+      clip(text, event)
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .avatar-uploader {
+  .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    &:hover {
+      border-color: #409EFF;
+    }
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+}
+</style>

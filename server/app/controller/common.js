@@ -6,7 +6,7 @@ class CommonController extends Controller {
 
   /**
    * 获取图片验证码
-   * @return {Promise<void>}
+   * @returns {Promise<void>}
    */
   async getImgCaptcha() {
     const { ctx } = this;

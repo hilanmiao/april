@@ -39,8 +39,8 @@ class SystemUserService extends Service {
 
     // 获取用户的所有角色
     const user_id = ctx.request.user.id
-    const roles = await ctx.model.SystemUserRole.findAll({ where: { user_id: '49fb2680-60a9-42f1-83b5-6d994ec0bf56' } })
-    const roleIds = _.map(roles, 'id')
+    const roles = await ctx.model.SystemUserRole.findAll({ where: { user_id } })
+    const roleIds = _.map(roles, 'role_id')
 
     // 获取所有角色的所有权限
     let powerIds = []

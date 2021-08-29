@@ -124,6 +124,7 @@ module.exports = app => {
 
   // 添加钩子
   SystemUser.beforeCreate((user, options) => {
+    // 密码加密
     return generateHash(user.password).then(({ hash }) => {
       user.password = hash;
     });
@@ -136,6 +137,7 @@ module.exports = app => {
   });
 
   SystemUser.associate = function() {
+    SystemUser.belongsToMany(app.model.SystemRole, { through: app.model.SystemUserRole, foreignKey: 'user_id', otherKey: 'role_id', constraints: false });
   };
 
   return SystemUser;

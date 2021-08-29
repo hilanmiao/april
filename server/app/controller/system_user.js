@@ -11,9 +11,9 @@ class SystemUserController extends Controller {
   async create() {
     const { ctx } = this;
     ctx.validate({ username: 'string' }, ctx.request.body)
-    const { roleId: role_id, username, displayName: display_name, realName: real_name, position, company, email, mobile, sex, avatar, introduction, status } = ctx.request.body
+    const { roleIds, username, displayName: display_name, realName: real_name, position, company, email, mobile, sex, avatar, introduction } = ctx.request.body
 
-    const res = await ctx.service.systemUser.create({ role_id, username, display_name, real_name, position, company, email, mobile, sex, avatar, introduction, status })
+    const res = await ctx.service.systemUser.create({ roleIds, username, display_name, real_name, position, company, email, mobile, sex, avatar, introduction })
 
     if (res.code) {
       this.fail({ ctx, code: res.code })
@@ -29,9 +29,9 @@ class SystemUserController extends Controller {
   async update() {
     const { ctx } = this;
     ctx.validate({ id: 'string', realName: 'string' }, ctx.request.body)
-    const { id, roleId: role_id, displayName: display_name, realName: real_name, position, company, email, mobile, sex, avatar, introduction, status } = ctx.request.body
+    const { id, roleIds, displayName: display_name, realName: real_name, position, company, email, mobile, sex, avatar, introduction } = ctx.request.body
 
-    const res = await ctx.service.systemUser.update({ id, role_id, display_name, real_name, position, company, email, mobile, sex, avatar, introduction, status })
+    const res = await ctx.service.systemUser.update({ id, roleIds, display_name, real_name, position, company, email, mobile, sex, avatar, introduction })
 
     if (res.code) {
       this.fail({ ctx, code: res.code })

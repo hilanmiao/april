@@ -1,5 +1,5 @@
 <template>
-  <div class="sys-menu-container">
+  <div class="sys-user-container">
     <table-layout class="table-layout">
       <!--      <template v-slot:asside>-->
       <!--      </template>-->
@@ -137,7 +137,7 @@ import userFormDialog from './components/user-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { getUserListByPage, deleteUser } from '@/api/system/user'
+import { getUserListByPage, deleteUser } from '@/services/system/user'
 
 export default {
   name: 'SystemMenu',

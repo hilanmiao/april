@@ -1,5 +1,5 @@
 <template>
-  <div class="sys-menu-container">
+  <div class="sys-role-container">
     <table-layout class="table-layout">
       <template v-slot:headerLeft>
         <el-button size="mini" type="primary" @click="handleAdd">新增</el-button>
@@ -20,8 +20,8 @@
       </template>
       <template>
         <el-table
-          class="has-checkbox"
           v-loading="tableLoading"
+          class="has-checkbox"
           :data="tableData"
           size="small"
           :header-cell-style="{ backgroundColor: '#ebeef4' }"
@@ -67,7 +67,7 @@ import roleFormDialog from './components/role-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { getRoleListByPage, deleteRole } from '@/api/system/role'
+import { getRoleListByPage, deleteRole } from '@/services/system/role'
 
 export default {
   name: 'SystemRole',

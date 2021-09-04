@@ -15,7 +15,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="登录名" :label-width="labelWidth" prop="username">
-              <el-input v-model="form.username" autocomplete="off" :disabled="form.id !== '-1'"/>
+              <el-input v-model="form.username" autocomplete="off" :disabled="form.id !== '-1'" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -118,8 +118,8 @@
 <script>
 import clip from '@/utils/clipboard'
 import _ from 'lodash'
-import { getRoleList } from '@/api/system/role'
-import { createUser, updateUser, getUser } from '@/api/system/user'
+import { getRoleList } from '@/services/system/role'
+import { createUser, updateUser, getUser } from '@/services/system/user'
 
 export default {
   components: {

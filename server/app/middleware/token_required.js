@@ -9,16 +9,19 @@ module.exports = (options, app) => {
 
     // 如果token验证不正确或没有
     if (!decodedToken) {
-      ctx.helper.fail({ ctx, code: 10003, message: 'Invalid Token' });
+      // 无效的token
+      ctx.helper.fail({ ctx, code: 20109 });
       return
     }
 
     if (decodedToken.exp < Math.floor(Date.now() / 1000)) {
       // Tips: 注意这里的message是固定的，不能改，前端根据文字判断是哪种token过期
       if (decodedToken.user) {
-        ctx.helper.fail({ ctx, code: 10003, message: 'Expired Access Token' });
+        // token过期
+        ctx.helper.fail({ ctx, code: 20104 });
       } else {
-        ctx.helper.fail({ ctx, code: 10003, message: 'Expired Refresh Token' });
+        // refreshtoken过期
+        ctx.helper.fail({ ctx, code: 20105 });
       }
       return
     }
@@ -36,19 +39,19 @@ module.exports = (options, app) => {
 
       if (!session) {
         // 检验失败，这个用户的session可能已经被删除
-        ctx.helper.fail({ ctx, code: 10003, message: 'Session may have been deleted' });
+        ctx.helper.fail({ ctx, code: 20110 });
         return
       }
       const user = await ctx.model.SystemUser.findByPk(session.userId)
       if (!user) {
         // 校验失败，这个用户可能已经被删除
-        ctx.helper.fail({ ctx, code: 10003, message: 'User may have been deleted' });
+        ctx.helper.fail({ ctx, code: 20111 });
         return
       }
 
       if (user.password !== decodedToken.passwordHash) {
         // 检验失败，用户密码可能已经被修改了（另一台电脑）
-        ctx.helper.fail({ ctx, code: 10003, message: 'Password may have been modified' });
+        ctx.helper.fail({ ctx, code: 20112 });
         return
       }
 

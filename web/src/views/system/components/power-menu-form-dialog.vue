@@ -43,7 +43,7 @@
         <el-input v-model="form.name" autocomplete="off" />
       </el-form-item>
       <el-form-item label="节点路由" :label-width="labelWidth" prop="router">
-        <el-input v-model="form.router" autocomplete="off" />
+        <el-input v-model="form.router" autocomplete="off" placeholder="例：/system/power/menu" />
       </el-form-item>
       <el-form-item label="节点图标" :label-width="labelWidth" prop="icon">
         <icon-selector :value="form.icon" @selected="iconSelected" />
@@ -79,7 +79,7 @@
 <script>
 import _ from 'lodash'
 import IconSelector from './icon-selector'
-import { getMenuAndParentMenu, createMenu, updateMenu } from '@/api/system/menu'
+import { getMenuAndParentMenu, createMenu, updateMenu } from '@/services/system/menu'
 import { constantRouterComponents } from '@/router'
 
 export default {

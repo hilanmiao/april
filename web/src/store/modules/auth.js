@@ -1,33 +1,35 @@
-import { login, logout } from '@/api/login'
-import { getUserBasic } from '@/api/system/user'
-import { setToken, removeToken } from '@/utils/auth'
+import { getAccessToken, setAccessToken, removeAccessToken,
+  getRefreshToken, setRefreshToken, removeRefreshToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-import { getMyPowerMenus, getMyPowerOperations } from '@/api/system/power'
+import { getMyPowerMenus, getMyPowerOperations } from '@/services/system/power'
+import axios from 'axios'
 
 const state = {
-  token: '',
-  name: '',
-  avatar: '',
+  user: {},
+  accessToken: getAccessToken(),
+  refreshToken: getRefreshToken(),
   powerMenus: [], // 菜单权限（未使用，同 store 中的 addedRoutes）
   powerOperations: [] // 操作权限
 }
 
 const mutations = {
   RESET_STATE: state => {
-    state.token = ''
-    state.name = ''
-    state.avatar = ''
+    state.user = ''
+    state.accessToken = ''
+    state.refreshToken = ''
     state.powerMenus = []
     state.powerOperations = []
+    removeAccessToken()
+    removeRefreshToken()
   },
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_USER: (state, user) => {
+    state.user = user
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_ACCESS_TOKEN: (state, token) => {
+    state.accessToken = token
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_REFRESH_TOKEN: (state, token) => {
+    state.refreshToken = token
   },
   SET_POWER_MENUS: (state, powerMenus) => {
     state.powerMenus = powerMenus
@@ -38,45 +40,45 @@ const mutations = {
 }
 
 const actions = {
-  // 登录
-  login({ commit }, loginInfo) {
-    const { username, password, captchaId, verifyCode } = loginInfo
-    return new Promise((resolve, reject) => {
-      login({
-        username: username.trim(),
-        password: password.trim(),
-        captchaId: captchaId.trim(),
-        verifyCode: verifyCode.trim()
-      })
-        .then(response => {
-          const { data } = response
-          commit('SET_TOKEN', data.accessToken)
-          setToken(data.accessToken)
-          resolve()
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
+  // // 登录
+  // login({ commit }, loginInfo) {
+  //   const { username, password, captchaId, verifyCode } = loginInfo
+  //   return new Promise((resolve, reject) => {
+  //     login({
+  //       username: username.trim(),
+  //       password: password.trim(),
+  //       captchaId: captchaId.trim(),
+  //       verifyCode: verifyCode.trim()
+  //     })
+  //       .then(response => {
+  //         const { data } = response
+  //         commit('SET_TOKEN', data.accessToken)
+  //         setToken(data.accessToken)
+  //         resolve()
+  //       })
+  //       .catch(error => {
+  //         reject(error)
+  //       })
+  //   })
+  // },
 
-  // 获取我的基本信息
-  getUserBasic({ commit, dispatch }) {
-    return new Promise((resolve, reject) => {
-      getUserBasic()
-        .then(response => {
-          const { data } = response
-
-          commit('SET_NAME', data.display_name)
-          commit('SET_AVATAR', data.avatar)
-
-          resolve()
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
+  // // 获取我的基本信息
+  // getUserBasic({ commit, dispatch }) {
+  //   return new Promise((resolve, reject) => {
+  //     getUserBasic()
+  //       .then(response => {
+  //         const { data } = response
+  //
+  //         commit('SET_NAME', data.display_name)
+  //         commit('SET_AVATAR', data.avatar)
+  //
+  //         resolve()
+  //       })
+  //       .catch(error => {
+  //         reject(error)
+  //       })
+  //   })
+  // },
 
   // 获取我的菜单权限
   getMyPowerMenus({ commit, dispatch }) {
@@ -114,42 +116,67 @@ const actions = {
     })
   },
 
-  // 管理员退出
-  logout({ commit, dispatch }) {
-    return new Promise((resolve, reject) => {
-      logout()
-        .then(() => {
-          // 清除localstorage存储的token
-          removeToken()
+  // // 管理员退出
+  // logout({ commit, dispatch }) {
+  //   return new Promise((resolve, reject) => {
+  //     logout()
+  //       .then(() => {
+  //         // 清除localstorage存储的token
+  //         removeToken()
+  //
+  //         // 清除store存储的routes
+  //         dispatch('router/resetRoutes', null, { root: true })
+  //
+  //         // reset visited views and cached views
+  //         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+  //         dispatch('tagsView/delAllViews', null, { root: true })
+  //
+  //         // clean vue-router
+  //         resetRouter()
+  //         commit('RESET_STATE')
+  //         resolve()
+  //       })
+  //       .catch(error => {
+  //         reject(error)
+  //       })
+  //   })
+  // },
 
-          // 清除store存储的routes
-          dispatch('router/resetRoutes', null, { root: true })
+  // 更新tokens
+  updateTokens({ commit }, { accessToken, refreshToken }) {
+    axios.defaults.headers.common.Authorization = accessToken
+    commit('SET_ACCESS_TOKEN', accessToken)
+    commit('SET_REFRESH_TOKEN', refreshToken)
+    setAccessToken(accessToken)
+    setRefreshToken(refreshToken)
 
-          // reset visited views and cached views
-          // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-          dispatch('tagsView/delAllViews', null, { root: true })
-
-          // clean vue-router
-          resetRouter()
-          commit('RESET_STATE')
-          resolve()
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
+    console.debug('Tokens 已更新')
   },
 
-  // 清除token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      // 清除localstorage存储的token
-      removeToken()
+  // 使用refreshToken
+  useRefreshToken({ state }) {
+    axios.defaults.headers.common.Authorization = state.refreshToken
+    console.debug('使用refreshToken')
+  },
 
-      // reset state
-      commit('RESET_STATE')
-      resolve()
-    })
+  // 设置授权
+  setAuth({ commit, dispatch }, data) {
+    dispatch('updateTokens', data)
+  },
+
+  // 清除授权
+  clearAuth({ commit }) {
+    axios.defaults.headers.common.Authorization = undefined
+    commit('RESET_STATE')
+    // 重置路由映射 https://github.com/pekonchan/Blog/issues/20
+    resetRouter()
+  },
+
+  // 设置登录的用户信息
+  setUserInfo({ commit, dispatch }, data) {
+    commit('SET_USER', data)
+
+    console.debug('设置登录的用户信息')
   }
 }
 

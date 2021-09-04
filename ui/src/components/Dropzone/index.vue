@@ -7,7 +7,7 @@
 <script>
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
-// import { getToken } from 'api/qiniu';
+// import { getToken } from 'services/qiniu';
 
 Dropzone.autoDiscover = false
 

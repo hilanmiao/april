@@ -79,7 +79,8 @@
 
 <script>
 import defaultSettings from '@/settings'
-import { getImageCaptcha } from '@/api/common'
+import { authService, commonService } from '@/services'
+import { Message } from 'element-ui'
 
 export default {
   name: 'Login',
@@ -135,6 +136,13 @@ export default {
   async created() {
     this.handleRefreshCaptcha()
   },
+  mounted() {
+    if (this.loginForm.username === '') {
+      this.$refs.username.focus()
+    } else if (this.loginForm.password === '') {
+      this.$refs.password.focus()
+    }
+  },
   methods: {
     showPwd() {
       if (this.passwordType === 'password') {
@@ -150,24 +158,35 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' }).catch(() => {})
-            this.loading = false
-          }).catch((e) => {
-            this.loading = false
-            if (e.code && e.code === 10003) {
-              this.handleRefreshCaptcha()
-            }
-          })
+          authService.login(this.loginForm)
+            .then(response => {
+              this.loading = false
+              this.$router.push({ path: this.redirect || '/' }).catch(() => {})
+            })
+            .catch(error => {
+              this.loading = false
+              if (error.code && error.code === 10003) {
+                this.handleRefreshCaptcha()
+              }
+              Message({
+                message: error.data.message,
+                type: 'error',
+                duration: 5 * 1000
+              })
+            })
         } else {
           return false
         }
       })
     },
     async handleRefreshCaptcha() {
-      const { data } = await getImageCaptcha({ width: 100, height: 50 })
-      this.loginForm.captchaId = data.id
-      this.captchaImageBase64 = data.img
+      commonService.getImageCaptcha({ width: 100, height: 50 }).then(response => {
+        const { data } = response.data
+        this.loginForm.captchaId = data.id
+        this.captchaImageBase64 = data.img
+      }).catch(error => {
+        console.error('meeting.getModel-error:', error)
+      })
     }
   }
 }

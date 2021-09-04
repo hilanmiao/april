@@ -9,7 +9,7 @@ class LoginService extends Service {
    * 登录
    * @param username
    * @param password
-   * @returns {Promise<{code: number}|{accessToken: string, user: {}, refreshToken: string}>}
+   * @return {Promise<{code: number}|{accessToken: string, user: {}, refreshToken: string}>}
    */
   async login({ username, password }) {
     const { ctx } = this;
@@ -24,6 +24,9 @@ class LoginService extends Service {
       // 用户名或密码不正确
       return { code: 20101 }
     }
+
+    // 保存登录日志
+    await ctx.service.systemLoginLog.create({ username: user.username })
 
     const session = await ctx.model.SystemSession.createInstance(user);
     const accessToken = await ctx.helper.createToken(user, null, this.config.sysConfig.expirationPeriod.short);

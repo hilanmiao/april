@@ -1,11 +1,13 @@
 'use strict';
 
 module.exports = {
-  userRoles: {
-    administrator: 'administrator',
-    developer: 'developer',
-    tester: 'tester',
-    customer: 'customer',
+  baseData: { // 不可删除的基础数据
+    userIds: ['1'],
+    roleIds: ['1'],
+    userRoles: ['1'],
+    rolePowers: ['1'],
+    powers: ['1'],
+    menuIds: ['1'],
   },
   expirationPeriod: { // 到期期限
     short: '10m',

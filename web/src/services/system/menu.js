@@ -1,30 +1,22 @@
 import request from '@/utils/request'
-const apiUrl = 'api/system/role/'
+const apiUrl = 'services/system/menu/'
 
-export function getRole(params) {
+export function getMenuAndParentMenu(params) {
   return request({
-    url: apiUrl,
+    url: apiUrl + 'menu-and-parent-menu',
     method: 'get',
     params
   })
 }
 
-export function getRoleList() {
+export function getMenuList() {
   return request({
     url: apiUrl + 'list',
     method: 'get'
   })
 }
 
-export function getRoleListByPage(params) {
-  return request({
-    url: apiUrl + 'page',
-    method: 'get',
-    params
-  })
-}
-
-export function createRole(data) {
+export function createMenu(data) {
   return request({
     url: apiUrl,
     method: 'post',
@@ -32,7 +24,7 @@ export function createRole(data) {
   })
 }
 
-export function updateRole(data) {
+export function updateMenu(data) {
   return request({
     url: apiUrl,
     method: 'put',
@@ -40,7 +32,7 @@ export function updateRole(data) {
   })
 }
 
-export function deleteRole(data) {
+export function deleteMenu(data) {
   return request({
     url: apiUrl,
     method: 'delete',

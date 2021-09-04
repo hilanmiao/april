@@ -3,8 +3,11 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { getAccessToken, getRefreshToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import qs from 'querystring'
+import { authService, authInterceptor } from '@/services'
+import axios from 'axios'
 
 // 打印项目信息
 console.log('%c更多内容请访问：https://github.com/hilanmiao/april.git', 'color: red;')
@@ -23,11 +26,14 @@ console.log(`
  ▀         ▀  ▀            ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀
 `)
 
-// 设置 token
-store.commit('user/SET_TOKEN', getToken())
-
 // NProgress Configuration
 NProgress.configure({ showSpinner: false })
+
+// 配置axios
+axios.defaults.baseURL = process.env.VUE_APP_BASE_API
+axios.defaults.paramsSerializer = function(params) { return qs.stringify(params) }
+axios.interceptors.response.use(authInterceptor.response, authInterceptor.responseError)
+axios.defaults.headers.common.Authorization = store.state.auth.accessToken
 
 // no redirect whitelist
 const whiteList = ['/login']
@@ -40,7 +46,7 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasToken = getToken()
+  const hasToken = getAccessToken() || getRefreshToken()
 
   if (hasToken) {
     if (to.path === '/login') {
@@ -58,11 +64,20 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // 获取我的基本信息
-          await store.dispatch('user/getUserBasic')
+          let user = {}
+          await authService.getUserInfo()
+            .then(data => {
+              user = data
+            })
+            .catch(error => {
+              throw error.data.message
+            })
+          await store.dispatch('auth/setUserInfo', user)
+
           // 获取我的操作权限
-          await store.dispatch('user/getMyPowerOperations')
+          await store.dispatch('auth/getMyPowerOperations')
           // 获取我的菜单权限
-          const { powerMenus } = await store.dispatch('user/getMyPowerMenus')
+          const { powerMenus } = await store.dispatch('auth/getMyPowerMenus')
           // 生成可访问的路由
           const accessRoutes = await store.dispatch('router/generateRoutes', powerMenus)
           // 动态添加可访问的路由
@@ -73,7 +88,7 @@ router.beforeEach(async(to, from, next) => {
           next({ ...to, replace: true })
         } catch (error) {
           // remove token
-          await store.dispatch('user/resetToken')
+          await store.dispatch('auth/clearAuth')
           Message.error(`${error}` || '发生了一些未知的错误，请重试！')
 
           // go to login page to re-login

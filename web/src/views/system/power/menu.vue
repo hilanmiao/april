@@ -104,7 +104,7 @@
 <script>
 import MenuFormDialog from '../components/power-menu-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import { getMenuList, deleteMenu } from '@/api/system/menu'
+import { getMenuList, deleteMenu } from '@/services/system/menu'
 import PowerMenuMixin from '@/core/mixins/power-menu'
 import TableLayout from '@/layout/components/TableLayout'
 

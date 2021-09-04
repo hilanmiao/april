@@ -58,8 +58,8 @@
 
 <script>
 import _ from 'lodash'
-import { getMenuList } from '@/api/system/menu'
-import { createRole, updateRole, getRole } from '@/api/system/role'
+import { getMenuList } from '@/services/system/menu'
+import { createRole, updateRole, getRole } from '@/services/system/role'
 import PowerMenuMixin from '@/core/mixins/power-menu'
 
 export default {

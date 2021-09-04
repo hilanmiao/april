@@ -42,7 +42,7 @@ class SystemRoleService extends Service {
 
       // 提交事务
       await transaction.commit()
-      res = { role_id: modelRole.id }
+      res = { id: modelRole.id }
 
       return res
     } catch (e) {
@@ -97,7 +97,7 @@ class SystemRoleService extends Service {
 
       // 提交事务
       await transaction.commit()
-      res = { role_id: modelRole.id }
+      res = { id: modelRole.id }
 
       return res
     } catch (e) {

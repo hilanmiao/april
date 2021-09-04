@@ -44,9 +44,9 @@ module.exports = {
       errors: true
     }
     // proxy: {
-    //   '/api': {
+    //   '/services': {
     //     target: 'http://127.0.0.1:7001',
-    //     pathRewrite: { '^/api': '' }
+    //     pathRewrite: { '^/services': '' }
     //   }
     // }
   },

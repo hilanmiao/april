@@ -48,7 +48,7 @@ class SystemUserService extends Service {
 
       // 提交事务
       await transaction.commit()
-      res = { user_id: modelUser.id, password }
+      res = { id: modelUser.id, password }
 
       return res
     } catch (e) {
@@ -96,7 +96,7 @@ class SystemUserService extends Service {
 
       // 提交事务
       await transaction.commit()
-      res = { user_id: modelUser.id }
+      res = { id: modelUser.id }
 
       return res
     } catch (e) {

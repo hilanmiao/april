@@ -74,6 +74,14 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    .left {
+      display: flex;
+      align-items: center;
+    }
+    .right {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .table-layout-pagination {

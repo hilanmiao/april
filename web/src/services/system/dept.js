@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const apiUrl = 'api/system/role/'
+const apiUrl = 'services/system/role/'
 
 export function getRole(id) {
   return request({

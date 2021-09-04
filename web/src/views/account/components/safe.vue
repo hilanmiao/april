@@ -30,7 +30,7 @@
 </template>
 
 <!--<script>-->
-<!--import { updatePassword } from '@/api/account'-->
+<!--import { updatePassword } from '@/services/account'-->
 
 <!--export default {-->
 <!--  name: 'AccountSafeSetting',-->

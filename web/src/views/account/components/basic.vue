@@ -22,7 +22,7 @@
 </template>
 
 <!--<script>-->
-<!--import { updateAccountInfo, getInfo } from '@/api/account'-->
+<!--import { updateAccountInfo, getInfo } from '@/services/account'-->
 
 <!--export default {-->
 <!--  name: 'AccountBasicSetting',-->

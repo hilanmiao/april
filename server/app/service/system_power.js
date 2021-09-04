@@ -6,11 +6,11 @@ const _ = require('lodash')
 class SystemUserService extends Service {
 
   /**
-     * 创建
-     * @param username
-     * @param password
-     * @return {Promise<boolean>}
-     */
+   * 创建
+   * @param ref_id
+   * @param type
+   * @returns {Promise<*>}
+   */
   async create({ ref_id, type }) {
     const { ctx } = this;
     const res = await ctx.model.SystemPower.create({ ref_id, type });

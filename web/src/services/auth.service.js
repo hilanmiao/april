@@ -8,7 +8,8 @@ internals.login = credentials => {
   return http
     .post('api/login', credentials)
     .then(response => {
-      store.dispatch('auth/setAuth', response.data)
+      const { data } = response.data
+      store.dispatch('auth/setAuth', data)
     })
     .catch(error => {
       console.error('authService.login-error:\n', error)
@@ -34,10 +35,23 @@ internals.getUserInfo = () => {
     .get('api/system/user/basic')
     .then(response => {
       // store.dispatch('auth/setUserInfo', response.data)
-      return response.data
+      return response
     })
     .catch(error => {
       console.error('authService.getUserInfo-error:\n', error)
+      throw error
+    })
+}
+
+internals.getMyPowerMenus = () => {
+  return http
+    .get('api/system/power/my-power-operations')
+    .then(response => {
+      // store.dispatch('auth/setUserInfo', response.data)
+      return response
+    })
+    .catch(error => {
+      console.error('authService.getMyPowerMenus-error:\n', error)
       throw error
     })
 }

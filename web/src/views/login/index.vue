@@ -165,14 +165,12 @@ export default {
             })
             .catch(error => {
               this.loading = false
-              if (error.code && error.code === 10003) {
+              const { code, message } = error.data
+              // 验证码不正确
+              if (code && code === 20106) {
                 this.handleRefreshCaptcha()
               }
-              Message({
-                message: error.data.message,
-                type: 'error',
-                duration: 5 * 1000
-              })
+              Message.error(message)
             })
         } else {
           return false

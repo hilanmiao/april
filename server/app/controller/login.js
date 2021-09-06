@@ -32,9 +32,15 @@ class LoginController extends Controller {
   /**
    * 登出
    */
-  logout() {
+  async logout() {
     const { ctx } = this
-    this.success({ ctx })
+
+    const res = await ctx.service.login.logout()
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
+    this.success({ ctx, data: res })
   }
 }
 

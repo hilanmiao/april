@@ -7,8 +7,8 @@ const state = {
   user: {},
   accessToken: getAccessToken(),
   refreshToken: getRefreshToken(),
-  powerMenus: [], // 菜单权限（未使用，同 store 中的 addedRoutes）
-  powerOperations: [] // 操作权限
+  myPowerMenus: [], // 我的菜单权限（未使用，同 store 中的 addedRoutes）
+  myPowerOperations: [] // 我的操作权限
 }
 
 const mutations = {
@@ -16,8 +16,8 @@ const mutations = {
     state.user = ''
     state.accessToken = ''
     state.refreshToken = ''
-    state.powerMenus = []
-    state.powerOperations = []
+    state.myPowerMenus = []
+    state.myPowerOperations = []
     removeAccessToken()
     removeRefreshToken()
   },
@@ -30,11 +30,11 @@ const mutations = {
   SET_REFRESH_TOKEN: (state, token) => {
     state.refreshToken = token
   },
-  SET_POWER_MENUS: (state, powerMenus) => {
-    state.powerMenus = powerMenus
+  SET_MY_POWER_MENUS: (state, myPowerMenus) => {
+    state.myPowerMenus = myPowerMenus
   },
-  SET_POWER_OPERATIONS: (state, powerOperations) => {
-    state.powerOperations = powerOperations
+  SET_MY_POWER_OPERATIONS: (state, myPowerOperations) => {
+    state.myPowerOperations = myPowerOperations
   }
 }
 
@@ -104,7 +104,7 @@ const actions = {
 
   // 设置我的菜单权限
   setMyPowerMenus({ commit, dispatch }, data) {
-    commit('SET_POWER_MENUS', data)
+    commit('SET_MY_POWER_MENUS', data)
 
     console.debug('设置我的菜单权限')
   }

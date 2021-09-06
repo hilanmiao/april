@@ -7,8 +7,8 @@ const getters = {
   user: state => state.auth.user,
   accessToken: state => state.auth.accessToken,
   refreshToken: state => state.auth.refreshToken,
-  powerMenus: state => state.user.powerMenus,
-  powerOperations: state => state.user.powerOperations,
+  myPowerMenus: state => state.user.myPowerMenus,
+  myPowerOperations: state => state.user.myPowerOperations,
   myRoutes: state => state.router.myRoutes
 }
 export default getters

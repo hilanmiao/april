@@ -7,9 +7,9 @@ const internals = {}
 
 internals.response = function(response) {
   // 递归下划线转驼峰
-  let { data } = response
-  data = camelizeKeys(data)
-  const { code } = data
+  response.data = camelizeKeys(response.data)
+  console.log(response)
+  const { code } = response.data
 
   if (code !== 200) {
     if (code === 20104) {
@@ -26,6 +26,21 @@ internals.response = function(response) {
         store.dispatch('auth/clearAuth')
         vm.$router.push('/login')
       }).catch(() => {})
+    } else if (code === 20105) {
+      console.debug('检验失败，这个用户的session可能已经被删除')
+      Message.error('用户已被下线')
+      store.dispatch('auth/clearAuth')
+      vm.$router.push('/login')
+    } else if (code === 20111) {
+      console.debug('校验失败，这个用户可能已经被删除')
+      Message.error('用户可能已经被删除')
+      store.dispatch('auth/clearAuth')
+      vm.$router.push('/login')
+    } else if (code === 20105) {
+      console.debug('检验失败，用户密码可能已经被修改了（另一台电脑）')
+      Message.error('用户密码可能已经被修改')
+      store.dispatch('auth/clearAuth')
+      vm.$router.push('/login')
     }
     return Promise.reject(response)
   }

@@ -10,7 +10,8 @@ module.exports = {
     menuIds: ['1'],
   },
   expirationPeriod: { // 到期期限
-    short: '10m',
+    // short: '10m',
+    short: '1m',
     medium: '4h',
     long: '730h',
   },

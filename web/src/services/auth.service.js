@@ -20,7 +20,7 @@ internals.login = credentials => {
 internals.logout = () => {
   store.dispatch('auth/useRefreshToken')
   return http
-    .delete('api/logout')
+    .put('api/logout')
     .then(response => {
       store.dispatch('auth/clearAuth')
     })
@@ -45,9 +45,8 @@ internals.getUserInfo = () => {
 
 internals.getMyPowerMenus = () => {
   return http
-    .get('api/system/power/my-power-operations')
+    .get('api/system/power/my-power-menus')
     .then(response => {
-      // store.dispatch('auth/setUserInfo', response.data)
       return response
     })
     .catch(error => {

@@ -12,6 +12,6 @@ module.exports = app => {
   const tokenRequired = middleware.tokenRequired(null, app)
 
   apiRouter.post('/login', login.login);
-  apiRouter.put('/logout', login.logout);
+  apiRouter.put('/logout', tokenRequired, login.logout);
 
 };

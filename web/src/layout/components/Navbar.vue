@@ -35,6 +35,7 @@ import { mapGetters } from 'vuex'
 import Screenfull from '@/components/Screenfull'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { authService } from '@/services'
 
 export default {
   components: {
@@ -54,8 +55,13 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      authService.logout()
+        .then(response => {
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        })
+        .catch(error => {
+          console.error('MainHeader.logout-error:', error)
+        })
     }
   }
 }

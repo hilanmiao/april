@@ -32,9 +32,23 @@ class LoginService extends Service {
     const accessToken = await ctx.helper.createToken(user, null, this.config.sysConfig.expirationPeriod.short);
     const refreshToken = await ctx.helper.createToken(null, session, this.config.sysConfig.expirationPeriod.long);
 
-    res.user = user;
+    // res.user = user;
     res.accessToken = accessToken;
     res.refreshToken = refreshToken;
+
+    return res
+  }
+
+  /**
+   * 登出
+   * @returns {Promise<Model|null|any>}
+   */
+  async logout() {
+    const { ctx } = this;
+
+    const session = ctx.request.session
+    console.log(ctx.request.session)
+    const res = ctx.model.SystemSession.findByPk(session.id)
 
     return res
   }

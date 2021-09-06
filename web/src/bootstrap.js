@@ -75,19 +75,20 @@ router.beforeEach(async(to, from, next) => {
             })
           await store.dispatch('auth/setUserInfo', user)
 
+          // TODO: 获取我的操作权限
           // 获取我的菜单权限
-          let powerMenus = []
+          let myPowerMenus = []
           await authService.getMyPowerMenus()
             .then(response => {
               const { data } = response.data
-              powerMenus = data
+              myPowerMenus = data
             })
             .catch(error => {
               throw error.data.message
             })
-          await store.dispatch('auth/setMyPowerMenus', powerMenus)
+          await store.dispatch('auth/setMyPowerMenus', myPowerMenus)
           // 生成可访问的路由
-          const accessRoutes = await store.dispatch('router/generateRoutes', powerMenus)
+          const accessRoutes = await store.dispatch('router/generateRoutes', myPowerMenus)
           // 动态添加可访问的路由
           router.addRoutes(accessRoutes)
 

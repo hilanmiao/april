@@ -118,8 +118,7 @@
 <script>
 import clip from '@/utils/clipboard'
 import _ from 'lodash'
-import { getRoleList } from '@/services/system/role'
-import { createUser, updateUser, getUser } from '@/services/system/user'
+import { roleService, userService } from '@/services'
 
 export default {
   components: {
@@ -202,23 +201,37 @@ export default {
     },
     // 初始化数据事件等
     async init() {
-      this.form.id = this.formId
-      const { data: roleList } = await getRoleList()
-      this.roleList = roleList
+      try {
+        this.form.id = this.formId
+        const response = await roleService.getRoleList()
+        const { data: roleList } = response.data
+        this.roleList = roleList
+      } catch (e) {
+        console.error('user.getRoleList-error:', e)
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
+      }
     },
     // 设置数据
     async setData() {
-      const { data: user } = await getUser({ id: this.form.id })
-      const { username, realName, displayName, sex, mobile, email, systemRoles, introduction, avatar } = user
-      this.form.username = username
-      this.form.realName = realName
-      this.form.displayName = displayName
-      this.form.sex = sex
-      this.form.mobile = mobile
-      this.form.email = email
-      this.form.roleIds = _.map(systemRoles, 'id')
-      this.form.introduction = introduction
-      this.form.avatar = avatar
+      try {
+        const response = await userService.getUser({ id: this.form.id })
+        const { data: user } = response.data
+        const { username, realName, displayName, sex, mobile, email, systemRoles, introduction, avatar } = user
+        this.form.username = username
+        this.form.realName = realName
+        this.form.displayName = displayName
+        this.form.sex = sex
+        this.form.mobile = mobile
+        this.form.email = email
+        this.form.roleIds = _.map(systemRoles, 'id')
+        this.form.introduction = introduction
+        this.form.avatar = avatar
+      } catch (e) {
+        console.error('user.getUser-error:', e)
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
+      }
     },
     // 关闭回调
     close() {
@@ -265,30 +278,32 @@ export default {
       // 提交前处理
 
       // 提交通用处理
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           this.saving = true
-          const data = _.cloneDeep(this.form)
-          let res = null
-          if (data.id === '-1') {
-            res = createUser(data)
-          } else {
-            res = updateUser(data)
+          const formData = _.cloneDeep(this.form)
+          let response = null
+          try {
+            if (formData.id === '-1') {
+              response = await userService.createUser(formData)
+            } else {
+              response = await userService.updateUser(formData)
+            }
+            const { data } = response.data
+            // 如果是添加，成功后显示密码
+            if (this.form.id === '-1') {
+              this.password = data.password
+              this.visiblePassword = true
+            } else {
+              this.$emit('save-success')
+              this.close()
+            }
+          } catch (e) {
+            console.error('user.submitUser-error:', e)
+            this.done()
+            const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+            this.$message.error(errorMessage)
           }
-          res
-            .then(({ data }) => {
-              // 如果是添加，成功后显示密码
-              if (this.form.id === '-1') {
-                this.password = data.password
-                this.visiblePassword = true
-              } else {
-                this.$emit('save-success')
-                this.close()
-              }
-            })
-            .catch(() => {
-              this.done()
-            })
         }
       })
     },

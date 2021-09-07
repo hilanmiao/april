@@ -81,6 +81,7 @@ export default {
                 done()
               },
               done: () => {
+                console.log(111)
                 instance.confirmButtonLoading = false
               }
             })
@@ -92,6 +93,7 @@ export default {
         }
       })
         .then(act => {
+          console.log(222)
           this.closed()
         })
         .catch(e => {

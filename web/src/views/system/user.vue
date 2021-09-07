@@ -137,7 +137,7 @@ import userFormDialog from './components/user-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { getUserListByPage, deleteUser } from '@/services/system/user'
+import { userService } from '@/services'
 
 export default {
   name: 'SystemMenu',
@@ -178,13 +178,16 @@ export default {
       const limit = this.tablePagination.pageSize
       const username = this.tableSearchParams.username
       try {
-        const { data } = await getUserListByPage({ page, limit, username })
+        const response = await userService.getUserListByPage({ page, limit, username })
+        const { data } = response.data
         this.tableData = data.list
         this.tablePagination.total = data.pagination.total
         this.tableLoading = false
       } catch (e) {
-        console.log(e)
+        console.error('user.getUserListByPage-error:', e)
         this.tableLoading = false
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 多选框选择事件
@@ -208,20 +211,27 @@ export default {
     // 删除
     async handleDelete(row, { done, close }) {
       try {
-        await deleteUser({ ids: [row.id] })
+        await userService.deleteUser({ ids: [row.id] })
         close()
       } catch (e) {
+        console.error('user.deleteUser-error:', e)
         done()
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 批量删除
     async handleBulkDelete({ done, close }) {
       try {
         const ids = _.map(this.tableMultipleSelection, 'id')
-        await deleteUser({ ids })
+        await userService.deleteUser({ ids })
         close()
       } catch (e) {
         done()
+        console.error('user.deleteUser-error:', e)
+        done()
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     }
   }

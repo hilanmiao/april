@@ -39,8 +39,8 @@
             </template>
           </el-table-column>
           <el-table-column prop="remark" label="备注" align="center" />
-          <el-table-column prop="createTime" label="创建时间" align="center" width="200" />
-          <el-table-column prop="updateTime" label="更新时间" align="center" width="200" />
+          <el-table-column prop="createdAt" label="创建时间" align="center" width="200" />
+          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />
           <el-table-column label="操作" width="150" align="center">
             <template slot-scope="scope">
               <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
@@ -67,7 +67,7 @@ import roleFormDialog from './components/role-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { getRoleListByPage, deleteRole } from '@/services/system/role'
+import { roleService } from '@/services'
 
 export default {
   name: 'SystemRole',
@@ -108,13 +108,16 @@ export default {
       const limit = this.tablePagination.pageSize
       const name = this.tableSearchParams.name
       try {
-        const { data } = await getRoleListByPage({ page, limit, name })
+        const response = await roleService.getRoleListByPage({ page, limit, name })
+        const { data } = response.data
         this.tableData = data.list
         this.tablePagination.total = data.pagination.total
         this.tableLoading = false
       } catch (e) {
-        console.log(e)
+        console.error('role.getRoleListByPage-error:', e)
         this.tableLoading = false
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 多选框选择事件
@@ -138,20 +141,27 @@ export default {
     // 删除
     async handleDelete(row, { done, close }) {
       try {
-        await deleteRole({ ids: [row.id] })
+        await roleService.deleteRole({ ids: [row.id] })
         close()
       } catch (e) {
+        console.error('role.deleteRole-error:', e)
         done()
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 批量删除
     async handleBulkDelete({ done, close }) {
       try {
         const ids = _.map(this.tableMultipleSelection, 'id')
-        await deleteRole({ ids })
+        await roleService.deleteRole({ ids })
         close()
       } catch (e) {
         done()
+        console.error('role.deleteRole-error:', e)
+        done()
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     }
   }

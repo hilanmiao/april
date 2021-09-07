@@ -112,7 +112,7 @@ class SystemMenuService extends Service {
       }
 
       // 更新菜单
-      await modelMenu.update(id, { parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden }, { transaction })
+      await modelMenu.update({ parent_id, name, router, type, icon, order_num, view_path, keepalive, is_hidden }, { transaction })
 
       // TODO
       // 刷新所有用户的权限

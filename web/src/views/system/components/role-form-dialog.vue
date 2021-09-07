@@ -58,8 +58,7 @@
 
 <script>
 import _ from 'lodash'
-import { getMenuList } from '@/services/system/menu'
-import { createRole, updateRole, getRole } from '@/services/system/role'
+import { menuService, roleService } from '@/services'
 import PowerMenuMixin from '@/core/mixins/power-menu'
 
 export default {
@@ -136,26 +135,40 @@ export default {
     },
     // 初始化数据事件等
     async init() {
-      this.form.id = this.formId
-      const { data: menusData } = await getMenuList()
-      this.menus = this.filterMenuToTree(menusData, null)
+      try {
+        this.form.id = this.formId
+        const response = await menuService.getMenuList()
+        const { data: menusData } = response.data
+        this.menus = this.filterMenuToTree(menusData, null)
+      } catch (e) {
+        console.error('role.getMenuList-error:', e)
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
+      }
     },
     // 设置数据
     async setData() {
-      const { data: role } = await getRole({ id: this.form.id })
-      const { name, remark, systemPowers } = role
-      this.form.name = name
-      this.form.remark = remark
-      const powerMenus = _.map(systemPowers, 'systemMenu')
-      // 设置节点
-      if (powerMenus && powerMenus.length > 0) {
-        powerMenus.forEach(o => {
-          const node = this.$refs.treeMenu.getNode(o.id)
-          console.log(node)
-          if (node && node.isLeaf) {
-            this.$refs.treeMenu.setChecked(node, true)
-          }
-        })
+      try {
+        const response = await roleService.getRole({ id: this.form.id })
+        const { data: role } = response.data
+        const { name, remark, systemPowers } = role
+        this.form.name = name
+        this.form.remark = remark
+        const powerMenus = _.map(systemPowers, 'systemMenu')
+        // 设置节点
+        if (powerMenus && powerMenus.length > 0) {
+          powerMenus.forEach(o => {
+            const node = this.$refs.treeMenu.getNode(o.id)
+            console.log(node)
+            if (node && node.isLeaf) {
+              this.$refs.treeMenu.setChecked(node, true)
+            }
+          })
+        }
+      } catch (e) {
+        console.error('role.getRole-error:', e)
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 关闭回调
@@ -198,24 +211,27 @@ export default {
       this.form.powerMenus = this.getTreeMenuCheckedKeys()
 
       // 提交通用处理
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           this.saving = true
-          const data = _.cloneDeep(this.form)
-          let res = null
-          if (data.id === '-1') {
-            res = createRole(data)
-          } else {
-            res = updateRole(data)
+          const formData = _.cloneDeep(this.form)
+          let response = null
+          try {
+            if (formData.id === '-1') {
+              response = await roleService.createRole(formData)
+            } else {
+              response = await roleService.updateRole(formData)
+            }
+            const { data } = response.data
+            console.log(data)
+            this.$emit('save-success')
+            this.close()
+          } catch (e) {
+            console.error('role.submitRole-error:', e)
+            this.done()
+            const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+            this.$message.error(errorMessage)
           }
-          res
-            .then(() => {
-              this.$emit('save-success')
-              this.close()
-            })
-            .catch(() => {
-              this.done()
-            })
         }
       })
     },

@@ -79,8 +79,8 @@
 <script>
 import _ from 'lodash'
 import IconSelector from './icon-selector'
-import { getMenuAndParentMenu, createMenu, updateMenu } from '@/services/system/menu'
 import { constantRouterComponents } from '@/router'
+import { menuService } from '@/services'
 
 export default {
   components: {
@@ -174,18 +174,25 @@ export default {
     },
     // 设置数据
     async setData() {
-      const { data } = await getMenuAndParentMenu({ id: this.form.id })
-      const { menu, parentMenu } = data
-      this.form.parentId = parentMenu ? menu.parentId : '-1'
-      this.form.parentName = parentMenu ? parentMenu.name : '一级菜单'
-      this.form.name = menu.name
-      this.form.router = menu.router
-      this.form.type = menu.type
-      this.form.icon = menu.icon
-      this.form.orderNum = menu.orderNum
-      this.form.viewPath = menu.viewPath
-      this.form.keepalive = menu.keepalive
-      this.form.isHidden = menu.isHidden
+      try {
+        const response = await menuService.getMenuAndParentMenu({ id: this.form.id })
+        const { data } = response.data
+        const { menu, parentMenu } = data
+        this.form.parentId = parentMenu ? menu.parentId : '-1'
+        this.form.parentName = parentMenu ? parentMenu.name : '一级菜单'
+        this.form.name = menu.name
+        this.form.router = menu.router
+        this.form.type = menu.type
+        this.form.icon = menu.icon
+        this.form.orderNum = menu.orderNum
+        this.form.viewPath = menu.viewPath
+        this.form.keepalive = menu.keepalive
+        this.form.isHidden = menu.isHidden
+      } catch (e) {
+        console.error('menu.getMenuAndParentMenu-error:', e)
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
+      }
     },
     // 关闭回调
     close() {
@@ -226,24 +233,27 @@ export default {
       // 提交前处理
 
       // 提交通用处理
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
           this.saving = true
-          const data = _.cloneDeep(this.form)
-          let res = null
-          if (data.id === '-1') {
-            res = createMenu(data)
-          } else {
-            res = updateMenu(data)
+          const formData = _.cloneDeep(this.form)
+          let response = null
+          try {
+            if (formData.id === '-1') {
+              response = await menuService.createMenu(formData)
+            } else {
+              response = await menuService.updateMenu(formData)
+            }
+            const { data } = response.data
+            console.log(data)
+            this.$emit('save-success')
+            this.close()
+          } catch (e) {
+            console.error('menu.submitMenu-error:', e)
+            this.done()
+            const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+            this.$message.error(errorMessage)
           }
-          res
-            .then(() => {
-              this.$emit('save-success')
-              this.close()
-            })
-            .catch(() => {
-              this.done()
-            })
         }
       })
     },

@@ -50,8 +50,8 @@
 <script>
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { getLoginLogListByPage } from '@/services/system/login-log'
 import { UAParser } from 'ua-parser-js'
+import { loginLogService } from '@/services'
 
 export default {
   name: 'SystemLoginLog',
@@ -113,7 +113,8 @@ export default {
       const limit = this.tablePagination.pageSize
       const dateRange = this.tableSearchParams.dateRange
       try {
-        const { data } = await getLoginLogListByPage({ page, limit, dateRange })
+        const response = await loginLogService.getLoginLogListByPage({ page, limit, dateRange })
+        const { data } = response.data
         // UA 解析
         const uaParser = new UAParser()
         for (const item of data.list) {
@@ -125,8 +126,10 @@ export default {
         this.tablePagination.total = data.pagination.total
         this.tableLoading = false
       } catch (e) {
-        console.log(e)
+        console.error('loginLog.getLoginLogListByPage-error:', e)
         this.tableLoading = false
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 刷新表格数据

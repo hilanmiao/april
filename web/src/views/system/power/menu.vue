@@ -104,9 +104,9 @@
 <script>
 import MenuFormDialog from '../components/power-menu-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
-import { getMenuList, deleteMenu } from '@/services/system/menu'
 import PowerMenuMixin from '@/core/mixins/power-menu'
 import TableLayout from '@/layout/components/TableLayout'
+import { menuService } from '@/services'
 
 export default {
   name: 'SystemPowerMenu',
@@ -145,8 +145,8 @@ export default {
       this.tableLoading = true
 
       try {
-        const { data } = await getMenuList()
-
+        const response = await menuService.getMenuList()
+        const { data } = response.data
         // clean
         if (this.menutree && this.menutree.length > 0) {
           this.menutree = []
@@ -159,8 +159,10 @@ export default {
         this.tableData = this.filterMenuToTable(data, null)
         this.tableLoading = false
       } catch (e) {
-        console.log(e)
+        console.error('menu.getMenuList-error:', e)
         this.tableLoading = false
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 刷新表格数据
@@ -180,11 +182,13 @@ export default {
     // 删除
     async handleDelete(row, { done, close }) {
       try {
-        const ids = [row.id]
-        await deleteMenu({ ids })
+        await menuService.deleteMenu({ ids: [row.id] })
         close()
       } catch (e) {
+        console.error('role.deleteRole-error:', e)
         done()
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
       }
     },
     // 将对应菜单类型转为字符串字意

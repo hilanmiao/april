@@ -80,7 +80,6 @@
 <script>
 import defaultSettings from '@/settings'
 import { authService, commonService } from '@/services'
-import { Message } from 'element-ui'
 
 export default {
   name: 'Login',
@@ -155,36 +154,41 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true
-          authService.login(this.loginForm)
-            .then(response => {
-              this.loading = false
-              this.$router.push({ path: this.redirect || '/' }).catch(() => {})
+          try {
+            await authService.login(this.loginForm)
+            this.loading = false
+            this.$router.push({ path: this.redirect || '/' }).catch(() => {
             })
-            .catch(error => {
-              this.loading = false
-              const { code, message } = error.data
-              // 验证码不正确
-              if (code && code === 20106) {
-                this.handleRefreshCaptcha()
-              }
-              Message.error(message)
-            })
+          } catch (e) {
+            console.error('login.login-error:', e)
+            this.loading = false
+            const { code } = e.data
+            // 验证码不正确
+            if (code && code === 20106) {
+              await this.handleRefreshCaptcha()
+            }
+            const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+            this.$message.error(errorMessage)
+          }
         } else {
           return false
         }
       })
     },
     async handleRefreshCaptcha() {
-      commonService.getImageCaptcha({ width: 100, height: 50 }).then(response => {
+      try {
+        const response = await commonService.getImageCaptcha({ width: 100, height: 50 })
         const { data } = response.data
         this.loginForm.captchaId = data.id
         this.captchaImageBase64 = data.img
-      }).catch(error => {
-        console.error('meeting.getModel-error:', error)
-      })
+      } catch (e) {
+        console.error('login.getImageCaptcha-error:', e)
+        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+        this.$message.error(errorMessage)
+      }
     }
   }
 }

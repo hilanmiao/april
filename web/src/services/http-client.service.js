@@ -1,4 +1,4 @@
-import store from '../store'
+import store from '@/store'
 import axios from 'axios'
 
 const internals = {}
@@ -27,30 +27,6 @@ internals.get = function(url, params, options) {
     })
 }
 
-internals.put = function(url, payload, options) {
-  let config = {
-    method: 'PUT',
-    url: url,
-    data: payload
-  }
-  config = Object.assign(config, options)
-  return axios(config)
-    .then(function(response) {
-      if (response.headers['x-access-token']) {
-        internals.updateTokens(response.headers)
-      }
-      return response
-    })
-    .catch(function(error) {
-      if (error === 'EXPIRED_ACCESS_TOKEN') {
-        store.dispatch('auth/useRefreshToken')
-        return internals.put(url, payload, options)
-      } else {
-        throw error
-      }
-    })
-}
-
 internals.post = function(url, payload, options) {
   let config = {
     method: 'POST',
@@ -69,6 +45,30 @@ internals.post = function(url, payload, options) {
       if (error === 'EXPIRED_ACCESS_TOKEN') {
         store.dispatch('auth/useRefreshToken')
         return internals.post(url, payload, options)
+      } else {
+        throw error
+      }
+    })
+}
+
+internals.put = function(url, payload, options) {
+  let config = {
+    method: 'PUT',
+    url: url,
+    data: payload
+  }
+  config = Object.assign(config, options)
+  return axios(config)
+    .then(function(response) {
+      if (response.headers['x-access-token']) {
+        internals.updateTokens(response.headers)
+      }
+      return response
+    })
+    .catch(function(error) {
+      if (error === 'EXPIRED_ACCESS_TOKEN') {
+        store.dispatch('auth/useRefreshToken')
+        return internals.put(url, payload, options)
       } else {
         throw error
       }

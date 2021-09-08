@@ -14,7 +14,7 @@ class LoginService extends Service {
   async login({ username, password }) {
     const { ctx } = this;
     const res = {
-      user: {},
+      // user: {},
       accessToken: '',
       refreshToken: ''
     };

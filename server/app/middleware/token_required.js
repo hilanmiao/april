@@ -15,7 +15,6 @@ module.exports = (options, app) => {
     }
 
     if (decodedToken.exp < Math.floor(Date.now() / 1000)) {
-      // Tips: 注意这里的message是固定的，不能改，前端根据文字判断是哪种token过期
       if (decodedToken.user) {
         // token过期
         ctx.helper.fail({ ctx, code: 20104 });
@@ -42,13 +41,12 @@ module.exports = (options, app) => {
         ctx.helper.fail({ ctx, code: 20110 });
         return
       }
-      const user = await ctx.model.SystemUser.findByPk(session.userId)
+      const user = await ctx.model.SystemUser.findByPk(session.user_id)
       if (!user) {
         // 校验失败，这个用户可能已经被删除
         ctx.helper.fail({ ctx, code: 20111 });
         return
       }
-
       if (user.password !== decodedToken.passwordHash) {
         // 检验失败，用户密码可能已经被修改了（另一台电脑）
         ctx.helper.fail({ ctx, code: 20112 });

@@ -27,8 +27,6 @@ class SystemPowerController extends Controller {
   async page() {
     const { ctx } = this;
     const { page, limit, dateRange } = ctx.request.query
-    console.log(ctx.request.query)
-    console.log(dateRange)
     const res = await ctx.service.systemLoginLog.page({ page, limit, dateRange })
 
     this.success({ ctx, data: res })

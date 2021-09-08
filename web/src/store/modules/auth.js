@@ -88,9 +88,14 @@ const actions = {
   },
 
   // 清除授权
-  clearAuth({ commit }) {
+  clearAuth({ commit, dispatch }) {
     axios.defaults.headers.common.Authorization = undefined
     commit('RESET_STATE')
+
+    // 清除store存储的routes
+    dispatch('router/resetRoutes', null, { root: true })
+    // 重置快捷导航
+    dispatch('tagsView/delAllViews', null, { root: true })
     // 重置路由映射 https://github.com/pekonchan/Blog/issues/20
     resetRouter()
   },

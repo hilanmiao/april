@@ -55,11 +55,11 @@ module.exports = {
     const JwtSecret = this.config.envConfig.jwtSecret;
 
     if (session) {
-      token = await jwt.sign(
+      token = jwt.sign(
         {
           sessionId: session.id,
           sessionKey: session.key,
-          passwordHash: session.passwordHash,
+          passwordHash: session.password_hash,
         },
         JwtSecret,
         { algorithm: 'HS256', expiresIn: expirationPeriod }

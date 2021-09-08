@@ -5,7 +5,7 @@ import { camelizeKeys } from '@/utils'
 
 const internals = {}
 
-internals.response = function(response) {
+internals.response = async(response) => {
   // 递归下划线转驼峰
   response.data = camelizeKeys(response.data)
   console.log(response)
@@ -21,25 +21,30 @@ internals.response = function(response) {
         confirmButtonText: '重新登录',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
+      }).then(async() => {
         console.debug('accessToken 是无效的，或者 refreshToken 已过期，强制用户登录')
-        store.dispatch('auth/clearAuth')
+        await store.dispatch('auth/clearAuth')
         vm.$router.push('/login')
       }).catch(() => {})
     } else if (code === 20105) {
       console.debug('检验失败，这个用户的session可能已经被删除')
       Message.error('用户已被下线')
-      store.dispatch('auth/clearAuth')
+      await store.dispatch('auth/clearAuth')
+      vm.$router.push('/login')
+    } else if (code === 20110) {
+      console.debug('检验失败，这个用户的session可能已经被删除')
+      Message.error('用户会话可能已经被删除')
+      await store.dispatch('auth/clearAuth')
       vm.$router.push('/login')
     } else if (code === 20111) {
       console.debug('校验失败，这个用户可能已经被删除')
       Message.error('用户可能已经被删除')
-      store.dispatch('auth/clearAuth')
+      await store.dispatch('auth/clearAuth')
       vm.$router.push('/login')
     } else if (code === 20105) {
       console.debug('检验失败，用户密码可能已经被修改了（另一台电脑）')
       Message.error('用户密码可能已经被修改')
-      store.dispatch('auth/clearAuth')
+      await store.dispatch('auth/clearAuth')
       vm.$router.push('/login')
     }
     return Promise.reject(response)

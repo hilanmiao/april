@@ -27,6 +27,7 @@
     "mysql2": "^2.2.5",
     "nodemailer": "^6.6.3",
     "svg-captcha": "^1.4.0",
+    "systeminformation": "^5.9.15",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

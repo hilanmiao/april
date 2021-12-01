@@ -15,9 +15,9 @@ module.exports = {
     database: 'april',
   },
   redis: {
-    host: '127.0.0.1',
+    host: '81.70.194.45',
     port: '6379',
-    password: '',
+    password: 'Smartmiao1992!',
     db: '1',
   }
 }

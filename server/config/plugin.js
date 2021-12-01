@@ -25,5 +25,9 @@ module.exports = {
   routerPlus: {
     enable: true,
     package: 'egg-router-plus'
+  },
+  globalHeader: {
+    enable: true,
+    package: 'egg-global-header'
   }
 };

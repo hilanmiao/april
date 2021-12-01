@@ -40,6 +40,11 @@ module.exports = appInfo => {
     outputJSON: true
   }
 
+  // 全局设置响应头
+  config.globalHeader = {
+    'Powered-by': envConfig.name,
+  };
+
   // 模板配置
   config.view = {
     root: [
@@ -81,27 +86,6 @@ module.exports = appInfo => {
     jsonLimit: '10mb'
   };
 
-  // mysql
-  config.mysql = {
-    // 单数据库信息配置
-    client: {
-      // host
-      host: envConfig.mysql.host,
-      // 端口号
-      port: envConfig.mysql.port,
-      // 用户名
-      user: envConfig.mysql.user,
-      // 密码
-      password: envConfig.mysql.password,
-      // 数据库名
-      database: envConfig.mysql.database,
-    },
-    // 是否加载到 app 上，默认开启
-    app: true,
-    // 是否加载到 agent 上，默认关闭
-    agent: false,
-  };
-
   // sequelize
   config.sequelize = {
     dialect: 'mysql', // 表示使用mysql
@@ -140,11 +124,13 @@ module.exports = appInfo => {
   };
 
   // 添加你的全局中间件(路由的单独中间件顺序在全局之后)
-  config.middleware = ['log', 'errorHandler'];
+  config.middleware = ['errorHandler'];
+
+  // 其他配置
+  config.sysConfig = sysConfig
+  config.envConfig = envConfig
 
   return {
-    ...config,
-    ...sysConfig,
-    ...envConfig
+    ...config
   };
 };

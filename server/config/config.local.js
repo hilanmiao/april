@@ -40,6 +40,11 @@ module.exports = appInfo => {
     outputJSON: true
   }
 
+  // 全局设置响应头
+  config.globalHeader = {
+    'Powered-by': envConfig.name,
+  };
+
   // 模板配置
   config.view = {
     root: [

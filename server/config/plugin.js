@@ -29,5 +29,9 @@ module.exports = {
   globalHeader: {
     enable: true,
     package: 'egg-global-header'
+  },
+  io: {
+    enable: true,
+    package: 'egg-socket.io'
   }
 };

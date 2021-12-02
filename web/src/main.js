@@ -6,13 +6,13 @@ import './styles/element-variables.scss'
 
 import './styles/index.scss' // global css
 
-import App from './App'
-import store from './store'
-import router from './router'
-
 import './bootstrap'
 import './core/use' // vue use
 import './icons' // icon
+
+import App from './App'
+import store from './store'
+import router from './router'
 
 Vue.config.productionTip = false
 

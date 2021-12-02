@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 // 根据不同环境导入不同配置
 const envConfig = require('./config_env_local');
@@ -65,6 +66,32 @@ module.exports = appInfo => {
       host: envConfig.redis.host,
       password: envConfig.redis.password,
       db: envConfig.redis.db,
+    },
+  };
+
+  // socket.io
+  exports.io = {
+    init: {
+      // transports: ['websocket'],
+      // pingInterval: 5000,
+      // allowEIO3: true,
+    }, // passed to engine.io
+    namespace: {
+      '/': {
+        connectionMiddleware: ['connection'],
+        packetMiddleware: ['packet'],
+      },
+    },
+    redis: {
+      port: envConfig.redis.port,
+      host: envConfig.redis.host,
+      password: envConfig.redis.password,
+      db: envConfig.redis.db,
+    },
+    generateId: req => {
+      // 自定义 socket.id 生成函数
+      // const data = qs.parse(req.url.split('?')[1]);
+      return `${req._query.userId}_${uuidv4()}`; // custom id must be unique
     },
   };
 

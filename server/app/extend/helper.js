@@ -109,4 +109,25 @@ module.exports = {
     }
     return errorMap[code];
   },
+
+  /**
+   * socket消息规则解析
+   * @param action
+   * @param payload
+   * @param metadata
+   * @returns {{data: {payload: {}, action}, meta: {timestamp: number}}}
+   */
+  parseSocketMsg({ action, payload = {}, metadata = {} }) {
+    const meta = Object.assign({}, {
+      timestamp: Date.now(),
+    }, metadata);
+
+    return {
+      meta,
+      data: {
+        action,
+        payload,
+      },
+    };
+  },
 };

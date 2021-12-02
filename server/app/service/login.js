@@ -50,6 +50,10 @@ class LoginService extends Service {
     console.log(ctx.request.session)
     const res = ctx.model.SystemSession.findByPk(session.id)
 
+    // socket
+    const nsp = this.app.io.of('/'); // 获取到对应的命名空间的内容
+    nsp.emit('logout', { msg: 'logout', id: ctx.request.user.id });
+
     return res
   }
 }

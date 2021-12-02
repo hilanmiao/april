@@ -18,6 +18,7 @@
     "egg-router-plus": "^2.0.0",
     "egg-scripts": "^2.11.0",
     "egg-sequelize": "^6.0.0",
+    "egg-socket.io": "^4.1.6",
     "egg-validate": "^2.0.2",
     "egg-view-nunjucks": "^2.3.0",
     "fs-extra": "^10.0.0",
@@ -44,9 +45,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-server",
+    "start": "egg-scripts start  --sticky --daemon --title=egg-server-server",
     "stop": "egg-scripts stop --title=egg-server-server",
-    "dev": "egg-bin dev",
+    "dev": "egg-bin dev --sticky",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",

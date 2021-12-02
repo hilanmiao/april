@@ -26,5 +26,10 @@ module.exports = {
     sendInterval: 60, // 发送时间间隔 秒
     countLimit: 5, // 每天上限 条数
     effectiveTime: 60 * 5 // 有效时间 5分钟
+  },
+  socket: {
+    socketOnlineUserRoomName: 'onlineUserRoom:', // socket所有在线用户房间名
+    socketRoomNamePrefix: 'room:', // socket项目房间名前缀
+    socketRedisExp: 30, // socket消息存入redis过期时间(秒)
   }
 }

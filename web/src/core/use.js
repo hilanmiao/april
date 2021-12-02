@@ -5,7 +5,8 @@ import EventBus from '@/utils/event-bus'
 import VEcharts from '@/components/Echarts'
 
 import VueSocketIOExt from 'vue-socket.io-extended'
-import { io } from 'socket.io-client'
+// import { io } from 'socket.io-client'
+import io from 'socket.io-client'
 const socket = io(process.env.VUE_APP_BASE_SOCKET)
 
 Vue.use(EventBus)

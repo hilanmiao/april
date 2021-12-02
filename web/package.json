@@ -30,7 +30,7 @@
     "qiniu-js": "^3.1.4",
     "querystring": "^0.2.1",
     "screenfull": "^4.2.0",
-    "socket.io-client": "^4.4.0",
+    "socket.io-client": "^2.1.1",
     "store": "^2.0.12",
     "ua-parser-js": "^0.7.28",
     "vue": "^2.6.14",

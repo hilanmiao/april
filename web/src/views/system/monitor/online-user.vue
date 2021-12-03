@@ -1,17 +1,16 @@
 <template>
-  <div class="sys-role-container">
+  <div class="sys-oneline-user-container">
     <table-layout class="table-layout">
       <template v-slot:headerLeft>
-        <el-button size="mini" type="primary" @click="handleAdd">新增</el-button>
         <warning-confirm-button
           button-type="danger"
-          :content="`确认批量删除 ${tableMultipleSelection.length} 条数据？`"
+          :content="`确认批量下线 ${tableMultipleSelection.length} 个用户？`"
           :closed="handleRefresh"
-          @confirm="(o) => { handleBulkDelete(o) }"
-        >批量删除</warning-confirm-button>
+          @confirm="(o) => { handleBulkKick(o) }"
+        >批量下线</warning-confirm-button>
       </template>
       <template v-slot:headerRight>
-        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入角色名称" class="search-input">
+        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入用户名称" class="search-input">
           <el-button slot="append" icon="el-icon-search" type="primary" @click="loadTableData">搜索</el-button>
         </el-input>
         <span class="line">|</span>
@@ -33,21 +32,30 @@
         >
           <el-table-column type="index" width="30" />
           <el-table-column type="selection" align="center" width="30" />
-          <el-table-column prop="name" label="名称" align="center" width="200">
+          <el-table-column prop="username" label="用户名" align="center" width="200">
             <template slot-scope="{row}">
-              <span class="link-type" @click="handleEdit(row)">{{ row.name }}</span>
+              <span class="link-type" @click="handleEdit(row)">{{ row.username }}</span>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="realName"
+            label="实名"
+            width="160"
+            align="center"
+          />
+          <el-table-column
+            prop="mobile"
+            label="手机"
+            align="center"
+            width="300"
+          />
           <el-table-column prop="remark" label="备注" align="center" />
-          <el-table-column prop="createdAt" label="创建时间" align="center" width="200" />
-          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />
           <el-table-column label="操作" width="150" align="center">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
               <warning-confirm-button
                 :closed="handleRefresh"
-                @confirm="(o) => { handleDelete(scope.row, o) }"
-              >删除</warning-confirm-button>
+                @confirm="(o) => { handleKick(scope.row, o) }"
+              >下线</warning-confirm-button>
             </template>
           </el-table-column>
         </el-table>
@@ -56,26 +64,22 @@
         <pagination v-show="tablePagination.total>0" :total="tablePagination.total" :page.sync="tablePagination.currentPage" :limit.sync="tablePagination.pageSize" @pagination="loadTableData" />
       </template>
     </table-layout>
-
-    <role-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
-import roleFormDialog from './components/role-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { roleService } from '@/services'
+import { onlineUserService } from '@/services'
 
 export default {
-  name: 'SystemRole',
+  name: 'SystemOnelineUser',
   components: {
     TableLayout,
     Pagination,
-    WarningConfirmButton,
-    roleFormDialog
+    WarningConfirmButton
   },
   data() {
     return {
@@ -92,11 +96,8 @@ export default {
       },
       tablePaginationDefault: null,
       tableSearchParamsDefault: null,
-      tableMultipleSelection: [],
+      tableMultipleSelection: []
       // 导出配置
-      // 表单相关
-      dialogVisible: false,
-      formId: '-1'
     }
   },
   created() {
@@ -117,13 +118,13 @@ export default {
       const limit = this.tablePagination.pageSize
       const name = this.tableSearchParams.name
       try {
-        const response = await roleService.getRoleListByPage({ page, limit, name })
+        const response = await onlineUserService.getOnlineUserListByPage({ page, limit, name })
         const { data } = response.data
         this.tableData = data.list
         this.tablePagination.total = data.pagination.total
         this.tableLoading = false
       } catch (e) {
-        console.error('role.getRoleListByPage-error:', e)
+        console.error('onelineUser.getOnelineUserListByPage-error:', e)
         this.tableLoading = false
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
@@ -141,37 +142,27 @@ export default {
 
       this.loadTableData()
     },
-    // 新增
-    handleAdd() {
-      this.formId = '-1'
-      this.dialogVisible = true
-    },
-    // 编辑
-    handleEdit(row) {
-      this.formId = row.id
-      this.dialogVisible = true
-    },
     // 删除
-    async handleDelete(row, { done, close }) {
+    async handleKick(row, { done, close }) {
       try {
-        await roleService.deleteRole({ ids: [row.id] })
+        await onlineUserService.kickUser({ ids: [row.id] })
         close()
       } catch (e) {
-        console.error('role.deleteRole-error:', e)
+        console.error('onelineUser.kickUser-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
       }
     },
     // 批量删除
-    async handleBulkDelete({ done, close }) {
+    async handleBulkKick({ done, close }) {
       try {
         const ids = _.map(this.tableMultipleSelection, 'id')
-        await roleService.deleteRole({ ids })
+        await onlineUserService.kickUser({ ids })
         close()
       } catch (e) {
         done()
-        console.error('role.deleteRole-error:', e)
+        console.error('onelineUser.kickUser-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)

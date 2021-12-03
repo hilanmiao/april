@@ -3,11 +3,21 @@
 const Controller = require('egg').Controller;
 
 class DefaultController extends Controller {
-  async index() {
+  async exchange() {
     const { ctx, app } = this;
-    const message = ctx.args[0];
-    console.log(message)
-    await ctx.socket.emit('res', { name: 'server', msg: `Hi! I\'ve got your message: ${message.msg}` });
+    const nsp = app.io.of('/');
+    const message = ctx.args[0] || {};
+    const socket = ctx.socket;
+    const client = socket.id;
+
+    try {
+      const { target, payload } = message;
+      if (!target) return;
+      const msg = ctx.helper.parseSocketMsg({ action: 'exchange', payload, metadata: { client, target } });
+      nsp.emit(target, msg);
+    } catch (error) {
+      app.logger.error(error);
+    }
   }
 
 }

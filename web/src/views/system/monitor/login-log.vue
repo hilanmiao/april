@@ -52,6 +52,7 @@ import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
 import { UAParser } from 'ua-parser-js'
 import { loginLogService } from '@/services'
+import _ from 'lodash'
 
 export default {
   name: 'SystemLoginLog',
@@ -72,6 +73,8 @@ export default {
       tableSearchParams: {
         dateRange: ''
       },
+      tablePaginationDefault: null,
+      tableSearchParamsDefault: null,
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -104,6 +107,13 @@ export default {
   },
   created() {
     this.loadTableData()
+    // 拷贝默认值
+    this.tablePaginationDefault = _.cloneDeep(this.tablePagination)
+    this.tableSearchParamsDefault = _.cloneDeep(this.tableSearchParams)
+  },
+  destroyed() {
+    this.tablePaginationDefault = null
+    this.tableSearchParamsDefault = null
   },
   methods: {
     // 加载表格数据
@@ -134,6 +144,10 @@ export default {
     },
     // 刷新表格数据
     handleRefresh() {
+      // 重置
+      this.tablePagination = _.cloneDeep(this.tablePaginationDefault)
+      this.tableSearchParams = _.cloneDeep(this.tableSearchParamsDefault)
+
       this.loadTableData()
     }
   }

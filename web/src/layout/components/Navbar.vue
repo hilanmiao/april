@@ -5,6 +5,8 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
+      <onlineUsers class="right-menu-item hover-effect badge-container" />
+
       <template v-if="device!=='mobile'">
         <!-- 全屏按钮控件 -->
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -32,6 +34,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import OnlineUsers from '@/components/OnlineUsers'
 import Screenfull from '@/components/Screenfull'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -41,7 +44,8 @@ export default {
   components: {
     Breadcrumb,
     Hamburger,
-    Screenfull
+    Screenfull,
+    OnlineUsers
   },
   computed: {
     ...mapGetters([
@@ -49,6 +53,8 @@ export default {
       'avatar',
       'device'
     ])
+  },
+  created() {
   },
   methods: {
     toggleSideBar() {
@@ -121,6 +127,10 @@ export default {
           background: rgba(0, 0, 0, .025)
         }
       }
+    }
+
+    .badge-container {
+      padding-right: 20px;
     }
 
     .avatar-container {

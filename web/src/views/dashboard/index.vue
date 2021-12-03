@@ -1,25 +1,25 @@
 <template>
   <div class="dashboard-container">
-    <ul class="chatList">
-      <li v-for="(item,index) in msgList" :key="index">
-        <div>
-          <div class="content">
-            <p>姓名：{{ item.name }}</p>
-            <p>消息:{{ item.msg }}</p>
-          </div>
-        </div>
-      </li>
-    </ul>
-    <div class="chat-input">
-      <el-input
-        v-model="msg"
-        type="textarea"
-        :autosize="{ minRows: 4, maxRows: 6 }"
-        maxlength="300"
-        placeholder="请输入内容"
-        @keyup.enter.native="send()"
-      />
-    </div>
+    <!--    <ul class="chatList">-->
+    <!--      <li v-for="(item,index) in msgList" :key="index">-->
+    <!--        <div>-->
+    <!--          <div class="content">-->
+    <!--            <p>姓名：{{ item.name }}</p>-->
+    <!--            <p>消息:{{ item.msg }}</p>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </li>-->
+    <!--    </ul>-->
+    <!--    <div class="chat-input">-->
+    <!--      <el-input-->
+    <!--        v-model="msg"-->
+    <!--        type="textarea"-->
+    <!--        :autosize="{ minRows: 4, maxRows: 6 }"-->
+    <!--        maxlength="300"-->
+    <!--        placeholder="请输入内容"-->
+    <!--        @keyup.enter.native="send()"-->
+    <!--      />-->
+    <!--    </div>-->
   </div>
 </template>
 
@@ -37,34 +37,34 @@ export default {
   computed: {
     ...mapGetters(['name'])
   },
-  sockets: {
-    connect: function() {
-      const id = this.$socket.client.id
-      console.log(id + ' connected')
-    },
-    customEmit: function(data) {
-      console.log(data)
-      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-    },
-    res: function(data) {
-      this.msgList.push(data)
-      console.log('接收到服务端消息', data)
-    }
-  },
+  // sockets: {
+  //   connect: function() {
+  //     const id = this.$socket.client.id
+  //     console.log(id + ' connected')
+  //   },
+  //   customEmit: function(data) {
+  //     console.log(data)
+  //     console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+  //   },
+  //   res: function(data) {
+  //     this.msgList.push(data)
+  //     console.log('接收到服务端消息', data)
+  //   }
+  // },
   methods: {
-    send() {
-      // 给服务器发送一个字符串:
-      console.log('send')
-      this.msgList.push({
-        name: 'april',
-        msg: this.msg
-      })
-      this.$socket.client.emit('server', {
-        name: 'april',
-        msg: this.msg
-      })
-      this.msg = ''
-    }
+    // send() {
+    //   // 给服务器发送一个字符串:
+    //   console.log('send')
+    //   this.msgList.push({
+    //     name: 'april',
+    //     msg: this.msg
+    //   })
+    //   this.$socket.client.emit('server', {
+    //     name: 'april',
+    //     msg: this.msg
+    //   })
+    //   this.msg = ''
+    // }
   }
 }
 </script>

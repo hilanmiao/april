@@ -91,7 +91,9 @@ module.exports = appInfo => {
     generateId: req => {
       // 自定义 socket.id 生成函数
       // const data = qs.parse(req.url.split('?')[1]);
-      return `${req._query.userId}_${uuidv4()}`; // custom id must be unique
+      // console.log('socket generateId:', req)
+      // 添加username仅仅是为了方便调试查看用户，不能做其他用途，请使用token解析获取用户信息
+      return `${req._query.username}_${uuidv4()}`; // custom id must be unique
     },
   };
 

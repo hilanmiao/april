@@ -235,7 +235,7 @@ class SystemUserService extends Service {
       where: {
         id
       },
-      attributes: ['id', 'display_name', 'real_name', 'position', 'company', 'email', 'mobile', 'sex', 'avatar', 'introduction', 'status']
+      attributes: ['id', 'username', 'display_name', 'real_name', 'position', 'company', 'email', 'mobile', 'sex', 'avatar', 'introduction', 'status']
     }
 
     const res = await ctx.model.SystemUser.findOne(op);

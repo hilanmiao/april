@@ -55,7 +55,11 @@
             label="用户名"
             align="center"
             width="180"
-          />
+          >
+            <template slot-scope="{row}">
+              <span class="link-type" @click="handleEdit(row)">{{ row.username }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="realName"
             label="实名"
@@ -160,6 +164,8 @@ export default {
       tableSearchParams: {
         username: ''
       },
+      tablePaginationDefault: null,
+      tableSearchParamsDefault: null,
       tableMultipleSelection: [],
       // 导出配置
       // 表单相关
@@ -169,6 +175,13 @@ export default {
   },
   created() {
     this.loadTableData()
+    // 拷贝默认值
+    this.tablePaginationDefault = _.cloneDeep(this.tablePagination)
+    this.tableSearchParamsDefault = _.cloneDeep(this.tableSearchParams)
+  },
+  destroyed() {
+    this.tablePaginationDefault = null
+    this.tableSearchParamsDefault = null
   },
   methods: {
     // 加载表格数据
@@ -196,6 +209,10 @@ export default {
     },
     // 刷新表格数据
     handleRefresh() {
+      // 重置
+      this.tablePagination = _.cloneDeep(this.tablePaginationDefault)
+      this.tableSearchParams = _.cloneDeep(this.tableSearchParamsDefault)
+
       this.loadTableData()
     },
     // 新增

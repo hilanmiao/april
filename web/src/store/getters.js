@@ -9,6 +9,7 @@ const getters = {
   refreshToken: state => state.auth.refreshToken,
   myPowerMenus: state => state.user.myPowerMenus,
   myPowerOperations: state => state.user.myPowerOperations,
-  myRoutes: state => state.router.myRoutes
+  myRoutes: state => state.router.myRoutes,
+  onlineUserSocketIds: state => state.socket.onlineUserSocketIds
 }
 export default getters

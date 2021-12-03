@@ -100,7 +100,7 @@
       :close-on-press-escape="false"
       :close-on-click-modal="false"
     >
-      <el-result icon="success" title="创建成功" sub-title="密码只显示一次，请牢记">
+      <el-result icon="success" title="创建成功" sub-title="初始密码只显示一次，可前往个人中心修改密码！">
         <template slot="extra">
           <p style="font-size: 20px;font-weight: bold;">{{ password }}</p>
           <el-button size="mini" type="primary" icon="el-icon-document" @click="handleCopy(password,$event)">

@@ -92,6 +92,8 @@ const actions = {
     axios.defaults.headers.common.Authorization = undefined
     commit('RESET_STATE')
 
+    // 断开socket连接
+    dispatch('socket/closeSocket', null, { root: true })
     // 清除store存储的routes
     dispatch('router/resetRoutes', null, { root: true })
     // 重置快捷导航
@@ -103,8 +105,10 @@ const actions = {
   // 设置登录的用户信息
   setUserInfo({ commit, dispatch }, data) {
     commit('SET_USER', data)
-
     console.debug('设置登录的用户信息')
+
+    // 初始化socket
+    dispatch('socket/initSocket', data, { root: true })
   },
 
   // 设置我的菜单权限

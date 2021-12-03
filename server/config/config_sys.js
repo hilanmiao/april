@@ -28,8 +28,8 @@ module.exports = {
     effectiveTime: 60 * 5 // 有效时间 5分钟
   },
   socket: {
-    socketOnlineUserRoomName: 'onlineUserRoom:', // socket所有在线用户房间名
-    socketRoomNamePrefix: 'room:', // socket项目房间名前缀
+    socketOnlineUserRoomName: 'onlineUserRoom', // socket所有在线用户房间名
+    socketRoomNamePrefix: 'room', // socket项目房间名前缀
     socketRedisExp: 30, // socket消息存入redis过期时间(秒)
   }
 }

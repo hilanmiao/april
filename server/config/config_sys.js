@@ -34,6 +34,7 @@ module.exports = {
   },
   redis: {
     redisCaptchaImgKeyPrefix: 'captcha:img',
-    redisOnlineUsersKey: 'online_users'
+    redisOnlineUsersKey: 'online_users',
+    redisOnlineUserSocketKey: 'online_username_socketid'
   }
 }

@@ -11,24 +11,52 @@ class SystemOnlineUserService extends Service {
    * @param ids
    * @return {Promise<{code: number}|{count}>}
    */
-  async kick({ ids }) {
+  async kick({ usernames }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
-    // const op = { where: { id: { [Op.in]: ids } } };
+    const { socket, helper, logger, app } = ctx
+
+    const { redisOnlineUserSocketKey } = app.config.sysConfig.redis
+    const nsp = app.io.of('/');
+    const { socketOnlineUserRoomName: room } = app.config.sysConfig.socket
+
     let res,
       transaction;
     try {
       // 开启事务
-      transaction = await ctx.model.transaction();
+      // transaction = await ctx.model.transaction();
+
+      const kick = (id, msg) => {
+        logger.debug('#kick', id, msg);
+
+        // 踢出用户前发送消息
+        // 发送给指定 socketid 的客户端（私密消息）
+        nsp.to(id).emit('kick', helper.parseSocketMsg({ action: 'deny', payload: msg }));
+
+        // 调用 adapter 方法踢出用户，客户端触发 disconnect 事件
+        // nsp.adapter.remoteDisconnect(id, true, err => {
+        //   logger.error(err);
+        // });
+      };
+
+      for (const username of usernames) {
+        const socketId = await app.redis.get(`${redisOnlineUserSocketKey}:${username}`);
+        // 断开连接
+        kick(socketId, {
+          type: 'deleted',
+          message: 'deleted, kick'
+        })
+        // TODO：强制登出
+      }
 
       // 提交事务
-      await transaction.commit()
-      res = { count: ids.length }
+      // await transaction.commit()
+      res = { count: usernames.length }
 
       return res
     } catch (e) {
       console.log(e)
-      ctx.logger.error(e)
-      await transaction.rollback();
+      logger.error(e)
+      // await transaction.rollback();
 
       // 操作失败
       return { code: 20107 }

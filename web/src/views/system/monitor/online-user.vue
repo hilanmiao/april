@@ -10,9 +10,19 @@
         >批量下线</warning-confirm-button>
       </template>
       <template v-slot:headerRight>
-        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入用户名称" class="search-input">
-          <el-button slot="append" icon="el-icon-search" type="primary" @click="loadTableData">搜索</el-button>
-        </el-input>
+        <el-date-picker
+          v-model="tableSearchParams.dateRange"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          size="mini"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+        />
+        <el-button size="mini" icon="el-icon-search" type="primary" style="margin-left: 10px;" @click="loadTableData">搜索</el-button>
         <span class="line">|</span>
         <el-button size="mini" icon="el-icon-refresh" @click="handleRefresh" />
         <el-button size="mini" icon="el-icon-download" />
@@ -34,7 +44,7 @@
           <el-table-column type="selection" align="center" width="30" />
           <el-table-column prop="username" label="用户名" align="center">
             <template slot-scope="{row}">
-              {{ row.username }}, {{ row.createdAt }}
+              {{ row.username }}
             </template>
           </el-table-column>
           <el-table-column prop="createdAt" label="连接时间" align="center">
@@ -46,6 +56,7 @@
             <template slot-scope="scope">
               <warning-confirm-button
                 :closed="handleRefresh"
+                content="确定下线该用户吗?"
                 @confirm="(o) => { handleKick(scope.row, o) }"
               >下线</warning-confirm-button>
             </template>
@@ -84,11 +95,38 @@ export default {
         currentPage: 1
       },
       tableSearchParams: {
-        name: ''
+        dateRange: ''
       },
       tablePaginationDefault: null,
       tableSearchParamsDefault: null,
-      tableMultipleSelection: []
+      tableMultipleSelection: [],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      }
       // 导出配置
     }
   },
@@ -108,9 +146,9 @@ export default {
       this.tableLoading = true
       const page = this.tablePagination.currentPage
       const limit = this.tablePagination.pageSize
-      const name = this.tableSearchParams.name
+      const dateRange = this.tableSearchParams.dateRange
       try {
-        const response = await onlineUserService.getOnlineUserListByPage({ page, limit, name })
+        const response = await onlineUserService.getOnlineUserListByPage({ page, limit, dateRange })
         const { data } = response.data
         this.tableData = data.list
         this.tablePagination.total = data.pagination.total
@@ -137,7 +175,7 @@ export default {
     // 删除
     async handleKick(row, { done, close }) {
       try {
-        await onlineUserService.kickUser({ ids: [row.id] })
+        await onlineUserService.kickUser({ usernames: [row.username] })
         close()
       } catch (e) {
         console.error('onelineUser.kickUser-error:', e)
@@ -149,8 +187,8 @@ export default {
     // 批量删除
     async handleBulkKick({ done, close }) {
       try {
-        const ids = _.map(this.tableMultipleSelection, 'id')
-        await onlineUserService.kickUser({ ids })
+        const usernames = _.map(this.tableMultipleSelection, 'username')
+        await onlineUserService.kickUser({ usernames })
         close()
       } catch (e) {
         done()

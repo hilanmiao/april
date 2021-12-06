@@ -15,7 +15,7 @@ module.exports = app => {
     const nsp = app.io.of('/');
     const query = socket.handshake.query;
     const { socketOnlineUserRoomName: room } = app.config.sysConfig.socket
-    const { redisOnlineUsersKey } = app.config.sysConfig.redis
+    const { redisOnlineUsersKey, redisOnlineUserSocketKey } = app.config.sysConfig.redis
 
     // 用户信息
     const rooms = [ room ];
@@ -23,8 +23,8 @@ module.exports = app => {
 
     logger.debug('#user_info', id, room);
 
-    const tick = (id, msg) => {
-      logger.debug('#tick', id, msg);
+    const kick = (id, msg) => {
+      logger.debug('#kick', id, msg);
 
       // 踢出用户前发送消息
       socket.emit(id, helper.parseSocketMsg({ action: 'deny', payload: msg }));
@@ -46,7 +46,7 @@ module.exports = app => {
 
     // 如果token验证不正确或没有
     if (!decodedToken) {
-      tick(id, {
+      kick(id, {
         type: 'deleted',
         message: 'deleted, accessToken is valid'
       });
@@ -55,7 +55,7 @@ module.exports = app => {
 
     // token过期
     if (decodedToken.exp < Math.floor(Date.now() / 1000)) {
-      tick(id, {
+      kick(id, {
         type: 'deleted',
         message: 'deleted, accessToken is expired'
       });
@@ -80,6 +80,9 @@ module.exports = app => {
 
       // 存储到有序集合中
       await app.redis.zadd(redisOnlineUsersKey, dayjs().valueOf(), decodedToken.user.username)
+      // 并映射username 和 socketid
+      const MAX_TTL = 24 * 60 * 60;// 最大过期时长，兜底用
+      await app.redis.setex(`${redisOnlineUserSocketKey}:${decodedToken.user.username}`, MAX_TTL, id)
     });
 
     await next();
@@ -109,6 +112,7 @@ module.exports = app => {
 
       // 更新有序集合
       await app.redis.zrem(redisOnlineUsersKey, decodedToken.user.username)
+      await app.redis.del(`${redisOnlineUserSocketKey}:${decodedToken.user.username}`)
     });
   };
 };

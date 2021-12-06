@@ -10,9 +10,9 @@ class SystemOnlineUserController extends Controller {
    */
   async kick() {
     const { ctx } = this;
-    const { ids } = ctx.request.body
+    const { usernames } = ctx.request.body
 
-    const res = await ctx.service.systemOnlineUser.kick({ ids })
+    const res = await ctx.service.systemOnlineUser.kick({ usernames })
 
     if (res.code) {
       this.fail({ ctx, code: res.code })
@@ -27,9 +27,9 @@ class SystemOnlineUserController extends Controller {
    */
   async page() {
     const { ctx } = this;
-    const { page, limit, name } = ctx.request.query
+    const { page, limit, dateRange } = ctx.request.query
 
-    const res = await ctx.service.systemOnlineUser.page({ page, limit, name })
+    const res = await ctx.service.systemOnlineUser.page({ page, limit, dateRange })
 
     this.success({ ctx, data: res })
   }

@@ -30,7 +30,8 @@ class CommonService extends Service {
     };
 
     // 放入缓存中，并设置过期时间
-    await this.app.redis.setex(`admin:captcha:img:${res.id}`, 60 * 10, svg.text)
+    const { redisCaptchaImgKeyPrefix } = this.config.sysConfig.redis
+    await this.app.redis.setex(`${redisCaptchaImgKeyPrefix}:${res.id}`, 60 * 10, svg.text)
 
     return res
   }
@@ -43,7 +44,8 @@ class CommonService extends Service {
    */
   async verifyImgCaptcha({ id, code }) {
     const { ctx } = this;
-    const key = `admin:captcha:img:${id}`
+    const { redisCaptchaImgKeyPrefix } = this.config.sysConfig.redis
+    const key = `${redisCaptchaImgKeyPrefix}:${id}`
     // 从缓存中取出
     const res = await this.app.redis.get(key)
 

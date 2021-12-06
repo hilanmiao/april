@@ -31,5 +31,9 @@ module.exports = {
     socketOnlineUserRoomName: 'onlineUserRoom', // socket所有在线用户房间名
     socketRoomNamePrefix: 'room', // socket项目房间名前缀
     socketRedisExp: 30, // socket消息存入redis过期时间(秒)
+  },
+  redis: {
+    redisCaptchaImgKeyPrefix: 'captcha:img',
+    redisOnlineUsersKey: 'online_users'
   }
 }

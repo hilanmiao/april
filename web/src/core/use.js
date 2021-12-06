@@ -2,9 +2,10 @@ import Vue from 'vue'
 import store from '@/store'
 
 import ElementUI from 'element-ui'
-
 import EventBus from '@/utils/event-bus'
 import VEcharts from '@/components/Echarts'
+
+import dayjs from 'dayjs'
 
 import VueSocketIOExt from 'vue-socket.io-extended'
 // import { io } from 'socket.io-client'
@@ -23,6 +24,9 @@ Vue.use(EventBus)
 // ui
 Vue.use(ElementUI)
 Vue.use(VEcharts)
+
+// tools
+Vue.prototype.dayjs = dayjs
 
 // socket
 Vue.use(VueSocketIOExt, socket, { store })

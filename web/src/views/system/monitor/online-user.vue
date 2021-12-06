@@ -32,24 +32,16 @@
         >
           <el-table-column type="index" width="30" />
           <el-table-column type="selection" align="center" width="30" />
-          <el-table-column prop="username" label="用户名" align="center" width="200">
+          <el-table-column prop="username" label="用户名" align="center">
             <template slot-scope="{row}">
-              <span class="link-type" @click="handleEdit(row)">{{ row.username }}</span>
+              {{ row.username }}, {{ row.createdAt }}
             </template>
           </el-table-column>
-          <el-table-column
-            prop="realName"
-            label="实名"
-            width="160"
-            align="center"
-          />
-          <el-table-column
-            prop="mobile"
-            label="手机"
-            align="center"
-            width="300"
-          />
-          <el-table-column prop="remark" label="备注" align="center" />
+          <el-table-column prop="createdAt" label="连接时间" align="center">
+            <template slot-scope="{row}">
+              {{ dayjs(parseInt(row.createdAt)).format('YYYY-MM-DD HH:mm:ss:SSS') }}
+            </template>
+          </el-table-column>>
           <el-table-column label="操作" width="150" align="center">
             <template slot-scope="scope">
               <warning-confirm-button

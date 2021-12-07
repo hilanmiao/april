@@ -111,7 +111,8 @@ const actions = {
     console.log('socket connected')
   },
   async socket_kick() {
-    // 解决下线自己时不弹框的问题，因为上一个下线动作的messagebox动画关闭需要时间，所有要setTimeout
+    // 解决下线自己时不弹框的问题，因为messagebox关闭设置了延迟，
+    // 如果不setTimeout的话，上一个下线的messagebox还没关闭，导致这个messagebox没有正确显示出来
     setTimeout(async() => {
       // 被踢下线，强制用户登录
       await store.dispatch('auth/clearAuth')

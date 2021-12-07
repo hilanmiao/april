@@ -111,17 +111,19 @@ const actions = {
     console.log('socket connected')
   },
   async socket_kick() {
-    // 被踢下线，强制用户登录
-    await store.dispatch('auth/clearAuth')
-    // TODO：下线自己时不弹框？？？
-    MessageBox.confirm('您已被踢下线，请重新登录', '警告', {
-      confirmButtonText: '重新登录',
-      showCancelButton: false,
-      type: 'warning'
-    }).finally(() => {
-      console.debug('被踢下线，强制用户登录')
-      router.push('/login')
-    })
+    // 解决下线自己时不弹框的问题，因为上一个下线动作的messagebox动画关闭需要时间，所有要setTimeout
+    setTimeout(async() => {
+      // 被踢下线，强制用户登录
+      await store.dispatch('auth/clearAuth')
+      MessageBox.confirm('您已被踢下线，请重新登录', '警告', {
+        confirmButtonText: '重新登录',
+        showCancelButton: false,
+        type: 'warning'
+      }).finally(() => {
+        console.debug('被踢下线，强制用户登录')
+        router.push('/login')
+      })
+    }, 500)
 
     console.log('socket kicked')
   },

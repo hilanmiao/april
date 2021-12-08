@@ -10,7 +10,8 @@ $panGreen: #30B08F;
 
 // sidebar
 $menuText:#bfcbd9;
-$menuActiveText:#409EFF;
+$menuActiveText:#fff;
+$menuActiveBg:#409EFF;
 $subMenuActiveText:#f4f4f5; // https://github.com/ElemeFE/element/issues/12951
 
 $menuBg:#304156;
@@ -26,6 +27,7 @@ $sideBarWidth: 210px;
 :export {
   menuText: $menuText;
   menuActiveText: $menuActiveText;
+  menuActiveBg: $menuActiveBg;
   subMenuActiveText: $subMenuActiveText;
   menuBg: $menuBg;
   menuHover: $menuHover;

@@ -71,14 +71,19 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/account',
+    path: '/profile',
     component: Layout,
-    redirect: '/account/settings',
+    redirect: '/profile/index',
     hidden: true,
     children: [{
-      path: 'settings',
-      name: 'Settings',
-      component: () => import('@/views/account/settings'),
+      path: 'index',
+      name: 'index',
+      component: () => import('@/views/profile/index'),
+      meta: { title: '个人设置' }
+    }, {
+      path: 'notification',
+      name: 'notification',
+      component: () => import('@/views/profile/notification/index'),
       meta: { title: '个人设置' }
     }]
   }

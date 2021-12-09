@@ -19,7 +19,7 @@ class SystemUserService extends Service {
    * @param sex
    * @param avatar
    * @param introduction
-   * @returns {Promise<{password: string | *, user_id}|{code: number}>}
+   * @return {Promise<{password: string | *, user_id}|{code: number}>}
    */
   async create({ roleIds, username, display_name, real_name, position, company, email, mobile, sex, avatar, introduction }) {
     const { ctx } = this;
@@ -74,7 +74,7 @@ class SystemUserService extends Service {
    * @param sex
    * @param avatar
    * @param introduction
-   * @returns {Promise<{user_id}|{code: number}>}
+   * @return {Promise<{user_id}|{code: number}>}
    */
   async update({ id, roleIds, display_name, real_name, position, company, email, mobile, sex, avatar, introduction }) {
     const { ctx } = this;
@@ -247,6 +247,48 @@ class SystemUserService extends Service {
 
     return res
   }
+
+  /**
+   * 更新当前用户资料
+   * @param id
+   * @param display_name
+   * @param real_name
+   * @param position
+   * @param company
+   * @param sex
+   * @param avatar
+   * @param introduction
+   * @return {Promise<{code: number}|{id}>}
+   */
+  async updateCurrentUserProfile({ id, display_name, real_name, position, company, sex, avatar, introduction }) {
+    const { ctx } = this;
+    let res,
+      transaction;
+    try {
+      // 开启事务
+      transaction = await ctx.model.transaction();
+
+      // 更新用户
+      const modelUser = await ctx.model.SystemUser.findOne({ where: { id }, transaction, lock: true, skipLocked: true });
+      await modelUser.update({ display_name, real_name, position, company, sex, avatar, introduction }, { transaction })
+
+      // 提交事务
+      await transaction.commit()
+      // res = { id: modelUser.id }
+      // 重新获取完整关联信息
+      res = await this.getUserBasic({ id })
+
+      return res
+    } catch (e) {
+      console.log(e)
+      ctx.logger.error(e)
+      await transaction.rollback();
+
+      // 操作失败
+      return { code: 20107 }
+    }
+  }
+
 }
 
 module.exports = SystemUserService;

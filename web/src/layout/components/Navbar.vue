@@ -12,16 +12,18 @@
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
       </template>
 
+      <notification class="right-menu-item hover-effect" :unread-count="9" />
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img v-show="avatar" :src="avatar" class="user-avatar">
-          <img v-show="!avatar" src="@/assets/logo.png" class="user-avatar">
+          <img v-if="user.avatar" :src="VUE_APP_BASE_API + user.avatar" class="user-avatar">
+          <img v-else src="@/assets/logo.png" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/account/settings">
+          <router-link to="/profile">
             <el-dropdown-item>
-              个人设置
+              个人中心
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
@@ -36,6 +38,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import OnlineUsers from '@/components/OnlineUsers'
+import Notification from '@/components/Notification'
 import Screenfull from '@/components/Screenfull'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -46,12 +49,13 @@ export default {
     Breadcrumb,
     Hamburger,
     Screenfull,
+    Notification,
     OnlineUsers
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
+      'user',
       'device'
     ])
   },

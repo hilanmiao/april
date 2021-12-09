@@ -154,6 +154,9 @@ export default {
       })
     },
     handleLogin() {
+      if (this.loading) {
+        return
+      }
       this.$refs.loginForm.validate(async valid => {
         if (valid) {
           this.loading = true

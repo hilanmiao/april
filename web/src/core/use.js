@@ -27,6 +27,7 @@ Vue.use(VEcharts)
 
 // tools
 Vue.prototype.dayjs = dayjs
+Vue.prototype.VUE_APP_BASE_API = process.env.VUE_APP_BASE_API
 
 // socket
 Vue.use(VueSocketIOExt, socket, { store })

@@ -30,4 +30,8 @@ internals.deleteUser = (data) => {
   return http.delete(apiUrl, data)
 }
 
+internals.updateCurrentUserProfile = (data) => {
+  return http.put(apiUrl + 'profile', data)
+}
+
 export default internals

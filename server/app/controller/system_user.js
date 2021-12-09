@@ -117,6 +117,24 @@ class SystemUserController extends Controller {
     this.success({ ctx, data: res })
   }
 
+  /**
+   * 更新当前用户资料
+   * @return {Promise<void>}
+   */
+  async updateCurrentUserProfile() {
+    const { ctx } = this;
+    const { displayName: display_name, realName: real_name, position, company, email, mobile, sex, avatar, introduction } = ctx.request.body
+    const id = ctx.request.user.id
+
+    // 邮箱和手机等需要单独设置
+    const res = await ctx.service.systemUser.updateCurrentUserProfile({ id, display_name, real_name, position, company, sex, avatar, introduction })
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
+    this.success({ ctx, data: res })
+  }
 }
 
 module.exports = SystemUserController;

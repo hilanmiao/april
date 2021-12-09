@@ -10,6 +10,7 @@ module.exports = app => {
 
   const tokenRequired = middleware.tokenRequired(null, app)
 
+  apiRouter.put('/system/user/profile', tokenRequired, systemUser.updateCurrentUserProfile);
   apiRouter.post('/system/user', tokenRequired, systemUser.create);
   apiRouter.put('/system/user', tokenRequired, systemUser.update);
   apiRouter.delete('/system/user', tokenRequired, systemUser.delete);

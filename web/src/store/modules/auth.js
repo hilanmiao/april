@@ -13,7 +13,7 @@ const state = {
 
 const mutations = {
   RESET_STATE: state => {
-    state.user = ''
+    state.user = {}
     state.accessToken = ''
     state.refreshToken = ''
     state.myPowerMenus = []

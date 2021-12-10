@@ -17,7 +17,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-if="user.avatar" :src="VUE_APP_BASE_API + user.avatar" class="user-avatar">
-          <img v-else src="@/assets/logo.png" class="user-avatar">
+          <img v-else src="@/assets/images/logo.png" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">

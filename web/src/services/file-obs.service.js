@@ -1,4 +1,4 @@
-import { httpClient as http } from '@/services'
+import { httpClient as http } from '@/services/index'
 
 const internals = {}
 

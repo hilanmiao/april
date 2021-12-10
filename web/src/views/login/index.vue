@@ -1,148 +1,168 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginForm"
-      size="small"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
-      <div class="title-container">
-        <h3 class="title">{{ title }}</h3>
+    <canvas-star-background />
+    <div class="box">
+      <div class="color-wrap">
+        <div class="box-color" />
       </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="用户名"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="密码"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon
-            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-          />
-        </span>
-      </el-form-item>
-
-      <el-form-item prop="verifyCode">
-        <span class="svg-container">
-          <svg-icon icon-class="captcha" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="verifyCode"
-          v-model="loginForm.verifyCode"
-          placeholder="验证码"
-          name="verifyCode"
-          tabindex="3"
-          @keyup.enter.native="handleLogin"
-        />
-        <div class="img-captcha-container">
-          <img :src="captchaImageBase64" @click="handleRefreshCaptcha">
+      <div class="box-image">
+        <img src="@/assets/images/login-left.png" alt="">
+      </div>
+      <el-card class="box-card">
+        <div class="left" />
+        <div class="right">
+          <div class="box-title">
+            <img src="@/assets/images/logo.png" alt="" class="logo">
+            <div class="info">
+              <span class="title">{{ title }}</span>
+              <span class="sub-title">{{ subTitle }}</span>
+            </div>
+          </div>
+          <el-tabs v-model="activeTabName">
+            <el-tab-pane label="密码登录" name="account">
+              <account-login />
+            </el-tab-pane>
+            <el-tab-pane label="短信登录" name="note">
+              <note-login />
+            </el-tab-pane>
+            <el-tab-pane label="扫码登录" name="scan">
+              <scan-login />
+            </el-tab-pane>
+          </el-tabs>
+          <div class="box-bottom">
+            <div class="social">
+              <div class="icon" :style="{ backgroundColor: '#24292e' }" @click="go(loginGithubURI)">
+                <svg-icon icon-class="dingtalk" />
+              </div>
+              <div class="icon" :style="{ backgroundColor: '#1BB723' }" @click="go(loginWeixinURI)">
+                <svg-icon icon-class="dingtalk" />
+              </div>
+              <div class="icon fa-lg dingtalk" :style="{ backgroundColor: '#4494F0' }" @click="go(loginDingtalkURI)">
+                <svg-icon icon-class="dingtalk" />
+              </div>
+            </div>
+            <div class="register">
+              <span>没有账号？</span>
+              <el-button type="text" @click="dialogFormVisible = true">马上注册</el-button>
+            </div>
+          </div>
         </div>
-      </el-form-item>
-
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width: 100%; margin-bottom: 30px"
-        @click.native.prevent="handleLogin"
-      >登录</el-button>
-    </el-form>
+      </el-card>
+    </div>
+    <el-dialog title="请填写真实信息" :visible.sync="dialogFormVisible" width="400px">
+      <register @reg-result="regResult" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { validUsername } from '@/utils/validate'
+import { authService } from '@/services'
+import { Message } from 'element-ui'
 import defaultSettings from '@/settings'
-import { authService, commonService } from '@/services'
+import CanvasStarBackground from '@/components/CanvasStarBackground'
+import accountLogin from './components/account-login'
+import noteLogin from './components/note-login'
+// import ScanLogin from './components/scan-login'
+import register from './components/register'
 
 export default {
   name: 'Login',
+  components: { accountLogin, noteLogin, CanvasStarBackground, register },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (value.length < 2) {
-        callback(new Error('请输入合法的用户名'))
+      if (!validUsername(value)) {
+        callback(new Error('Please enter the correct user name'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('密码不能少于6位'))
-      } else {
-        callback()
-      }
-    }
-    const validatecaptchaCode = (rule, value, callback) => {
-      if (value.length !== 4) {
-        callback(new Error('请输入合法的验证码'))
+        callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
       }
     }
     return {
       title: defaultSettings.title,
+      subTitle: defaultSettings.subTitle,
       loginForm: {
-        username: '',
-        password: '',
-        verifyCode: '',
-        captchaId: ''
+        username: 'admin',
+        password: '123456'
       },
-      captchaImageBase64: '',
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        verifyCode: [{ required: true, trigger: 'blur', validator: validatecaptchaCode }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
-      loading: false,
       passwordType: 'password',
-      redirect: undefined
+      capsTooltip: false,
+      loading: false,
+      showDialog: false,
+      redirect: undefined,
+      otherQuery: {},
+      shortUrl: '',
+      activeTabName: 'account',
+      dialogFormVisible: false
+    }
+  },
+  computed: {
+    // The '/auth/{social}' endpoint will first authenticate the user using the third party
+    // social authentication, then the appy server will redirect us to the '/login/social/' view
+    loginGithubURI() {
+      return this.VUE_APP_BASE_API + '/passport/github'
+    },
+    loginWeixinURI() {
+      return this.VUE_APP_BASE_API + '/passport/weixin'
+    },
+    loginDingtalkURI() {
+      return this.VUE_APP_BASE_API + '/passport/dingtalk'
     }
   },
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+        const query = route.query
+        if (query) {
+          this.redirect = query.redirect
+          this.otherQuery = this.getOtherQuery(query)
+        }
       },
       immediate: true
     }
   },
-  async created() {
-    this.handleRefreshCaptcha()
+  created() {
+    // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
+    if (this.$route.query.action === 'register') {
+      this.dialogFormVisible = true
+    }
     if (this.loginForm.username === '') {
       this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
   },
+  destroyed() {
+    // window.removeEventListener('storage', this.afterQRScan)
+  },
   methods: {
+    go(uri) {
+      location.href = uri
+    },
+    checkCapslock({ shiftKey, key } = {}) {
+      if (key && key.length === 1) {
+        if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
+          this.capsTooltip = true
+        } else {
+          this.capsTooltip = false
+        }
+      }
+      if (key === 'CapsLock' && this.capsTooltip === true) {
+        this.capsTooltip = false
+      }
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -154,159 +174,216 @@ export default {
       })
     },
     handleLogin() {
-      if (this.loading) {
-        return
-      }
-      this.$refs.loginForm.validate(async valid => {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          try {
-            await authService.login(this.loginForm)
-            this.loading = false
-            this.$router.push({ path: this.redirect || '/' }).catch(() => {
+
+          authService.login(this.loginForm)
+            .then(response => {
+              this.loading = false
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             })
-          } catch (e) {
-            console.error('login.login-error:', e)
-            this.loading = false
-            const { code } = e.data
-            // 验证码不正确
-            if (code && code === 20106) {
-              await this.handleRefreshCaptcha()
-            }
-            const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
-            this.$message.error(errorMessage)
-          }
+            .catch(error => {
+              this.loading = false
+              Message({
+                message: error.data.message,
+                type: 'error',
+                duration: 5 * 1000
+              })
+            })
         } else {
+          console.log('error submit!!')
           return false
         }
       })
     },
-    async handleRefreshCaptcha() {
-      try {
-        const response = await commonService.getImageCaptcha({ width: 100, height: 50 })
-        const { data } = response.data
-        this.loginForm.captchaId = data.id
-        this.captchaImageBase64 = data.img
-      } catch (e) {
-        console.error('login.getImageCaptcha-error:', e)
-        const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
-        this.$message.error(errorMessage)
-      }
+    getOtherQuery(query) {
+      return Object.keys(query).reduce((acc, cur) => {
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
+        }
+        return acc
+      }, {})
+    },
+    // afterQRScan() {
+    //   if (e.key === 'x-admin-oauth-code') {
+    //     const code = getQueryObject(e.newValue)
+    //     const codeMap = {
+    //       wechat: 'code',
+    //       tencent: 'code'
+    //     }
+    //     const type = codeMap[this.auth_type]
+    //     const codeName = code[type]
+    //     if (codeName) {
+    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
+    //         this.$router.push({ path: this.redirect || '/' })
+    //       })
+    //     } else {
+    //       alert('第三方登录失败')
+    //     }
+    //   }
+    // },
+    regResult(result) {
+      this.dialogFormVisible = false
     }
   }
 }
 </script>
 
-<style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
+<style lang="scss" scoped>
+  $loginWidth: 760px;
+  $loginHeight: 480px;
+  $colorExtraHeight: 40px;
+  $imageExtraWidth: 40px;
+  $borderRadius: 8px;
+  $formPaddingLeft: 80px;
 
-$bg: #f0f2f5;
-$dark_gray: #d9d9d9;
-$cursor: black;
+  .login-container {
+    min-height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background-image: radial-gradient(circle,#99CCCC, #7171B7);*/
+    background: url("../../assets/images/login-background.jpg") no-repeat;
+    background-size: 100% 100%;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
+    .box {
+      position: relative;
+    }
 
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 37px;
-    width: 85%;
+    .color-wrap {
+      filter: drop-shadow(-1px 1px 10px #79BBFF );
+    }
 
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: black;
-      height: 37px;
-      caret-color: $cursor;
+    .box-color {
+      width: calc(#{$loginWidth}/2);
+      height: calc(#{$loginHeight} + #{$colorExtraHeight});
+      position: absolute;
+      background-image: linear-gradient(to bottom , #409EFF , #B3D8FF);
+      margin-top: calc(-#{$colorExtraHeight}/2);
+      border-radius: $borderRadius;
+      clip-path: polygon(0 0,75% 0,95% 100%, 0px 100%)
+    }
 
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+    .box-image {
+      position: absolute;
+      height: $loginHeight;
+      width: calc(#{$loginWidth}/2 + #{$imageExtraWidth}/2);
+      display: flex;
+      align-items: center;
+      margin-left: -40px;
+      img {
+        max-width: 100%;
+      }
+    }
+
+    .box-title {
+      display: flex;
+      align-items: center;
+      padding-top: 10px;
+      .logo {
+        height: 44px;
+        width: 44px;
+      }
+      .info {
+        padding-left: 6px;
+        display: flex;
+        flex-direction: column;
+        .title {
+          font-size: 20px;
+          color: #303133;
+          font-weight: bold;
+        }
+        .sub-title {
+          font-size: 12px;
+          padding-top: 2px;
+          color: #909399;
+        }
+      }
+    }
+
+    .box-card {
+      height: $loginHeight;
+      width: $loginWidth;
+      border-radius: $borderRadius;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+
+      .left {
+        flex: 1;
+      }
+
+      .right {
+        flex: 1;
+        padding-left: calc(#{$formPaddingLeft}/2);
+
+        .el-tabs {
+          padding-right: calc(#{$formPaddingLeft}/2);
+          padding-top: 30px;
+        }
+      }
+    }
+
+    .box-bottom {
+      padding-right: calc(#{$formPaddingLeft}/2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .social {
+        color: #ffffff;
+        display: flex;
+        .icon {
+          cursor: pointer;
+          margin-right: 6px;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      .register {
+        font-size: 14px;
+        color: #909399;
       }
     }
   }
-
-  .el-form-item {
-    border: 1px solid $dark_gray;
-    border-radius: 5px;
-    color: $dark_gray;
-    margin-bottom: 34px;
-  }
-}
 </style>
 
-<style lang="scss" scoped>
-$dark_gray: #889aa4;
-$bg: #f0f2f5;
+<style lang="scss">
+  .login-container {
+    .el-card__body {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
 
-.login-container {
-  min-height: 100%;
-  width: 100%;
-  overflow: hidden;
-  background: $bg url('~@/assets/background.svg') no-repeat 50%;
-  background-size: 100%;
+    .component-account-login, .component-note-login {
 
-  .login-form {
-    position: relative;
-    width: 420px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
-  }
+      .el-input {
+        height: 40px;
+        line-height: 40px;
 
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
+        input {
+          height: 40px;
+          line-height: 40px;
+          padding-left: 35px;
+        }
+      }
 
-  .title-container {
-    position: relative;
+      .el-input__prefix {
+        width: 30px;
+        color: #889aa4;
+      }
 
-    .title {
-      font-size: 26px;
-      font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
-      color: black;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
+      .el-input__suffix {
+        width: 30px;
+        color: #889aa4;
+      }
     }
   }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .img-captcha-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 80px;
-    cursor: pointer;
-
-      img {
-        height: 100%;
-        width: 100%;
-      }
-  }
-}
 </style>

@@ -62,7 +62,9 @@
     <el-divider />
     <div class="item-box">
       <div class="left">
-        <svg-icon icon-class="email" />
+        <div class="fa-3x icon dingtalk" :style="{ color: '#4494F0' }">
+          <svg-icon icon-class="dingtalk" />
+        </div>
       </div>
       <div class="center">
         <p class="subtitle"><strong>社交账号</strong></p>
@@ -73,7 +75,9 @@
     <div class="social">
       <div class="item">
         <div class="left">
-          <svg-icon icon-class="email" />
+          <div class="fa-3x icon dingtalk" :style="{ color: '#4494F0' }">
+            <svg-icon icon-class="dingtalk" />
+          </div>
         </div>
         <div class="right">
           <p class="brand"><strong>github</strong></p>
@@ -87,6 +91,18 @@
         </div>
         <div class="right">
           <p class="brand"><strong>微信</strong></p>
+          <p class="info">已绑定 毛毛虫</p>
+          <el-button size="mini">解除绑定</el-button>
+        </div>
+      </div>
+      <div class="item">
+        <div class="left">
+          <div class="fa-3x icon dingtalk" :style="{ color: '#4494F0' }">
+            <svg-icon icon-class="dingtalk" />
+          </div>
+        </div>
+        <div class="right">
+          <p class="brand"><strong>钉钉</strong></p>
           <p class="info">已绑定 毛毛虫</p>
           <el-button size="mini">解除绑定</el-button>
         </div>

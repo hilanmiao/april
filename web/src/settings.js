@@ -1,5 +1,6 @@
 module.exports = {
   title: 'April',
+  subTitle: 'Apirl',
   dashboardName: '工作台',
 
   /**

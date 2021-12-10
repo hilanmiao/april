@@ -13,7 +13,7 @@
           :http-request="uploadAvatar"
         >
           <img v-if="user.avatar" :src="VUE_APP_BASE_API + user.avatar" alt="" draggable="false">
-          <img v-else src="@/assets/logo.png">
+          <img v-else src="@/assets/images/logo.png">
           <div class="update-avatar">
             <span>更换头像</span>
           </div>

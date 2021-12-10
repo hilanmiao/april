@@ -33,7 +33,7 @@
             <svg-icon
               slot="suffix"
               class="icon password"
-              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+              :icon-class="passwordType === 'password' ? 'eye' : 'eye-invisible'"
               @click="showPwd"
             />
           </el-input>

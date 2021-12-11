@@ -3,12 +3,12 @@
     <template v-if="unreadCount > 0">
       <el-tooltip :content="`有${unreadCount}条未读消息`" effect="dark" placement="bottom">
         <el-badge is-dot>
-          <i class="el-icon-message-solid" />
+          <svg-icon icon-class="notification"/>
         </el-badge>
       </el-tooltip>
     </template>
     <template v-else>
-      <i class="el-icon-message-solid" />
+      <svg-icon icon-class="notification"/>
     </template>
   </div>
 </template>

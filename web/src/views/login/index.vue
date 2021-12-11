@@ -32,12 +32,12 @@
           <div class="box-bottom">
             <div class="social">
               <div class="icon" :style="{ backgroundColor: '#24292e' }" @click="go(loginGithubURI)">
-                <svg-icon icon-class="dingtalk" />
+                <svg-icon icon-class="github" />
               </div>
               <div class="icon" :style="{ backgroundColor: '#1BB723' }" @click="go(loginWeixinURI)">
-                <svg-icon icon-class="dingtalk" />
+                <svg-icon icon-class="wechat" />
               </div>
-              <div class="icon fa-lg dingtalk" :style="{ backgroundColor: '#4494F0' }" @click="go(loginDingtalkURI)">
+              <div class="icon" :style="{ backgroundColor: '#4494F0' }" @click="go(loginDingtalkURI)">
                 <svg-icon icon-class="dingtalk" />
               </div>
             </div>

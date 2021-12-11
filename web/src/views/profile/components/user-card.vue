@@ -47,19 +47,19 @@
             class=""
           >
             <el-menu-item index="account" @click="activeMenu = 'account'">
-              <i class="el-icon-menu" />
+              <svg-icon icon-class="link"/>
               <strong slot="title">账号绑定</strong>
             </el-menu-item>
             <el-menu-item index="profile" @click="activeMenu = 'profile'">
-              <i class="el-icon-setting" />
+              <svg-icon icon-class="profile"/>
               <strong slot="title">个人信息</strong>
             </el-menu-item>
             <el-menu-item index="operationLog" @click="activeMenu = 'operationLog'">
-              <i class="el-icon-setting" />
+              <svg-icon icon-class="history"/>
               <strong slot="title">操作记录</strong>
             </el-menu-item>
             <el-menu-item index="authenticate" @click="activeMenu = 'authenticate'">
-              <i class="el-icon-setting" />
+              <svg-icon icon-class="safety-certificate"/>
               <strong slot="title">实名认证</strong>
             </el-menu-item>
           </el-menu>
@@ -269,6 +269,8 @@ export default {
     border-radius: 8px 0 0 8px;
     font-size: 16px;
     margin-bottom: 8px;
+    display: flex;
+    align-items: center;
     &:hover {
       background-color: transparent;
     }
@@ -289,8 +291,8 @@ export default {
       background: $menuActiveBg;
     }
 
-    [class^="el-icon-"] {
-      margin-right: 15px;
+    .svg-icon {
+      margin-right: 8px;
     }
   }
 }

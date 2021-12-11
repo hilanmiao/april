@@ -10,7 +10,7 @@
     <el-divider />
     <div class="item-box">
       <div class="left">
-        <svg-icon icon-class="email" />
+        <svg-icon icon-class="mail" />
       </div>
       <div class="center">
         <p class="subtitle">
@@ -28,7 +28,7 @@
     <el-divider />
     <div class="item-box">
       <div class="left">
-        <svg-icon icon-class="email" />
+        <svg-icon icon-class="mobile" />
       </div>
       <div class="center">
         <p class="subtitle">
@@ -46,7 +46,7 @@
     <el-divider />
     <div class="item-box">
       <div class="left">
-        <svg-icon icon-class="email" />
+        <svg-icon icon-class="lock" />
       </div>
       <div class="center">
         <p class="subtitle">
@@ -62,32 +62,27 @@
     <el-divider />
     <div class="item-box">
       <div class="left">
-        <div class="fa-3x icon dingtalk" :style="{ color: '#4494F0' }">
-          <svg-icon icon-class="dingtalk" />
-        </div>
+        <svg-icon icon-class="link" />
       </div>
       <div class="center">
         <p class="subtitle"><strong>社交账号</strong></p>
         <p class="content">绑定第三方账号，可以直接登录，还可以将内容同步到以下平台，与更多好友分享</p>
       </div>
     </div>
-
     <div class="social">
       <div class="item">
         <div class="left">
-          <div class="fa-3x icon dingtalk" :style="{ color: '#4494F0' }">
-            <svg-icon icon-class="dingtalk" />
-          </div>
+          <svg-icon class="github" icon-class="github" />
         </div>
         <div class="right">
-          <p class="brand"><strong>github</strong></p>
+          <p class="brand"><strong>Github</strong></p>
           <p class="info unbound">未绑定</p>
           <el-button size="mini" type="primary">添加绑定</el-button>
         </div>
       </div>
       <div class="item">
         <div class="left">
-          <svg-icon icon-class="email" />
+          <svg-icon class="wechat" icon-class="wechat" />
         </div>
         <div class="right">
           <p class="brand"><strong>微信</strong></p>
@@ -97,9 +92,7 @@
       </div>
       <div class="item">
         <div class="left">
-          <div class="fa-3x icon dingtalk" :style="{ color: '#4494F0' }">
-            <svg-icon icon-class="dingtalk" />
-          </div>
+          <svg-icon class="dingtalk" icon-class="dingtalk"/>
         </div>
         <div class="right">
           <p class="brand"><strong>钉钉</strong></p>
@@ -166,8 +159,10 @@ export default {
       padding: 0 30px;
       width: 100px;
       justify-content: center;
-      .icon {
-        color: #d9dde1;
+      .svg-icon {
+        color: #C0C4CC;
+        width: 3em;
+        height: 3em;
       }
     }
     .center {
@@ -215,6 +210,17 @@ export default {
         align-items: center;
         padding-right: 14px;
         justify-content: center;
+        .svg-icon {
+          &.github {
+            color: #303133;
+          }
+          &.wechat {
+            color: #1BB723;
+          }
+          &.dingtalk {
+            color: #4494F0;
+          }
+        }
       }
       .right {
         p {

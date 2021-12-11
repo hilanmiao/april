@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-badge :value="onlineUserSocketIds.length" :max="99" type="primary">
-      <svg-icon icon-class="peoples" @click="click" />
+      <svg-icon icon-class="team" @click="click" />
     </el-badge>
   </div>
 </template>

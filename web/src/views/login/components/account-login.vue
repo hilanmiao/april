@@ -29,7 +29,7 @@
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
           >
-            <svg-icon slot="prefix" icon-class="password" class="icon" />
+            <svg-icon slot="prefix" icon-class="lock" class="icon" />
             <svg-icon
               slot="suffix"
               class="icon password"
@@ -50,7 +50,7 @@
           tabindex="3"
           @keyup.enter.native="handleLogin"
         >
-          <svg-icon slot="prefix" icon-class="password" class="icon" />
+          <svg-icon slot="prefix" icon-class="safety-certificate" class="icon" />
           <img
             slot="suffix"
             :src="captchaImageBase64"

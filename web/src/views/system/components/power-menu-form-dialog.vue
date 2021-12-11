@@ -46,7 +46,26 @@
         <el-input v-model="form.router" autocomplete="off" placeholder="例：/system/power/menu" />
       </el-form-item>
       <el-form-item label="节点图标" :label-width="labelWidth" prop="icon">
-        <icon-selector :value="form.icon" @selected="iconSelected" />
+<!--        <icon-selector :value="form.icon" @selected="iconSelected" />-->
+        <el-popover
+          v-model="popoverVisibleIcon"
+          placement="bottom-start"
+          width="700"
+          trigger="click"
+        >
+          <el-scrollbar wrap-style="max-height: 300px;">
+            <icon-selector :value="form.icon" @selected="iconSelected" />
+          </el-scrollbar>
+          <el-input
+            slot="reference"
+            v-model="form.icon"
+            placeholder="请选择图标"
+            readonly
+          >
+            <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" />
+            <span v-else slot="prefix" />
+          </el-input>
+        </el-popover>
       </el-form-item>
       <el-form-item v-show="form.type === 'menu'" label="隐藏" :label-width="labelWidth" prop="isHidden">
         <el-switch v-model="form.isHidden" />
@@ -78,7 +97,8 @@
 
 <script>
 import _ from 'lodash'
-import IconSelector from './icon-selector'
+// import IconSelector from './icon-selector'
+import IconSelector from '@/components/IconSelector'
 import { constantRouterComponents } from '@/router'
 import { menuService } from '@/services'
 
@@ -130,7 +150,8 @@ export default {
       },
       loading: false,
       saving: false,
-      popoverVisible: false
+      popoverVisible: false,
+      popoverVisibleIcon: false
       // 业务属性
     }
   },
@@ -260,6 +281,7 @@ export default {
     // 图标选择
     iconSelected(val) {
       this.form.icon = val
+      this.popoverVisibleIcon = false
     },
     // 菜单点击回调
     handleMenuNodeClick(data) {

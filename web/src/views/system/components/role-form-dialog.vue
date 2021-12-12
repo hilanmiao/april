@@ -126,12 +126,12 @@ export default {
   },
   methods: {
     // 打开回调
-    open() {
-      this.init()
+    async open() {
+      await this.init()
       // 添加
       if (this.form.id === '-1') return
       // 编辑
-      this.setData()
+      await this.setData()
     },
     // 初始化数据事件等
     async init() {

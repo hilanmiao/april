@@ -1,5 +1,5 @@
 <template>
-  <div class="sys-role-container">
+  <div class="notification-container">
     <table-layout class="table-layout">
       <template v-slot:headerLeft>
         <el-button size="mini" type="primary" @click="handleAdd">新增</el-button>
@@ -11,7 +11,7 @@
         >批量删除</warning-confirm-button>
       </template>
       <template v-slot:headerRight>
-        <el-input v-model="tableSearchParams.name" size="mini" placeholder="请输入角色名称" class="search-input">
+        <el-input v-model="tableSearchParams.title" size="mini" placeholder="请输入标题" class="search-input">
           <el-button slot="append" icon="el-icon-search" type="primary" @click="loadTableData">搜索</el-button>
         </el-input>
         <span class="line">|</span>
@@ -31,13 +31,19 @@
           style="width: 100%;"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="index" width="30" fixed="left"/>
-          <el-table-column type="selection" align="center" width="30" />
-          <el-table-column prop="name" label="名称" align="center" width="200">
+          <el-table-column type="index" width="30" fixed="left" />
+          <el-table-column type="selection" align="center" width="30" fixed="left" />
+          <el-table-column prop="title" label="标题" align="center" width="200">
             <template slot-scope="{row}">
-              <span class="link-type" @click="handleEdit(row)">{{ row.name }}</span>
+              <span class="link-type" @click="handleEdit(row)">{{ row.title }}</span>
             </template>
           </el-table-column>
+          <el-table-column prop="title" label="接收人" align="center" width="200">
+            <template slot-scope="{row}">
+              <span class="link-type" @click="handleEdit(row)">{{ row.title }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="managerName" label="发送人" align="center" />
           <el-table-column prop="remark" label="备注" align="center" />
           <el-table-column prop="createdAt" label="创建时间" align="center" width="200" />
           <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />
@@ -57,25 +63,25 @@
       </template>
     </table-layout>
 
-    <role-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
+    <notification-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
-import roleFormDialog from './components/role-form-dialog'
+import notificationFormDialog from './components/notification-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
-import { roleService } from '@/services'
+import { notificationService } from '@/services'
 
 export default {
-  name: 'SystemRole',
+  name: 'Notification',
   components: {
     TableLayout,
     Pagination,
     WarningConfirmButton,
-    roleFormDialog
+    notificationFormDialog
   },
   data() {
     return {
@@ -88,7 +94,7 @@ export default {
         currentPage: 1
       },
       tableSearchParams: {
-        name: ''
+        title: ''
       },
       tablePaginationDefault: null,
       tableSearchParamsDefault: null,
@@ -115,15 +121,15 @@ export default {
       this.tableLoading = true
       const page = this.tablePagination.currentPage
       const limit = this.tablePagination.pageSize
-      const name = this.tableSearchParams.name
+      const title = this.tableSearchParams.title
       try {
-        const response = await roleService.getRoleListByPage({ page, limit, name })
+        const response = await notificationService.getNotificationListByPage({ page, limit, title })
         const { data } = response.data
         this.tableData = data.list
         this.tablePagination.total = data.pagination.total
         this.tableLoading = false
       } catch (e) {
-        console.error('role.getRoleListByPage-error:', e)
+        console.error('notification.getNotificationListByPage-error:', e)
         this.tableLoading = false
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
@@ -154,10 +160,10 @@ export default {
     // 删除
     async handleDelete(row, { done, close }) {
       try {
-        await roleService.deleteRole({ ids: [row.id] })
+        await notificationService.deleteNotification({ ids: [row.id] })
         close()
       } catch (e) {
-        console.error('role.deleteRole-error:', e)
+        console.error('notification.deleteNotification-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
@@ -167,11 +173,11 @@ export default {
     async handleBulkDelete({ done, close }) {
       try {
         const ids = _.map(this.tableMultipleSelection, 'id')
-        await roleService.deleteRole({ ids })
+        await notificationService.deleteNotification({ ids })
         close()
       } catch (e) {
         done()
-        console.error('role.deleteRole-error:', e)
+        console.error('notification.deleteNotification-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)

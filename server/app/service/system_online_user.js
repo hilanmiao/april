@@ -58,8 +58,8 @@ class SystemOnlineUserService extends Service {
       logger.error(e)
       // await transaction.rollback();
 
-      // 操作失败
-      return { code: 20107 }
+      // 下线失败
+      return { code: 20601 }
     }
   }
 

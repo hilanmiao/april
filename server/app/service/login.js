@@ -48,12 +48,14 @@ class LoginService extends Service {
 
     const session = ctx.request.session
     console.log(ctx.request.session)
-    const res = ctx.model.SystemSession.findByPk(session.id)
+    const model = await ctx.model.SystemSession.findByPk(session.id)
+    await model.destroy()
 
     // socket
     const nsp = this.app.io.of('/'); // 获取到对应的命名空间的内容
     nsp.emit('logout', { msg: 'logout', id: ctx.request.user.id });
 
+    const res = { id: model.id }
     return res
   }
 }

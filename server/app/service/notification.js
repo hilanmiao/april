@@ -24,10 +24,14 @@ class NotificationService extends Service {
       transaction = await ctx.model.transaction();
 
       // 批量创建
-      const notifications = _.map(recipient_ids, item => {
-        return { title, content, type, recipient_id: item, manager_id, remark }
-      });
-      await ctx.model.Notification.bulkCreate(notifications, { ignoreDuplicates: true, transaction })
+      if (type === '1') {
+        const notifications = _.map(recipient_ids, item => {
+          return { title, content, type, recipient_id: item, manager_id, remark }
+        });
+        await ctx.model.Notification.bulkCreate(notifications, { ignoreDuplicates: true, transaction })
+      } else {
+        await ctx.model.Notification.create({ title, content, type, remark }, { transaction })
+      }
 
       // 提交事务
       await transaction.commit()
@@ -51,7 +55,7 @@ class NotificationService extends Service {
    * @param content
    * @param type
    * @param remark
-   * @returns {Promise<{code: number}|{id}>}
+   * @return {Promise<{code: number}|{id}>}
    */
   async update({ id, title, content, type, remark }) {
     const { ctx } = this;

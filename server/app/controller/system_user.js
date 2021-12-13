@@ -81,8 +81,9 @@ class SystemUserController extends Controller {
    */
   async list() {
     const { ctx } = this;
+    const { keyword } = ctx.request.query
 
-    const res = await ctx.service.systemUser.list()
+    const res = await ctx.service.systemUser.list({ keyword })
 
     this.success({ ctx, data: res })
   }

@@ -178,10 +178,25 @@ class SystemUserService extends Service {
    * 查询
    * @return {Promise<*>}
    */
-  async list() {
+  async list({ keyword }) {
     const { ctx, app: { Sequelize: { Op } } } = this;
+    const op = {
+      where: {
+      },
+      order: [
+        [ 'created_at', 'desc' ]
+      ]
+    }
+    if (keyword) {
+      op.where = {
+        [Op.or]: [
+          { username: { [Op.like]: `%${keyword || ''}%` } },
+          { mobile: { [Op.like]: `%${keyword || ''}%` } }
+        ]
+      }
+    }
 
-    const res = await ctx.model.SystemUser.findAll()
+    const res = await ctx.model.SystemUser.findAll(op)
 
     return res;
   }

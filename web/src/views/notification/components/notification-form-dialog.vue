@@ -15,10 +15,27 @@
         <el-input v-model="form.title" autocomplete="off" />
       </el-form-item>
       <el-form-item label="发送类型" :label-width="labelWidth" prop="type">
-        <el-input v-model="form.type" autocomplete="off" />
+        <el-radio v-model="form.type" label="1">指定用户</el-radio>
+        <el-radio v-model="form.type" label="2">全体用户</el-radio>
       </el-form-item>
-      <el-form-item label="接收人" :label-width="labelWidth" prop="recipientIds">
-        <el-input v-model="form.recipientIds" autocomplete="off" />
+      <el-form-item label="接收人" :label-width="labelWidth" v-show="form.type === '1'" prop="recipientIds">
+        <el-select
+          v-model="form.recipientIds"
+          multiple
+          filterable
+          remote
+          reserve-keyword
+          placeholder="请输入用户名或手机号进行模糊检索"
+          :remote-method="remoteMethod"
+          :loading="loadingSelect"
+        >
+          <el-option
+            v-for="item in userList"
+            :key="item.id"
+            :label="`${item.username}_${item.mobile}`"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="内容" :label-width="labelWidth" prop="cotent">
         <el-input v-model="form.content" autocomplete="off" type="textarea" />
@@ -78,6 +95,7 @@ export default {
       loading: false,
       saving: false,
       // 业务属性
+      loadingSelect: false,
       userList: []
     }
   },
@@ -204,6 +222,24 @@ export default {
           }
         }
       })
+    },
+    // 远程搜索
+    async remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true
+        try {
+          const response = await userService.getUserList({ keyword: query })
+          const { data: userList } = response.data
+          this.userList = userList
+        } catch (e) {
+          console.error('notification.getUserList-error:', e)
+          const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+          this.$message.error(errorMessage)
+          this.loading = false
+        }
+      } else {
+        this.userList = []
+      }
     }
   }
 }

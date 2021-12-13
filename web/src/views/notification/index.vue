@@ -38,18 +38,19 @@
               <span class="link-type" @click="handleEdit(row)">{{ row.title }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="title" label="接收人" align="center" width="200">
+          <el-table-column prop="title" label="接收人" align="center">
             <template slot-scope="{row}">
-              <span class="link-type" @click="handleEdit(row)">{{ row.title }}</span>
+              <el-tag type="info">{{ row.recipientName }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="managerName" label="发送人" align="center" />
           <el-table-column prop="remark" label="备注" align="center" />
           <el-table-column prop="createdAt" label="创建时间" align="center" width="200" />
-          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />
-          <el-table-column label="操作" width="150" align="center" fixed="right">
+<!--          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />-->
+          <el-table-column label="操作" width="100" align="center" fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <!--        最好是不要更新，而是删除并发送新的通知，社会      -->
+              <!--              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>-->
               <warning-confirm-button
                 :closed="handleRefresh"
                 @confirm="(o) => { handleDelete(scope.row, o) }"

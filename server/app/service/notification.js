@@ -180,6 +180,7 @@ class NotificationService extends Service {
               FROM notification_user
               WHERE
               notification_user.notification_id = notification.id
+              and is_read = 1
           )`),
           'readCount']
         ]
@@ -216,6 +217,7 @@ class NotificationService extends Service {
    * @param page
    * @param limit
    * @param title
+   * @param is_read
    * @return {Promise<{pagination: {total, size, page}, list: number | TInstance[] | M[] | SQLResultSetRowList | HTMLCollectionOf<HTMLTableRowElement> | string}>}
    */
   async getMine({ page, limit, title, is_read }) {
@@ -281,6 +283,27 @@ class NotificationService extends Service {
     });
     let res = await ctx.model.NotificationUser.bulkCreate(notificationUsers)
     res = { count: res.length }
+
+    return res;
+  }
+
+  /**
+   * 统计我的未读
+   * @return {Promise<{count: *}>}
+   */
+  async countMyUnread() {
+    const { ctx, app: { Sequelize, Sequelize: { Op } } } = this;
+    const currentUser = ctx.request.user
+    const op = {
+      where: {
+        is_read: false,
+        recipient_id: currentUser.id
+      }
+    }
+    let res = await ctx.model.NotificationUser.count(op)
+    res = {
+      count: res
+    }
 
     return res;
   }

@@ -34,9 +34,9 @@
           <el-table-column type="index" width="30" fixed="left" />
           <el-table-column type="selection" align="center" width="30" fixed="left" />
           <el-table-column prop="title" label="标题" align="center" width="200">
-            <template slot-scope="{row}">
-              <span class="link-type" @click="handleEdit(row)">{{ row.title }}</span>
-            </template>
+            <!--            <template slot-scope="{row}">-->
+            <!--              <span class="link-type" @click="handleEdit(row)">{{ row.title }}</span>-->
+            <!--            </template>-->
           </el-table-column>
           <el-table-column prop="title" label="接收人" align="center">
             <template slot-scope="{row}">
@@ -47,11 +47,11 @@
           <el-table-column prop="managerName" label="已读/未读" align="center">
             <template slot-scope="{row}">
               <template v-if="row.type === '1'">
-                <el-tag type="info" v-if="!row.readCount">未读</el-tag>
+                <el-tag v-if="!row.readCount" type="info">未读</el-tag>
                 <el-tag v-else type="success">已读</el-tag>
               </template>
               <template v-else>
-                <el-tag type="info" v-if="!row.readCount">未读</el-tag>
+                <el-tag v-if="!row.readCount" type="info">未读</el-tag>
                 <el-tag v-else type="success">已读 {{ row.readCount }}</el-tag>
               </template>
             </template>
@@ -63,7 +63,7 @@
           </el-table-column>
           <el-table-column prop="remark" label="备注" align="center" />
           <el-table-column prop="createdAt" label="创建时间" align="center" width="200" />
-<!--          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />-->
+          <!--          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />-->
           <el-table-column label="操作" width="100" align="center" fixed="right">
             <template slot-scope="scope">
               <!--        最好是不要更新，而是删除并发送新的通知，社会      -->
@@ -201,7 +201,7 @@ export default {
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
       }
-    },
+    }
     // async sync() {
     //   try {
     //     await notificationService.syncNotification()

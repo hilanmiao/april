@@ -10,6 +10,7 @@ module.exports = app => {
 
   const tokenRequired = middleware.tokenRequired(null, app)
 
+  apiRouter.get('/notification/my-unread', tokenRequired, notification.countMyUnread);
   apiRouter.post('/notification/sync', tokenRequired, notification.sync);
   apiRouter.post('/notification', tokenRequired, notification.create);
   apiRouter.put('/notification', tokenRequired, notification.update);

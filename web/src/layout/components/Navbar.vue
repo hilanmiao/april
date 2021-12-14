@@ -12,7 +12,7 @@
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
       </template>
 
-      <notification class="right-menu-item hover-effect" :unread-count="9" />
+      <notification class="right-menu-item hover-effect" :unread-count="unreadNotifications" />
 
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -56,7 +56,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'user',
-      'device'
+      'device',
+      'unreadNotifications'
     ])
   },
   created() {

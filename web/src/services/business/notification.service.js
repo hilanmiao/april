@@ -30,4 +30,8 @@ internals.syncNotification = (data) => {
   return http.post(apiUrl + 'sync', data)
 }
 
+internals.countMyUnreadNotification = (params) => {
+  return http.get(apiUrl + 'my-unread', params)
+}
+
 export default internals

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div @click="click">
     <el-badge :value="onlineUserSocketIds.length" :max="99" type="primary">
-      <svg-icon icon-class="team" @click="click" />
+      <svg-icon icon-class="team" />
     </el-badge>
   </div>
 </template>
@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     click() {
+      this.$router.push({ path: '/system/monitor/online-user' })
     }
   }
 }

@@ -18,7 +18,7 @@
         <el-radio v-model="form.type" label="1">指定用户</el-radio>
         <el-radio v-model="form.type" label="2">全体用户</el-radio>
       </el-form-item>
-      <el-form-item label="接收人" :label-width="labelWidth" v-show="form.type === '1'" prop="recipientIds">
+      <el-form-item v-show="form.type === '1'" label="接收人" :label-width="labelWidth" prop="recipientIds">
         <el-select
           v-model="form.recipientIds"
           multiple

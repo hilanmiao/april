@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getAccessToken, getRefreshToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 import qs from 'querystring'
-import { authService, authInterceptor } from '@/services'
+import { authService, authInterceptor, notificationService } from '@/services'
 import axios from 'axios'
 
 // 打印项目信息
@@ -63,6 +63,9 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
+          // 同步我的消息通知
+          await notificationService.syncNotification()
+
           // 获取我的基本信息
           let user = {}
           await authService.getUserInfo()

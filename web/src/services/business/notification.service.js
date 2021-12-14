@@ -14,10 +14,6 @@ internals.getNotificationListByPage = (params) => {
   return http.get(apiUrl + 'page', params)
 }
 
-internals.getNotificationList = (params) => {
-  return http.get(apiUrl + 'list', params)
-}
-
 internals.createNotification = (data) => {
   return http.post(apiUrl, data)
 }
@@ -28,6 +24,10 @@ internals.updateNotification = (data) => {
 
 internals.deleteNotification = (data) => {
   return http.delete(apiUrl, data)
+}
+
+internals.syncNotification = (data) => {
+  return http.post(apiUrl + 'sync', data)
 }
 
 export default internals

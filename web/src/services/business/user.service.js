@@ -14,10 +14,6 @@ internals.getUserListByPage = (params) => {
   return http.get(apiUrl + 'page', params)
 }
 
-internals.getUserList = (params) => {
-  return http.get(apiUrl + 'list', params)
-}
-
 internals.createUser = (data) => {
   return http.post(apiUrl, data)
 }

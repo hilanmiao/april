@@ -40,10 +40,27 @@
           </el-table-column>
           <el-table-column prop="title" label="接收人" align="center">
             <template slot-scope="{row}">
-              <el-tag type="info">{{ row.recipientName }}</el-tag>
+              <el-tag v-if="row.type === '1'">{{ row.recipientUser.username }}</el-tag>
+              <el-tag v-else type="danger">全体用户</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="managerName" label="发送人" align="center" />
+          <el-table-column prop="managerName" label="已读/未读" align="center">
+            <template slot-scope="{row}">
+              <template v-if="row.type === '1'">
+                <el-tag type="info" v-if="!row.readCount">未读</el-tag>
+                <el-tag v-else type="success">已读</el-tag>
+              </template>
+              <template v-else>
+                <el-tag type="info" v-if="!row.readCount">未读</el-tag>
+                <el-tag v-else type="success">已读 {{ row.readCount }}</el-tag>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="managerName" label="发送人" align="center">
+            <template slot-scope="{row}">
+              {{ row.managerUser.username }}
+            </template>
+          </el-table-column>
           <el-table-column prop="remark" label="备注" align="center" />
           <el-table-column prop="createdAt" label="创建时间" align="center" width="200" />
 <!--          <el-table-column prop="updatedAt" label="更新时间" align="center" width="200" />-->
@@ -107,6 +124,7 @@ export default {
     }
   },
   created() {
+    // this.sync()
     this.loadTableData()
     // 拷贝默认值
     this.tablePaginationDefault = _.cloneDeep(this.tablePagination)
@@ -183,7 +201,16 @@ export default {
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
       }
-    }
+    },
+    // async sync() {
+    //   try {
+    //     await notificationService.syncNotification()
+    //   } catch (e) {
+    //     console.error('notification.deleteNotification-error:', e)
+    //     const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
+    //     this.$message.error(errorMessage)
+    //   }
+    // }
   }
 }
 </script>

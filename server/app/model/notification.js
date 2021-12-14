@@ -40,5 +40,11 @@ module.exports = app => {
     comment: '消息通知表'
   });
 
+  Notification.associate = function() {
+    Notification.hasMany(app.model.NotificationUser, { foreignKey: 'notification_id', sourceKey: 'id', constraints: false });
+    Notification.belongsTo(app.model.SystemUser, { as: 'manager_user', foreignKey: 'manager_id', targetKey: 'id', constraints: false });
+    Notification.belongsTo(app.model.SystemUser, { as: 'recipient_user', foreignKey: 'recipient_id', targetKey: 'id', constraints: false });
+  }
+
   return Notification;
 };

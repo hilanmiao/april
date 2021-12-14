@@ -14,10 +14,6 @@ internals.getRoleListByPage = (params) => {
   return http.get(apiUrl + 'page', params)
 }
 
-internals.getRoleList = (params) => {
-  return http.get(apiUrl + 'list', params)
-}
-
 internals.createRole = (data) => {
   return http.post(apiUrl, data)
 }

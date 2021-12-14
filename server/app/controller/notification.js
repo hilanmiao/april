@@ -99,6 +99,22 @@ class NotificationController extends Controller {
 
     this.success({ ctx, data: res })
   }
+
+  /**
+   * 同步
+   * @return {Promise<void>}
+   */
+  async sync() {
+    const { ctx } = this;
+
+    const res = await ctx.service.notification.sync()
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
+    this.success({ ctx, data: res })
+  }
 }
 
 module.exports = NotificationController;

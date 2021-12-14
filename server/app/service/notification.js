@@ -30,7 +30,7 @@ class NotificationService extends Service {
         });
         await ctx.model.Notification.bulkCreate(notifications, { ignoreDuplicates: true, transaction })
       } else {
-        await ctx.model.Notification.create({ title, content, type, remark }, { transaction })
+        await ctx.model.Notification.create({ title, content, type, manager_id, remark }, { transaction })
       }
 
       // 提交事务
@@ -163,7 +163,7 @@ class NotificationService extends Service {
    * @return {Promise<{pagination: {total, size, page}, list: number | TInstance[] | M[] | SQLResultSetRowList | HTMLCollectionOf<HTMLTableRowElement> | string}>}
    */
   async page({ page, limit, title }) {
-    const { ctx, app: { Sequelize: { Op } } } = this;
+    const { ctx, app: { Sequelize, Sequelize: { Op } } } = this;
     const op = {
       where: {
         title: { [Op.like]: `%${title || ''}%` },
@@ -172,7 +172,30 @@ class NotificationService extends Service {
         [ 'created_at', 'desc' ]
       ],
       offset: (+(page || 1) - 1) * +limit || 0,
-      limit: +limit || 20
+      limit: +limit || 20,
+      attributes: {
+        include: [
+          [Sequelize.literal(`(
+              SELECT COUNT(*)
+              FROM notification_user
+              WHERE
+              notification_user.notification_id = notification.id
+          )`),
+          'readCount']
+        ]
+      },
+      include: [
+        {
+          attributes: ['id', 'username'],
+          model: ctx.model.SystemUser,
+          as: 'manager_user'
+        },
+        {
+          attributes: ['id', 'username'],
+          model: ctx.model.SystemUser,
+          as: 'recipient_user'
+        },
+      ]
     }
 
     let res = await ctx.model.Notification.findAndCountAll(op);
@@ -184,6 +207,80 @@ class NotificationService extends Service {
         total: res.count
       }
     }
+
+    return res;
+  }
+
+  /**
+   * 分页
+   * @param page
+   * @param limit
+   * @param title
+   * @return {Promise<{pagination: {total, size, page}, list: number | TInstance[] | M[] | SQLResultSetRowList | HTMLCollectionOf<HTMLTableRowElement> | string}>}
+   */
+  async getMine({ page, limit, title, is_read }) {
+    const { ctx, app: { Sequelize, Sequelize: { Op } } } = this;
+    const currentUser = ctx.request.user
+    const op = {
+      where: {
+        title: { [Op.like]: `%${title || ''}%` },
+        recipient_id: currentUser.id
+      },
+      order: [
+        [ 'created_at', 'desc' ]
+      ],
+      offset: (+(page || 1) - 1) * +limit || 0,
+      limit: +limit || 20,
+      include: [
+        {
+          model: ctx.model.Notification
+        }
+      ]
+    }
+    let res = await ctx.model.NotificationUser.findAndCountAll(op);
+    res = {
+      list: res.rows,
+      pagination: {
+        page,
+        size: limit,
+        total: res.count
+      }
+    }
+
+    return res;
+  }
+
+  /**
+   * 同步
+   * @return {Promise<{count}>}
+   */
+  async sync() {
+    const { ctx, app: { Sequelize, Sequelize: { Op } } } = this;
+    const currentUser = ctx.request.user
+    // 查询我没有同步的消息通知，并同步
+    const op1 = {
+      attributes: ['id'],
+      where: {
+        [Op.or]: [
+          { recipient_id: currentUser.id },
+          { type: '2' }
+        ]
+      }
+    }
+    const op2 = {
+      attributes: ['notification_id'],
+      where: {
+        recipient_id: currentUser.id
+      }
+    }
+    const ids1 = (await ctx.model.Notification.findAll(op1)).map(item => item.id)
+    const ids2 = (await ctx.model.NotificationUser.findAll(op2)).map(item => item.notification_id)
+    const ids = _.xor(ids1, ids2)
+    const notificationUsers = _.map(ids, id => {
+      return { notification_id: id, recipient_id: currentUser.id }
+    });
+    let res = await ctx.model.NotificationUser.bulkCreate(notificationUsers)
+    res = { count: res.length }
 
     return res;
   }

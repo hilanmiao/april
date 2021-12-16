@@ -1,11 +1,11 @@
 <template>
   <div class="notification-container">
-    <el-tabs type="border-card" v-model="activeTab">
+    <el-tabs v-model="activeTab" type="border-card">
       <el-tab-pane :label="`未读消息(${unreadNotifications})`" name="unread">
         <unread />
       </el-tab-pane>
       <el-tab-pane label="已读消息" name="read">
-        <read />
+        <read ref="read" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -29,6 +29,15 @@ export default {
     ...mapGetters([
       'unreadNotifications'
     ])
+  },
+  watch: {
+    activeTab(newValue) {
+      this.currentValue = newValue
+      if (newValue === 'read') {
+        // 更新已读组件数据
+        this.$refs.read.loadTableData()
+      }
+    }
   },
   created() {
 

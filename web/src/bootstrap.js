@@ -66,13 +66,7 @@ router.beforeEach(async(to, from, next) => {
           // 同步我的消息通知
           await notificationService.syncNotification()
           // 获取未读消息统计
-          let count = 0
-          await notificationService.countMyUnreadNotification()
-            .then(response => {
-              const { data } = response.data
-              count = data.count
-            })
-          await store.dispatch('notification/setUnreadNotification', count)
+          await store.dispatch('notification/countMyUnreadNotification')
 
           // 获取我的基本信息
           let user = {}

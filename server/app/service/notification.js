@@ -131,7 +131,19 @@ class NotificationService extends Service {
     const op = {
       where: {
         id
-      }
+      },
+      include: [
+        {
+          attributes: ['id', 'username'],
+          model: ctx.model.SystemUser,
+          as: 'manager_user'
+        },
+        {
+          attributes: ['id', 'username'],
+          model: ctx.model.SystemUser,
+          as: 'recipient_user'
+        },
+      ]
     }
 
     const res = await ctx.model.Notification.findOne(op);
@@ -215,18 +227,17 @@ class NotificationService extends Service {
   /**
    * 分页
    * @param page
-   * @param limit
    * @param title
    * @param is_read
    * @return {Promise<{pagination: {total, size, page}, list: number | TInstance[] | M[] | SQLResultSetRowList | HTMLCollectionOf<HTMLTableRowElement> | string}>}
    */
-  async getMine({ page, limit, title, is_read }) {
+  async pageMine({ page, limit, is_read }) {
     const { ctx, app: { Sequelize, Sequelize: { Op } } } = this;
     const currentUser = ctx.request.user
     const op = {
       where: {
-        title: { [Op.like]: `%${title || ''}%` },
-        recipient_id: currentUser.id
+        recipient_id: currentUser.id,
+        is_read
       },
       order: [
         [ 'created_at', 'desc' ]
@@ -235,9 +246,16 @@ class NotificationService extends Service {
       limit: +limit || 20,
       include: [
         {
-          model: ctx.model.Notification
+          model: ctx.model.Notification,
+          include: [
+            {
+              attributes: ['id', 'username'],
+              model: ctx.model.SystemUser,
+              as: 'manager_user'
+            },
+          ]
         }
-      ]
+      ],
     }
     let res = await ctx.model.NotificationUser.findAndCountAll(op);
     res = {
@@ -306,6 +324,40 @@ class NotificationService extends Service {
     }
 
     return res;
+  }
+
+  /**
+   * 已读
+   * @param ids
+   * @return {Promise<{code: number}|{count}>}
+   */
+  async read({ ids }) {
+    const { ctx, app: { Sequelize: { Op } } } = this;
+    // const op = { where: { id: { [Op.in]: ids } } };
+    let res,
+      transaction;
+    try {
+      // 开启事务
+      transaction = await ctx.model.transaction();
+
+      for (const id of ids) {
+        const modelNotificationUser = await ctx.model.NotificationUser.findOne({ where: { id }, transaction, lock: true, skipLocked: true });
+        await modelNotificationUser.update({ is_read: true }, { transaction })
+      }
+
+      // 提交事务
+      await transaction.commit()
+      res = { count: ids.length }
+
+      return res
+    } catch (e) {
+      console.log(e)
+      ctx.logger.error(e)
+      await transaction.rollback();
+
+      // 操作失败
+      return { code: 20107 }
+    }
   }
 }
 

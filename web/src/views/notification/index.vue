@@ -40,7 +40,7 @@
           </el-table-column>
           <el-table-column prop="title" label="接收人" align="center">
             <template slot-scope="{row}">
-              <el-tag v-if="row.type === '1'">{{ row.recipientUser.username }}</el-tag>
+              <el-tag v-if="row.type === '1'">{{ row.recipientUser && row.recipientUser.username || '' }}</el-tag>
               <el-tag v-else type="danger">全体用户</el-tag>
             </template>
           </el-table-column>
@@ -58,7 +58,7 @@
           </el-table-column>
           <el-table-column prop="managerName" label="发送人" align="center">
             <template slot-scope="{row}">
-              {{ row.managerUser.username }}
+              {{ row.managerUser && row.managerUser.username || '' }}
             </template>
           </el-table-column>
           <el-table-column prop="remark" label="备注" align="center" />
@@ -68,6 +68,7 @@
             <template slot-scope="scope">
               <!--        最好是不要更新，而是删除并发送新的通知，社会      -->
               <!--              <el-button size="mini" type="text" @click="handleEdit(scope.row)">编辑</el-button>-->
+              <el-button size="mini" type="text" @click="handleView(scope.row)">详情</el-button>
               <warning-confirm-button
                 :closed="handleRefresh"
                 @confirm="(o) => { handleDelete(scope.row, o) }"
@@ -82,15 +83,17 @@
     </table-layout>
 
     <notification-form-dialog ref="formDialog" v-model="dialogVisible" :form-id="formId" @save-success="handleRefresh" />
+    <notification-form-dialog-view ref="formDialogView" v-model="dialogVisibleView" :form-id="formId" />
   </div>
 </template>
 
 <script>
 import _ from 'lodash'
-import notificationFormDialog from './components/notification-form-dialog'
 import WarningConfirmButton from '@/components/WarningConfirmButton'
 import TableLayout from '@/layout/components/TableLayout'
 import Pagination from '@/components/Pagination'
+import notificationFormDialog from './components/notification-form-dialog'
+import notificationFormDialogView from './components/notification-form-dialog-view'
 import { notificationService } from '@/services'
 
 export default {
@@ -99,7 +102,8 @@ export default {
     TableLayout,
     Pagination,
     WarningConfirmButton,
-    notificationFormDialog
+    notificationFormDialog,
+    notificationFormDialogView
   },
   data() {
     return {
@@ -120,6 +124,7 @@ export default {
       // 导出配置
       // 表单相关
       dialogVisible: false,
+      dialogVisibleView: false,
       formId: '-1'
     }
   },
@@ -195,12 +200,16 @@ export default {
         await notificationService.deleteNotification({ ids })
         close()
       } catch (e) {
-        done()
         console.error('notification.deleteNotification-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'
         this.$message.error(errorMessage)
       }
+    },
+    // 详情
+    handleView(row) {
+      this.formId = row.id
+      this.dialogVisibleView = true
     }
     // async sync() {
     //   try {

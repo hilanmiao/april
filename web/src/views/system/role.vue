@@ -170,7 +170,6 @@ export default {
         await roleService.deleteRole({ ids })
         close()
       } catch (e) {
-        done()
         console.error('role.deleteRole-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'

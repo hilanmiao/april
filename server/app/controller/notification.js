@@ -101,6 +101,19 @@ class NotificationController extends Controller {
   }
 
   /**
+   * 分页我的
+   * @return {Promise<void>}
+   */
+  async pageMine() {
+    const { ctx } = this;
+    const { page, limit, isRead: is_read } = ctx.request.query
+
+    const res = await ctx.service.notification.pageMine({ page, limit, is_read })
+
+    this.success({ ctx, data: res })
+  }
+
+  /**
    * 同步
    * @return {Promise<void>}
    */
@@ -124,6 +137,23 @@ class NotificationController extends Controller {
     const { ctx } = this;
 
     const res = await ctx.service.notification.countMyUnread()
+
+    if (res.code) {
+      this.fail({ ctx, code: res.code })
+      return
+    }
+    this.success({ ctx, data: res })
+  }
+
+  /**
+   * 已读
+   * @return {Promise<void>}
+   */
+  async read() {
+    const { ctx } = this;
+    const { ids } = ctx.request.body
+
+    const res = await ctx.service.notification.read({ ids })
 
     if (res.code) {
       this.fail({ ctx, code: res.code })

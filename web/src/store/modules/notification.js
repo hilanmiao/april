@@ -1,3 +1,5 @@
+import { notificationService } from '@/services'
+
 const state = {
   unreadNotifications: 0
 }
@@ -9,8 +11,22 @@ const mutations = {
 }
 
 const actions = {
-  setUnreadNotification({ commit }, data) {
-    commit('SET_UNREAD_NOTIFICATION', data)
+  setUnreadNotification({ commit }, count) {
+    commit('SET_UNREAD_NOTIFICATION', count)
+  },
+  countMyUnreadNotification({ commit, dispatch }) {
+    return new Promise((resolve, reject) => {
+      notificationService.countMyUnreadNotification()
+        .then(response => {
+          const { data } = response.data
+          const count = data.count
+          commit('SET_UNREAD_NOTIFICATION', count)
+          resolve()
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

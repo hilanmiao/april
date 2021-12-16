@@ -84,7 +84,7 @@ export const constantRoutes = [
       path: 'notification',
       name: 'notification',
       component: () => import('@/views/profile/notification/index'),
-      meta: { title: '个人设置' }
+      meta: { title: '我的消息' }
     }]
   }
 ]

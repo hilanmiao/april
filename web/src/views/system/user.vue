@@ -244,7 +244,6 @@ export default {
         await userService.deleteUser({ ids })
         close()
       } catch (e) {
-        done()
         console.error('user.deleteUser-error:', e)
         done()
         const errorMessage = e && e.data.message || '发生了一些未知的错误，请重试！'

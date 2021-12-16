@@ -34,4 +34,12 @@ internals.countMyUnreadNotification = (params) => {
   return http.get(apiUrl + 'my-unread', params)
 }
 
+internals.getNotificationListByPageMine = (params) => {
+  return http.get(apiUrl + 'page-mine', params)
+}
+
+internals.readNotification = (data) => {
+  return http.put(apiUrl + 'read', data)
+}
+
 export default internals

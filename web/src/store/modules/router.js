@@ -3,13 +3,17 @@ import { filterAsyncRoutes } from '@/router/generator-routers'
 
 const state = {
   myRoutes: [], // 当前用户的所有路由
-  addedRoutes: [] // 添加的路由（未使用到）
+  addedRoutes: [], // 添加的路由（未使用到）
+  loading: false
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addedRoutes = routes
     state.myRoutes = constantRoutes.concat(routes)
+  },
+  SET_LOADING: (state, loading) => {
+    state.loading = loading
   }
 }
 
@@ -29,6 +33,9 @@ const actions = {
       commit('SET_ROUTES', [])
       resolve()
     })
+  },
+  setLoading({ commit }, loading) {
+    commit('SET_LOADING', loading)
   }
 }
 

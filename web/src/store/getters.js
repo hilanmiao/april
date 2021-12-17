@@ -10,6 +10,7 @@ const getters = {
   myPowerMenus: state => state.user.myPowerMenus,
   myPowerOperations: state => state.user.myPowerOperations,
   myRoutes: state => state.router.myRoutes,
+  routerLoading: state => state.router.loading,
   onlineUserSocketIds: state => state.socket.onlineUserSocketIds,
   unreadNotifications: state => state.notification.unreadNotifications
 }

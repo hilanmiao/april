@@ -39,6 +39,9 @@ axios.defaults.headers.common.Authorization = store.state.auth.accessToken
 const whiteList = ['/login']
 // 通过全局路由守卫实现权限控制、用户信息获取、加载进度
 router.beforeEach(async(to, from, next) => {
+  // 设置路由跳转loading（正常情况下基本看不到，除了刷新等）
+  await store.dispatch('router/setLoading', true)
+
   // start progress bar
   NProgress.start()
 
@@ -53,6 +56,8 @@ router.beforeEach(async(to, from, next) => {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
+      // 设置路由跳转loading
+      await store.dispatch('router/setLoading', false)
     } else {
       // 判断是否有权限路由
       const hasRoutes = store.getters.myRoutes &&
@@ -61,6 +66,8 @@ router.beforeEach(async(to, from, next) => {
       if (hasRoutes) {
         // pass
         next()
+        // 设置路由跳转loading
+        await store.dispatch('router/setLoading', false)
       } else {
         try {
           // 同步我的消息通知
@@ -100,6 +107,8 @@ router.beforeEach(async(to, from, next) => {
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
+          // 设置路由跳转loading
+          await store.dispatch('router/setLoading', false)
         } catch (error) {
           // remove token
           await store.dispatch('auth/clearAuth')
@@ -108,6 +117,8 @@ router.beforeEach(async(to, from, next) => {
           // go to login page to re-login
           next(`/login?redirect=${to.path}`)
           NProgress.done()
+          // 设置路由跳转loading
+          await store.dispatch('router/setLoading', false)
         }
       }
     }
@@ -117,14 +128,20 @@ router.beforeEach(async(to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()
+      // 设置路由跳转loading
+      await store.dispatch('router/setLoading', false)
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
       NProgress.done()
+      // 设置路由跳转loading
+      await store.dispatch('router/setLoading', false)
     }
   }
 })
-router.afterEach(() => {
+router.afterEach(async() => {
   // finish progress bar
   NProgress.done()
+  // 设置路由跳转loading
+  await store.dispatch('router/setLoading', false)
 })

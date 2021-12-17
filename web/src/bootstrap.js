@@ -39,7 +39,7 @@ axios.defaults.headers.common.Authorization = store.state.auth.accessToken
 const whiteList = ['/login']
 // 通过全局路由守卫实现权限控制、用户信息获取、加载进度
 router.beforeEach(async(to, from, next) => {
-  // 设置路由跳转loading（正常情况下基本看不到，除了刷新等）
+  // 设置路由跳转loading（正常情况下基本看不到，但刷新页面等行为会明显看到）
   await store.dispatch('router/setLoading', true)
 
   // start progress bar

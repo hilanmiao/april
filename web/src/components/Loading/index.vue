@@ -1,5 +1,6 @@
 <template>
   <div class="loading-container">
+    <div class="cube-title">April</div>
     <div class="cube-wrapper">
       <div class="cube-folding">
         <span class="leaf1" />
@@ -59,7 +60,7 @@ export default {
   height: 100px;
   text-align: center;
   font-size: 26px;
-  color: #fff;
+  color: #409EFF;
   font-weight: 300;
 }
 .cube-folding {
